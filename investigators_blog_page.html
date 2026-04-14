@@ -1,8 +1,12 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Blog | Investigators Tools & Tactics</title>  <script src="https://cdn.tailwindcss.com"></script>  <script>
+  <title>Blog | Investigators Tools & Tactics</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     tailwind.config = {
       theme: {
         extend: {
@@ -17,14 +21,25 @@
         }
       }
     }
-  </script>  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>  <style>
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
     body { background-color: #020617; color: #cbd5e1; }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #020617; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-  </style></head>
+  </style>
+</head>
 <body>
-  <div id="root"></div>  <script type="text/babel">
+  <div id="root"></div>
+
+  <script type="text/babel">
     const { useMemo, useState } = React;
 
     const NAV_ITEMS = [
@@ -373,5 +388,6 @@
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
-  </script></body>
+  </script>
+</body>
 </html>
