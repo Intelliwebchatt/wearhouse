@@ -39,6 +39,11 @@
 </head>
 <body>
   <div id="root"></div>
+<div class="flex justify-end p-4">
+    <a href="blog.html" class="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-gray-700 transition-all">
+        📖 View Blog
+    </a>
+</div>
 
   <script type="text/babel">
     const { useState } = React;
@@ -52,7 +57,7 @@
         `site:github.com {t_q} {mods}`,
         `{t_q} {mods} site:facebook.com OR site:x.com`,
         `{t_q} {mods} -site:linkedin.com -site:facebook.com -site:twitter.com`,
-        `filetype:pdf {t_q} {mods}`,
+        `filetype:pdf {ty_q} {mods}`,
         `intitle:"index of" {t_q} {mods} OR "contacts"`,
       ],
       infra:[
