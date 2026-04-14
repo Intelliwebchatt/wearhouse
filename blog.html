@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dorking Insights Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-dork-yellow { background-color: #ffcc00; }
+        .border-dork-yellow { border-color: #ffcc00; }
+        .text-dork-yellow { color: #ffcc00; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📝</span>
+                    <span class="font-bold text-xl tracking-tight">Dorking<span class="text-gray-500">Blog</span></span>
+                </div>
+                <a href="index.html" class="bg-dork-yellow hover:bg-yellow-400 text-black px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-all">
+                    🏠 Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <span class="w-2 h-8 bg-dork-yellow rounded-full"></span>
+                Latest Insights
+            </h2>
+            <div id="featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                </div>
+        </section>
+
+        <section>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <h2 class="text-2xl font-bold">Browse All Titles</h2>
+                <div class="relative w-full md:w-96">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                    <input type="text" id="blog-search" placeholder="Search by title or category..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all">
+                </div>
+            </div>
+
+            <div id="posts-list" class="space-y-4">
+                </div>
+        </section>
+    </main>
+
+    <script>
+        // Post Database
+        const BLOG_POSTS = [
+            { id: 1, title: "Mastering Infrastructure Dorks", category: "Infrastructure", date: "2024-05-20", excerpt: "How to identify exposed .env files and AWS credentials using advanced operators.", content: "Full content here..." },
+            { id: 2, title: "Corporate Legal Scoping 101", category: "Corporate/Legal", date: "2024-05-18", excerpt: "Finding sensitive internal PDF documents and contract drafts in the public domain.", content: "Full content here..." },
+            { id: 3, title: "People Tracking via Public Registries", category: "People", date: "2024-05-15", excerpt: "Leveraging WHOIS data and social media fragments to map organizational charts.", content: "Full content here..." },
+            { id: 4, title: "Advanced Google Operators for OSINT", category: "Infrastructure", date: "2024-05-10", excerpt: "Deep dive into 'inurl' and 'intitle' combinations.", content: "Full content here..." },
+            { id: 5, title: "Identifying C-Suite Vulnerabilities", category: "People", date: "2024-05-05", excerpt: "Executive exposure monitoring and personal data leakage patterns.", content: "Full content here..." }
+        ];
+
+        const featuredGrid = document.getElementById('featured-grid');
+        const postsList = document.getElementById('posts-list');
+        const searchInput = document.getElementById('blog-search');
+
+        function renderBlog() {
+            // Render Featured (First 3)
+            featuredGrid.innerHTML = BLOG_POSTS.slice(0, 3).map(post => `
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500">${post.category}</span>
+                    <h3 class="text-lg font-bold mt-2 mb-3 leading-tight">${post.title}</h3>
+                    <p class="text-gray-600 text-sm mb-4">${post.excerpt}</p>
+                    <button class="text-sm font-semibold text-black underline decoration-dork-yellow decoration-2">Read Article</button>
+                </div>
+            `).join('');
+
+            updateList("");
+        }
+
+        function updateList(query) {
+            const filtered = BLOG_POSTS.filter(post => 
+                post.title.toLowerCase().includes(query.toLowerCase()) || 
+                post.category.toLowerCase().includes(query.toLowerCase())
+            );
+
+            postsList.innerHTML = filtered.map(post => `
+                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between hover:border-dork-yellow transition-colors group">
+                    <div class="flex items-center gap-4">
+                        <span class="px-2 py-1 bg-gray-100 rounded text-xs font-medium text-gray-600">${post.category}</span>
+                        <h4 class="font-semibold text-gray-800 group-hover:text-black transition-colors">${post.title}</h4>
+                    </div>
+                    <span class="text-sm text-gray-400">${post.date}</span>
+                </div>
+            `).join('');
+
+            if (filtered.length === 0) {
+                postsList.innerHTML = `<p class="text-center text-gray-500 py-8">No titles found matching "${query}"</p>`;
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => updateList(e.target.value));
+
+        // Initialize
+        renderBlog();
+    </script>
+</body>
+</html>
