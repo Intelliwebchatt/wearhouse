@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tools | Signal & Trace</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const NAV_ITEMS = [
+      { label: 'HOME', href: 'index.html' },
+      { label: 'TOOLS', href: 'tools.html' },
+      { label: 'BLOG', href: 'blog.html' },
+      { label: 'ABOUT', href: 'about.html' },
+    ];
+
+    const DORKS = {
+      people: [
+        `site:linkedin.com/in {t_q} {mods}`,
+        `site:facebook.com {t_q} {mods}`,
+        `site:instagram.com {t_q} {mods}`,
+        `(site:x.com OR site:twitter.com) {t_q} {mods}`,
+        `site:github.com {t_q} {mods}`,
+        `{t_q} {mods} (site:facebook.com OR site:instagram.com OR site:x.com)`,
+        `{t_q} {mods} -site:linkedin.com -site:facebook.com -site:instagram.com -site:x.com`,
+        `filetype:pdf {t_q} {mods}`,
+        `"${'${t_raw}'}" {mods} "phone" OR "email" OR "address"`,
+        `intitle:"index of" {t_q} {mods}`,
+      ],
+      business: [
+        `site:opencorporates.com {t_q} {mods}`,
+        `(site:bbb.org OR site:ripoffreport.com) {t_q} {mods}`,
+        `(site:justia.com OR site:courtlistener.com) {t_q} {mods}`,
+        `"${'${t_raw}'}" {mods} "complaint" OR "lawsuit" OR "fraud"`,
+        `"${'${t_raw}'}" {mods} "address" OR "phone" OR "contact"`,
+        `"${'${t_raw}'}" {mods} "reviews" OR "scam" OR "complaint"`,
+        `site:sec.gov {t_q} {mods}`,
+        `filetype:pdf {t_q} {mods} "invoice" OR "contract" OR "proposal"`,
+        `intitle:"staff directory" {t_q} {mods}`,
+        `{t_q} {mods} -site:facebook.com -site:instagram.com`,
+      ],
+      website: [
+        `site:{t_raw} {mods}`,
+        `site:{t_raw} filetype:pdf {mods}`,
+        `site:{t_raw} "refund policy" OR "terms" OR "privacy"`,
+        `site:{t_raw} "contact" OR "about us" OR "shipping"`,
+        `"${'${t_raw}'}" "scam" OR "review" OR "complaint"`,
+        `"${'${t_raw}'}" "whois" OR "registrar" OR "domain"`,
+        `"${'${t_raw}'}" "copied" OR "template" OR "duplicate"`,
+        `site:{t_raw} inurl:login OR inurl:admin`,
+        `site:{t_raw} filetype:xls OR filetype:doc OR filetype:pdf`,
+        `intitle:"index of" "{t_raw}"`,
+      ]
+    };
+
+    const ENGINES = {
+      google: "https://www.google.com/search?q=",
+      ddg: "https://duckduckgo.com/?q=",
+      bing: "https://www.bing.com/search?q=",
+      yandex: "https://yandex.com/search/?text="
+    };
+
+    const TOOL_CARDS = [
+      {
+        title: 'Research Query Builder',
+        text: 'Generate useful search strings for names, businesses, websites, and public-facing online traces.',
+      },
+      {
+        title: 'Verification Workflows',
+        text: 'Use repeatable methods to check a claim, suspicious site, or business before you trust it.',
+      },
+      {
+        title: 'Public-Facing Use',
+        text: 'These tools are built for practical online research, not for hidden databases or forensic casework.',
+      },
+    ];
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'TOOLS' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+            <div className="max-w-4xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Tools · Search Logic · Verification
+              </div>
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
+                Research <span className="text-cyan-400">Tools</span>
+              </h1>
+              <p className="text-slate-300 text-base sm:text-lg lg:text-xl max-w-3xl leading-relaxed">
+                Practical tools for building smarter searches, checking claims, and researching people, businesses, and websites without wasting time.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function ToolIntroCards() {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+          <div className="grid md:grid-cols-3 gap-5">
+            {TOOL_CARDS.map((card) => (
+              <div key={card.title} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-glow">
+                <h2 className="text-white text-lg font-bold mb-3">{card.title}</h2>
+                <p className="text-sm text-slate-400 leading-relaxed">{card.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function QueryBuilder() {
+      const [dorkType, setDorkType] = useState('people');
+      const [target, setTarget] = useState('');
+      const [modifiers, setModifiers] = useState([]);
+      const [engine, setEngine] = useState('google');
+      const [generated, setGenerated] = useState([]);
+      const [copiedId, setCopiedId] = useState(null);
+
+      const handleAddModifier = () => setModifiers([...modifiers, '']);
+      const handleModifierChange = (index, value) => {
+        const newMods = [...modifiers];
+        newMods[index] = value;
+        setModifiers(newMods);
+      };
+      const handleRemoveModifier = (index) => {
+        setModifiers(modifiers.filter((_, i) => i !== index));
+      };
+
+      const generateDorks = () => {
+        if (!target.trim()) return;
+
+        const quote = (str) => {
+          if (!str) return '';
+          const cleaned = str.trim().replace(/(^"|"$)/g, '');
+          return `"${cleaned}"`;
+        };
+
+        const t_raw = target.trim().replace(/(^"|"$)/g, '');
+        const t_q = quote(target);
+        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(quote).join(' ');
+
+        const results = DORKS[dorkType].map(d => {
+          let q = d
+            .replace(/\{t_raw\}/g, t_raw)
+            .replace(/\{t_q\}/g, t_q)
+            .replace(/\{mods\}/g, mods);
+
+          q = q.replace(/"\$\{t_raw\}"/g, `"${t_raw}"`);
+          return q.replace(/\s+/g, ' ').trim();
+        });
+
+        setGenerated(results);
+      };
+
+      const copyToClipboard = async (text, index) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopiedId(index);
+          setTimeout(() => setCopiedId(null), 2000);
+        } catch (err) {
+          alert("Copy failed. Please select and copy manually.");
+        }
+      };
+
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-glow overflow-hidden">
+            <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold">RESEARCH QUERY BUILDER</span>
+            </div>
+
+            <div className="p-4 sm:p-8">
+              <div className="mb-6">
+                <h2 className="text-white text-2xl font-bold mb-2">Generate useful search strings</h2>
+                <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+                  Choose a target type, enter the main term, add a few useful modifiers, and generate search strings you can run directly.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
+                {[
+                  { id: 'people', label: '👤 PEOPLE' },
+                  { id: 'business', label: '🏢 BUSINESS' },
+                  { id: 'website', label: '🌐 WEBSITE' }
+                ].map(type => (
+                  <button
+                    key={type.id}
+                    onClick={() => setDorkType(type.id)}
+                    className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${
+                      dorkType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'
+                    }`}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider">
+                    MAIN TARGET
+                  </label>
+                  <input
+                    type="text"
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && generateDorks()}
+                    placeholder={
+                      dorkType === 'people'
+                        ? 'Name, username, or email'
+                        : dorkType === 'business'
+                        ? 'Business name'
+                        : 'Domain or website'
+                    }
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono"
+                  />
+                </div>
+
+                {modifiers.map((mod, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={mod}
+                      onChange={(e) => handleModifierChange(i, e.target.value)}
+                      placeholder="Add a useful modifier like city, state, niche, platform, or keyword"
+                      className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
+                    />
+                    <button
+                      onClick={() => handleRemoveModifier(i)}
+                      className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
+                <button
+                  onClick={handleAddModifier}
+                  className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200"
+                >
+                  + ADD MODIFIER
+                </button>
+
+                <div className="flex gap-2">
+                  <select
+                    value={engine}
+                    onChange={(e) => setEngine(e.target.value)}
+                    className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono"
+                  >
+                    <option value="google">Google</option>
+                    <option value="ddg">DuckDuckGo</option>
+                    <option value="bing">Bing</option>
+                    <option value="yandex">Yandex</option>
+                  </select>
+
+                  <button
+                    onClick={generateDorks}
+                    className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest"
+                  >
+                    ▶ GENERATE
+                  </button>
+                </div>
+              </div>
+
+              {generated.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-slate-800">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-mono text-xs font-bold text-slate-500 tracking-widest">// GENERATED</h3>
+                    <span className="text-xs text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded">{generated.length} RESULTS</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {generated.map((q, i) => (
+                      <div key={i} className="flex flex-col sm:flex-row gap-3 bg-slate-950 border border-slate-800/80 p-3 rounded-lg">
+                        <div className="flex-1 font-mono text-xs sm:text-sm text-cyan-100 break-all">{q}</div>
+                        <div className="flex gap-2">
+                          <a
+                            href={`${ENGINES[engine]}${encodeURIComponent(q)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center"
+                          >
+                            🔍 RUN
+                          </a>
+                          <button
+                            onClick={() => copyToClipboard(q, i)}
+                            className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${
+                              copiedId === i
+                                ? 'bg-green-500/10 text-green-400 border-green-500/30'
+                                : 'bg-slate-800 text-slate-400 border-slate-700'
+                            }`}
+                          >
+                            {copiedId === i ? '✓ COPIED' : '📋 COPY'}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function NotesSection() {
+      const notes = [
+        'Use modifiers sparingly. Too many can kill recall.',
+        'Start broad, then tighten only after you see what the first pass returns.',
+        'Treat search results as leads, not proof.',
+        'Always verify claims with source checks, timestamps, and cross-reference work.',
+      ];
+
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8">
+            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">USEFUL NOTES</div>
+            <h2 className="text-2xl sm:text-3xl text-white font-bold mb-5">Good search beats noisy search</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {notes.map((note, index) => (
+                <div key={index} className="rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-4 text-sm text-slate-300">
+                  {note}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              TOOLS · SEARCH · VERIFICATION · RESEARCH
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <ToolIntroCards />
+          <QueryBuilder />
+          <NotesSection />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
