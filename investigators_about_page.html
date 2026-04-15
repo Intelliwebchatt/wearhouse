@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>About | Investigators Tools & Tactics</title>  <script src="https://cdn.tailwindcss.com"></script>  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+  </style></head>
+<body>
+  <div id="root"></div>  <script type="text/babel">
+    const NAV_ITEMS = [
+      { label: 'HOME', href: 'index.html' },
+      { label: 'TOOLS', href: 'tools.html' },
+      { label: 'BLOG', href: 'blog.html' },
+      { label: 'ABOUT', href: 'about.html' },
+    ];
+
+    const POSITIONS = {
+      law: [
+        'Criminal Investigator',
+        'Lieutenant Investigator',
+        'Patrol Supervisor',
+        'Deputy Sheriff',
+        'Reserve Deputy',
+        'Drug and Violent Crimes Task Force Investigator',
+      ],
+      corrections: [
+        'Corrections Officer',
+        'Jail Administrator',
+      ],
+      tactical: [
+        'Tactical Operator / Sniper-Observer',
+        'Volunteer Firefighter',
+        'Emergency Medical Technician',
+      ],
+    };
+
+    const TRAINING = {
+      core: [
+        'APOSTC Certification',
+        'EMT Certification',
+        'Volunteer Firefighter Certification',
+      ],
+      investigations: [
+        'Interview and Interrogation',
+        'Reid Technique of Interview and Interrogation',
+        'Advanced Reid Technique',
+        'Kinesic Interview and Interrogation',
+        'Investigators and New Detectives',
+        'Homicide Investigations',
+        'Medical Death Investigation',
+        'Child Sexual Abuse Investigation',
+        'Informant Management',
+        'Compliance Investigations / Pharmaceutical Diversions',
+      ],
+      evidence: [
+        'Crime Scene Technology and Evidence Collection',
+        'Arson Scene Search and Evidence Recovery',
+        'Electrical Fire and Arson Investigation',
+        'Fire Investigator',
+        'Drug Identification Training',
+      ],
+      tactical: [
+        'SWAT',
+        'FBI Basic Sniper/Observer',
+        'Advanced Sniper Course',
+        'Tactical Woodland Operations',
+        'Tactical Carbine Operator',
+        'High Risk Operational Skills',
+        'Explosive Breaching',
+        'Tactical Entry Systems',
+        'Multiple Terrorist Response Training',
+        'Hostage / Anti-Terror Training',
+        'Officer Survival / Combat Shooting',
+        'Less-Lethal Launcher Instructor',
+        '12 Gauge Impact Munitions / Flash-Bang Instructor',
+      ],
+      patrol: [
+        'Police Traffic Radar',
+        'Breath Alcohol Testing Operator',
+        'Criminal Interdiction',
+        'Commercial Vehicle Criminal Interdiction',
+        'Defensive Tactics',
+        'Law Enforcement Skills',
+        'Taser Certification',
+        'Jail Administration',
+        'Jail Management',
+        'Handcuffing Techniques',
+        'Chemical Weapons Training',
+      ],
+      fire: [
+        'First Responder',
+        'Fire Prevention, Suppression, and Rescue',
+        'Search and Rescue',
+      ],
+    };
+
+    const CASES = [
+      {
+        title: 'Capital Murder Investigation',
+        text: 'Served as lead investigator in a capital murder case involving rape, torture, and murder. Conducted key interviews, developed case evidence, and obtained a full confession that became central to the case outcome.',
+      },
+      {
+        title: 'Major Felony Investigations',
+        text: 'Worked felony investigations involving homicide, rape, arson, robbery, sexual abuse, child abuse, assault, burglary, theft, fraud, and identity theft. Responsibilities included case development, witness and suspect interviews, evidence coordination, warrant preparation, and investigative follow-up.',
+      },
+      {
+        title: 'Interview and Interrogation',
+        text: 'Conducted extensive interviews of victims, witnesses, and suspects across a broad range of serious criminal cases. Obtained multiple felony confessions, including admissions in murder investigations.',
+      },
+      {
+        title: 'Drug and Violent Crime Task Force Work',
+        text: 'Served on a multi-agency Drug and Violent Crimes Task Force focused on major violent crime and narcotics-related investigations. Work included confidential informant development, search operations, pharmaceutical diversion investigations, and coordinated casework with other agencies.',
+      },
+      {
+        title: 'Crime Scene and Evidence Work',
+        text: 'Processed crime scenes and handled evidence collection in support of active investigations. Applied crime scene methods, evidentiary procedures, and case documentation practices designed to support prosecution and long-term case integrity.',
+      },
+    ];
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">I</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">INVESTIGATORS</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TOOLS &amp; TACTICS</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'ABOUT' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+            <div className="max-w-4xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Background · Training · Casework
+              </div>
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
+                About <span className="text-cyan-400">Shane Lockhart</span>
+              </h1>
+              <p className="text-slate-300 text-base sm:text-lg lg:text-xl max-w-3xl leading-relaxed mb-6">
+                Former investigator and law enforcement professional with experience across criminal investigations, patrol supervision, corrections leadership, tactical operations, and emergency response.
+              </p>
+              <p className="text-slate-400 text-sm sm:text-base max-w-3xl leading-relaxed">
+                This page is built to show relevant background, specialized training, role history, and selected case experience behind the site.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Intro() {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-start">
+            <div>
+              <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">OVERVIEW</div>
+              <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">Direct, analytical, and evidence-driven.</h2>
+              <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-5">
+                Shane Lockhart’s background includes major felony investigations, interviews and interrogations, supervisory leadership, tactical operations, corrections administration, and emergency response. His work has consistently centered on evidence, case logic, disciplined decision-making, and clear communication under pressure.
+              </p>
+              <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
+                Investigators Tools &amp; Tactics is an extension of that same mindset: practical tools, useful tradecraft, and hard-nosed analysis shaped by real-world experience.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-glow">
+              <div className="font-mono text-xs tracking-[0.2em] uppercase text-cyan-400 mb-4">Quick Snapshot</div>
+              <div className="space-y-3 text-sm text-slate-300">
+                <div>• Criminal investigations and major felony casework</div>
+                <div>• Patrol, supervision, corrections, and jail administration</div>
+                <div>• SWAT, sniper-observer, and high-risk operations training</div>
+                <div>• Fire service, EMS, and emergency response background</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Positions() {
+      const groups = [
+        { title: 'Law Enforcement and Investigations', items: POSITIONS.law },
+        { title: 'Corrections and Administration', items: POSITIONS.corrections },
+        { title: 'Tactical and Emergency Response', items: POSITIONS.tactical },
+      ];
+
+      return (
+        <section className="border-y border-slate-800 bg-slate-900/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+            <div className="mb-8">
+              <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">POSITIONS HELD</div>
+              <h2 className="text-2xl sm:text-3xl text-white font-bold">Role history</h2>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-5">
+              {groups.map((group) => (
+                <div key={group.title} className="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 shadow-glow">
+                  <h3 className="text-white text-lg font-bold mb-4">{group.title}</h3>
+                  <ul className="space-y-3 text-sm text-slate-300">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex gap-3">
+                        <span className="text-cyan-400">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Training() {
+      const groups = [
+        { title: 'Core Certifications', items: TRAINING.core },
+        { title: 'Investigations and Interview Training', items: TRAINING.investigations },
+        { title: 'Crime Scene and Evidence Training', items: TRAINING.evidence },
+        { title: 'Tactical and High-Risk Operations', items: TRAINING.tactical },
+        { title: 'Patrol, Enforcement, and Corrections', items: TRAINING.patrol },
+        { title: 'Fire and Emergency Response', items: TRAINING.fire },
+      ];
+
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+          <div className="mb-8">
+            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">TRAINING HIGHLIGHTS</div>
+            <h2 className="text-2xl sm:text-3xl text-white font-bold">Specialized training and certification</h2>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-5">
+            {groups.map((group) => (
+              <div key={group.title} className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+                <h3 className="text-white text-lg font-bold mb-4">{group.title}</h3>
+                <ul className="grid sm:grid-cols-1 gap-3 text-sm text-slate-300">
+                  {group.items.map((item) => (
+                    <li key={item} className="flex gap-3">
+                      <span className="text-cyan-400">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function CaseExperience() {
+      return (
+        <section className="border-y border-slate-800 bg-slate-900/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+            <div className="mb-8">
+              <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">SELECTED CASE EXPERIENCE</div>
+              <h2 className="text-2xl sm:text-3xl text-white font-bold">Casework and investigative focus</h2>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-5">
+              {CASES.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 shadow-glow">
+                  <h3 className="text-white text-xl font-bold mb-3">{item.title}</h3>
+                  <p className="text-sm sm:text-base text-slate-400 leading-relaxed">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function CurrentFocus() {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+          <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900/80 to-slate-950 p-8 sm:p-10 shadow-glow">
+            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">CURRENT FOCUS</div>
+            <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">Why this site exists now</h2>
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-4xl mb-6">
+              Today, Investigators Tools &amp; Tactics is focused on building useful tools, practical investigative resources, and disciplined analysis shaped by real-world experience. The goal is simple: create a place for effective tradecraft, better reasoning, and useful investigative work without wasted motion.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a href="tools.html" className="px-6 py-3 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono text-sm tracking-widest font-bold text-center shadow-glow">
+                EXPLORE TOOLS
+              </a>
+              <a href="blog.html" className="px-6 py-3 rounded-xl bg-slate-900/70 border border-slate-700 text-slate-100 font-mono text-sm tracking-widest font-bold text-center">
+                READ THE BLOG
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} INVESTIGATORS TOOLS &amp; TACTICS
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              ABOUT · TRAINING · CASEWORK · BACKGROUND
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <Intro />
+          <Positions />
+          <Training />
+          <CaseExperience />
+          <CurrentFocus />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script></body>
+</html>
