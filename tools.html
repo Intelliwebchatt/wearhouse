@@ -370,13 +370,50 @@
     }
 
     function NotesSection() {
-      const notes = [
-        'Use modifiers sparingly. Too many can kill recall.',
-        'Start broad, then tighten after you see what the first pass returns.',
-        'Treat search results as leads, not conclusions.',
-        'Cross-check important claims before relying on them.'
-      ];
+    function NotesSection() {
+  const notes = [
+    'Start broad, then tighten after you see what the first pass returns.',
+    'Treat search results as leads, not conclusions.',
+    'Cross-check important claims before relying on them.'
+  ];
 
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8">
+        <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">USEFUL NOTES</div>
+        <h2 className="text-2xl sm:text-3xl text-white font-bold mb-5">Good search beats noisy search</h2>
+
+        <div className="grid gap-4">
+          <a
+            href="posts/mastering-google-dorks.html"
+            className="block rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-5 hover:border-cyan-400/50 transition-colors"
+          >
+            <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-2">
+              Featured Guide
+            </div>
+            <div className="text-white font-bold text-lg mb-2">
+              New to Google dorks or want a stronger search method?
+            </div>
+            <div className="text-sm text-slate-300 leading-relaxed mb-3">
+              Read <span className="text-white font-semibold">Mastering Google Dorks</span> for operators, query patterns, and cleaner research workflow.
+            </div>
+            <div className="font-mono text-[11px] tracking-[0.16em] uppercase text-cyan-300">
+              Read the Full Guide →
+            </div>
+          </a>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {notes.map((note, index) => (
+              <div key={index} className="rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-4 text-sm text-slate-300">
+                {note}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
       return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8">
