@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>How to Check Whether a Website Is Real | Signal & Trace</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <meta name="description" content="A practical step-by-step guide for checking whether a website is real before you trust it with your money, login, or personal information." />
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    .post-content p { margin-bottom: 1.15rem; line-height: 1.8; }
+    .post-content ul { margin-bottom: 1.15rem; padding-left: 1.25rem; }
+    .post-content li { margin-bottom: 0.6rem; }
+    .post-content h2 { margin-top: 2.25rem; margin-bottom: 1rem; font-size: 1.5rem; line-height: 1.2; font-weight: 700; color: white; }
+    .post-content h3 { margin-top: 1.75rem; margin-bottom: 0.85rem; font-size: 1.1rem; line-height: 1.3; font-weight: 700; color: white; }
+    .post-content strong { color: white; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const NAV_ITEMS = [
+      { label: 'HOME', href: '../index.html' },
+      { label: 'TOOLS', href: '../tools.html' },
+      { label: 'BLOG', href: '../blog.html' },
+      { label: 'ABOUT', href: '../about.html' },
+    ];
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="../index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'BLOG' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-18 lg:py-22">
+            <div className="max-w-4xl">
+              <a
+                href="../blog.html"
+                className="inline-flex items-center gap-2 text-cyan-400 font-mono text-[11px] sm:text-xs tracking-[0.18em] uppercase mb-6 hover:text-cyan-300"
+              >
+                ← Back to Blog
+              </a>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Verification Guides · Scam Analysis · Website Checks
+              </div>
+
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1] text-white mb-6">
+                How to Check Whether a Website Is Real Before You Trust It
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500 mb-6">
+                <span className="px-2 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                  Verification Guides
+                </span>
+                <span>Apr 8, 2026</span>
+                <span>Signal &amp; Trace</span>
+              </div>
+
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl">
+                A practical workflow for checking whether a website is legitimate before you trust it with your money, login, personal data, or time.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Article() {
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+            <article className="post-content rounded-3xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 lg:p-10 shadow-glow text-slate-300">
+              <p>
+                If a website is asking for your money, your login, your credit card, your phone number, or your trust, you should assume nothing until it earns it.
+              </p>
+
+              <p>
+                A site can look polished and still be fake.
+              </p>
+
+              <p>
+                That is the trap.
+              </p>
+
+              <p>
+                Most scam sites do not look like obvious scams anymore. They copy legitimate layouts, reuse stock images, clone product descriptions, fake trust badges, and build just enough surface credibility to get people to lower their guard.
+              </p>
+
+              <p>
+                So the real question is not whether a site looks professional.
+              </p>
+
+              <p>
+                The real question is whether the site holds up when you start checking it.
+              </p>
+
+              <h2>The Fast Reality Check</h2>
+
+              <p>
+                Before you open five tools and start going deep, do the basic visual check first.
+              </p>
+
+              <p>Look for things like:</p>
+
+              <ul>
+                <li>bad grammar or awkward wording</li>
+                <li>generic “About Us” pages</li>
+                <li>no real names attached to the business</li>
+                <li>missing phone numbers or addresses</li>
+                <li>fake-looking reviews</li>
+                <li>prices that are unusually low</li>
+                <li>copied product photos</li>
+                <li>weak refund or return policies</li>
+                <li>pressure tactics like countdown timers everywhere</li>
+                <li>no real business footprint outside the site itself</li>
+              </ul>
+
+              <p>
+                None of these prove a site is fake by themselves.
+              </p>
+
+              <p>
+                But several of them together should put you on alert.
+              </p>
+
+              <h2>Step 1: Check the Site’s History</h2>
+
+              <p>
+                One of the fastest ways to test credibility is to see whether the site has any real history.
+              </p>
+
+              <p>
+                A legitimate site usually leaves a trail.
+              </p>
+
+              <p>
+                A fake one often appears suddenly, changes identity fast, or has almost no visible past.
+              </p>
+
+              <h3>Tools to use</h3>
+
+              <ul>
+                <li><strong>Wayback Machine</strong></li>
+                <li><strong>Archive.is</strong></li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>Has the site existed for a while?</li>
+                <li>Did it used to be something completely different?</li>
+                <li>Does the business story stay consistent over time?</li>
+                <li>Are important pages missing from older versions?</li>
+                <li>Does the current branding look brand new on an older domain?</li>
+              </ul>
+
+              <p>
+                If the domain is old but the current site identity appeared last week, that matters.
+              </p>
+
+              <p>
+                That can mean the domain changed hands, got repurposed, or is being used to borrow age-based credibility.
+              </p>
+
+              <h2>Step 2: Check for a Real Public Footprint</h2>
+
+              <p>
+                A real business usually exists in more than one place.
+              </p>
+
+              <p>
+                A fake one often exists only on its own site.
+              </p>
+
+              <p>Check whether the business has:</p>
+
+              <ul>
+                <li>active social profiles</li>
+                <li>real engagement</li>
+                <li>mentions outside its own pages</li>
+                <li>customer discussion</li>
+                <li>directory listings</li>
+                <li>consistent branding across platforms</li>
+              </ul>
+
+              <h3>Tool to use</h3>
+
+              <ul>
+                <li><strong>CrowdTangle Link Checker</strong> or normal social/platform searching</li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>Are people actually sharing or discussing the site?</li>
+                <li>Do the social accounts look old and active, or brand new and empty?</li>
+                <li>Do the links point to real business activity, or just recycled promo posts?</li>
+                <li>Does the same contact info appear elsewhere?</li>
+              </ul>
+
+              <p>
+                A dead social presence is not automatic proof of fraud.
+              </p>
+
+              <p>
+                But a business claiming to be established while leaving almost no public footprint is a warning sign.
+              </p>
+
+              <h2>Step 3: Check Basic Security and Reputation</h2>
+
+              <p>
+                A site should at least clear the basic security check.
+              </p>
+
+              <h3>Check HTTPS</h3>
+
+              <p>
+                If the site does not use HTTPS, that is already a problem.
+              </p>
+
+              <p>
+                But do not stop there.
+              </p>
+
+              <p>
+                A scam site can also have HTTPS. A certificate only tells you the connection is encrypted. It does <strong>not</strong> prove the site is trustworthy.
+              </p>
+
+              <h3>Tools to use</h3>
+
+              <ul>
+                <li><strong>VirusTotal</strong></li>
+                <li><strong>Web-Check</strong></li>
+                <li><strong>w3snoop</strong></li>
+                <li><strong>PhishStats</strong></li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>Has the domain been flagged for phishing or malware?</li>
+                <li>Is it associated with suspicious redirects?</li>
+                <li>Does the technical profile look sloppy or suspicious?</li>
+                <li>Is the domain already showing up in phishing databases?</li>
+              </ul>
+
+              <p>
+                If VirusTotal or phishing databases light up, do not rationalize it away.
+              </p>
+
+              <p>
+                That is a serious warning.
+              </p>
+
+              <h2>Step 4: Check Domain Ownership and Registration Age</h2>
+
+              <p>
+                This is one of the most important steps.
+              </p>
+
+              <p>
+                A lot of scam sites are new.
+              </p>
+
+              <p>
+                Not all new sites are fake, but a brand-new domain asking for trust should be treated carefully.
+              </p>
+
+              <h3>Tools to use</h3>
+
+              <ul>
+                <li><strong>ICANN Whois</strong></li>
+                <li><strong>DomainTools</strong></li>
+                <li><strong>DNS history tools</strong></li>
+                <li><strong>Validin</strong></li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>When was the domain registered?</li>
+                <li>Was it registered recently?</li>
+                <li>Is ownership hidden?</li>
+                <li>Have DNS records changed repeatedly?</li>
+                <li>Does the infrastructure look unstable or constantly shifted?</li>
+              </ul>
+
+              <p>
+                A legitimate business can use privacy protection. That alone proves nothing.
+              </p>
+
+              <p>
+                But if a site claims to be a long-established company and the domain was registered two months ago, that is a major contradiction.
+              </p>
+
+              <h2>Step 5: Check the Hosting and Infrastructure</h2>
+
+              <p>
+                Sometimes the technical side reveals patterns the site design hides.
+              </p>
+
+              <h3>Tools to use</h3>
+
+              <ul>
+                <li><strong>IP Location</strong></li>
+                <li><strong>IPFingerprints</strong></li>
+                <li><strong>DNS History</strong></li>
+                <li><strong>Validin</strong></li>
+                <li><strong>Web-Check</strong></li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>Where is the site hosted?</li>
+                <li>Does that location make sense for the claimed business?</li>
+                <li>Are multiple suspicious domains on the same infrastructure?</li>
+                <li>Have the DNS records shifted repeatedly?</li>
+                <li>Are there signals the site is part of a larger scam network?</li>
+              </ul>
+
+              <p>
+                This matters especially when you are dealing with multiple suspicious domains that look loosely connected.
+              </p>
+
+              <p>
+                Patterns in infrastructure can reveal linkage where branding does not.
+              </p>
+
+              <h2>Step 6: Verify the Claims the Site Makes</h2>
+
+              <p>
+                If a site makes factual claims, especially around products, politics, health, or current events, check the claims separately from the site itself.
+              </p>
+
+              <p>
+                Do not treat the site as its own validator.
+              </p>
+
+              <h3>Tools to use</h3>
+
+              <ul>
+                <li><strong>Snopes</strong></li>
+                <li><strong>FactCheck.org</strong></li>
+                <li><strong>Verification Handbook</strong></li>
+              </ul>
+
+              <h3>What to look for</h3>
+
+              <ul>
+                <li>Are the key claims already disputed elsewhere?</li>
+                <li>Does the site cite real sources?</li>
+                <li>Are those sources being represented honestly?</li>
+                <li>Does the language sound factual, or manipulative?</li>
+              </ul>
+
+              <p>
+                A site can be technically real and still be unreliable.
+              </p>
+
+              <p>
+                That distinction matters.
+              </p>
+
+              <h2>Step 7: Look for Internal Consistency</h2>
+
+              <p>
+                This part is simple and underrated.
+              </p>
+
+              <p>
+                Read the site like you are checking a witness statement.
+              </p>
+
+              <p>Ask:</p>
+
+              <ul>
+                <li>Does the about page match the contact page?</li>
+                <li>Does the domain name match the business name?</li>
+                <li>Do the policies sound like they belong to this business?</li>
+                <li>Do shipping, billing, and returns make sense together?</li>
+                <li>Are staff names, addresses, and phone numbers consistent?</li>
+                <li>Does the site claim years of history without evidence?</li>
+              </ul>
+
+              <p>
+                A lot of fake sites fail this test because they are stitched together from copied pieces.
+              </p>
+
+              <h2>The Best Way to Think About It</h2>
+
+              <p>
+                Do not look for one dramatic sign that proves a site is fake.
+              </p>
+
+              <p>
+                Look for stacked signals.
+              </p>
+
+              <p>
+                A single red flag may mean nothing.
+              </p>
+
+              <p>
+                But when you have:
+              </p>
+
+              <ul>
+                <li>recent domain registration</li>
+                <li>weak business footprint</li>
+                <li>copied content</li>
+                <li>suspicious technical reputation</li>
+                <li>fake-looking social presence</li>
+                <li>contradictory claims</li>
+                <li>poor policies</li>
+                <li>strange infrastructure</li>
+              </ul>
+
+              <p>
+                that is no longer random.
+              </p>
+
+              <p>
+                That is a pattern.
+              </p>
+
+              <h2>A Simple Decision Rule</h2>
+
+              <p>
+                If the site gives you multiple unresolved red flags, do not trust it with:
+              </p>
+
+              <ul>
+                <li>your credit card</li>
+                <li>your login</li>
+                <li>your ID</li>
+                <li>your phone number</li>
+                <li>your personal data</li>
+                <li>your money</li>
+              </ul>
+
+              <p>
+                Move on until it proves itself.
+              </p>
+
+              <h2>Reality Check</h2>
+
+              <p>
+                No tool can certify a site as “real” with perfect certainty.
+              </p>
+
+              <p>
+                What you are doing is not hunting for absolute certainty.
+              </p>
+
+              <p>
+                You are testing whether the site survives basic scrutiny.
+              </p>
+
+              <p>
+                That is the right standard.
+              </p>
+
+              <p>
+                A legitimate site should become more believable the more you check it.
+              </p>
+
+              <p>
+                A fake one usually starts falling apart.
+              </p>
+
+              <h2>Final Thought</h2>
+
+              <p>
+                A polished homepage is not evidence.
+              </p>
+
+              <p>
+                A clean logo is not evidence.
+              </p>
+
+              <p>
+                HTTPS is not evidence.
+              </p>
+
+              <p>
+                Trust comes from consistency, history, technical legitimacy, outside presence, and claims that hold up when checked.
+              </p>
+
+              <p>
+                If a site wants something from you, make it survive inspection first.
+              </p>
+            </article>
+
+            <aside className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Quick Summary
+                </div>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <div>• Check history, footprint, domain age, reputation, and consistency</div>
+                  <div>• HTTPS alone proves almost nothing</div>
+                  <div>• Look for stacked signals, not one dramatic clue</div>
+                  <div>• If the site fails basic scrutiny, do not trust it with your money or data</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Tools Mentioned
+                </div>
+                <div className="space-y-2 text-sm text-slate-300">
+                  <div>Wayback Machine</div>
+                  <div>Archive.is</div>
+                  <div>VirusTotal</div>
+                  <div>PhishStats</div>
+                  <div>ICANN Whois</div>
+                  <div>DomainTools</div>
+                  <div>Validin</div>
+                  <div>FactCheck.org</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Next Reads
+                </div>
+                <div className="space-y-3 text-sm">
+                  <a href="how-to-search-a-name-without-wasting-time.html" className="block text-slate-300 hover:text-white">
+                    How to Search a Name Without Wasting Time
+                  </a>
+                  <a href="how-to-use-ai-to-organize-research-without-trusting-it-blindly.html" className="block text-slate-300 hover:text-white">
+                    How to Use AI to Organize Research Without Trusting It Blindly
+                  </a>
+                  <a href="../blog.html" className="block text-cyan-400 hover:text-cyan-300 font-mono text-[11px] tracking-[0.16em] uppercase pt-1">
+                    View Full Archive →
+                  </a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              BLOG · GUIDES · SCAM ANALYSIS · WORKFLOWS
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <Article />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
