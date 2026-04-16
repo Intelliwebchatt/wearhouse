@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mastering Google Dorks | Signal & Trace</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <meta name="description" content="A practical guide to Google dorks, search operators, query patterns, and ethical verification workflow for smarter online research." />
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    .post-content p { margin-bottom: 1.15rem; line-height: 1.8; }
+    .post-content ul { margin-bottom: 1.15rem; padding-left: 1.25rem; }
+    .post-content li { margin-bottom: 0.6rem; }
+    .post-content h2 { margin-top: 2.25rem; margin-bottom: 1rem; font-size: 1.5rem; line-height: 1.2; font-weight: 700; color: white; }
+    .post-content h3 { margin-top: 1.75rem; margin-bottom: 0.85rem; font-size: 1.1rem; line-height: 1.3; font-weight: 700; color: white; }
+    .post-content strong { color: white; }
+    .post-content code.inline {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(51, 65, 85, 1);
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.35rem;
+      font-size: 0.9em;
+    }
+    .post-content pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const NAV_ITEMS = [
+      { label: 'HOME', href: '../index.html' },
+      { label: 'TOOLS', href: '../tools.html' },
+      { label: 'BLOG', href: '../blog.html' },
+      { label: 'ABOUT', href: '../about.html' },
+    ];
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="../index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'BLOG' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-18 lg:py-22">
+            <div className="max-w-4xl">
+              <a
+                href="../blog.html"
+                className="inline-flex items-center gap-2 text-cyan-400 font-mono text-[11px] sm:text-xs tracking-[0.18em] uppercase mb-6 hover:text-cyan-300"
+              >
+                ← Back to Blog
+              </a>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Search Methods · Verification · Query Logic
+              </div>
+
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1] text-white mb-6">
+                Mastering Google Dorks
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500 mb-6">
+                <span className="px-2 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                  Search Methods
+                </span>
+                <span>Signal &amp; Trace</span>
+              </div>
+
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl">
+                A practical guide to Google dorks, search operators, and query patterns for people who want cleaner search results, better verification, and less wasted motion.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Article() {
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+            <article className="post-content rounded-3xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 lg:p-10 shadow-glow text-slate-300">
+              <p>
+                A Google dork is just a search query built with extra precision.
+              </p>
+
+              <p>
+                Instead of throwing a few words into Google and hoping the right result floats to the top, you use operators to tell the search engine exactly where to look, what to exclude, and what kind of result you want back.
+              </p>
+
+              <p>
+                That matters because normal search behavior is messy. You get news coverage, recycled listicles, social noise, irrelevant pages, and whatever the ranking system thinks is most popular. A good dork helps cut through that.
+              </p>
+
+              <p>
+                Used well, Google dorks are not about theatrics. They are about filtering.
+              </p>
+
+              <p>
+                They help you search one domain, surface PDFs, isolate exact phrases, find likely admin pages, and reduce the junk that usually slows serious research down.
+              </p>
+
+              <h2>What Google Dorks Actually Are</h2>
+
+              <p>
+                A Google dork is a search query that uses operators like <code className="inline">site:</code>, <code className="inline">filetype:</code>, <code className="inline">intitle:</code>, or quotation marks to narrow results.
+              </p>
+
+              <p>
+                Think of it as a power filter for the web.
+              </p>
+
+              <p>
+                Basic search asks Google for likely matches.
+              </p>
+
+              <p>
+                Dorking tells Google where to search, what kind of result to return, and what to leave out.
+              </p>
+
+              <p>
+                That makes it useful for:
+              </p>
+
+              <ul>
+                <li>checking a specific website</li>
+                <li>finding PDFs and documents</li>
+                <li>researching people or businesses</li>
+                <li>finding hidden or overlooked site sections</li>
+                <li>cutting irrelevant results out of a search</li>
+              </ul>
+
+              <h2>The Basic Operators</h2>
+
+              <p>
+                These are the foundation. If you understand these, you can already build much stronger searches than most people ever use.
+              </p>
+
+              <h3><code className="inline">site:</code></h3>
+              <p>
+                Restricts your search to one website or one type of domain.
+              </p>
+              <p>
+                Example:
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                site:alabama.gov
+              </div>
+              <p>
+                That tells Google to only return results from Alabama government pages.
+              </p>
+
+              <h3><code className="inline">filetype:</code> or <code className="inline">ext:</code></h3>
+              <p>
+                Restricts results to a specific file format.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                filetype:pdf "target name"
+              </div>
+              <p>
+                This is one of the fastest ways to surface reports, handouts, presentations, filings, and archived documents.
+              </p>
+
+              <h3>Quotation Marks <code className="inline">" "</code></h3>
+              <p>
+                Forces Google to find an exact phrase in that exact order.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                "Shane Cook"
+              </div>
+              <p>
+                Without quotes, Google can split the name apart or return loose variations.
+              </p>
+
+              <h3>Minus Sign <code className="inline">-</code></h3>
+              <p>
+                Excludes terms or sites you do not want.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                "full name" -linkedin -facebook
+              </div>
+              <p>
+                This is how you strip out high-volume junk when a search keeps getting drowned in the same useless domains.
+              </p>
+
+              <h2>Content and URL Operators</h2>
+
+              <p>
+                These help you target specific parts of a webpage instead of searching everything equally.
+              </p>
+
+              <h3><code className="inline">intitle:</code></h3>
+              <p>
+                Searches only the title of a page.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                intitle:"staff directory"
+              </div>
+              <p>
+                Useful for finding login pages, open directories, staff lists, or documents with specific titles.
+              </p>
+
+              <h3><code className="inline">inurl:</code></h3>
+              <p>
+                Searches only the web address.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                inurl:admin site:example.com
+              </div>
+              <p>
+                Useful for finding folders or sections like <code className="inline">/admin</code>, <code className="inline">/blog</code>, <code className="inline">/uploads</code>, or <code className="inline">/portal</code>.
+              </p>
+
+              <h3><code className="inline">intext:</code></h3>
+              <p>
+                Searches only the body text of the page.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                intext:"target phrase"
+              </div>
+              <p>
+                Useful when the thing you care about is buried in a long article, report, or page body rather than the title.
+              </p>
+
+              <h3><code className="inline">allintitle:</code> and <code className="inline">allinurl:</code></h3>
+              <p>
+                These require every search term to appear in the title or URL.
+              </p>
+              <p>
+                They are useful when a single operator still leaves too much noise in the result set.
+              </p>
+
+              <h2>Professional and Research Operators</h2>
+
+              <p>
+                These operators are especially useful when you are trying to recover older traces or find related sources.
+              </p>
+
+              <h3><code className="inline">cache:</code></h3>
+              <p>
+                Shows Google’s last saved version of a page.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                cache:example.com
+              </div>
+              <p>
+                This can help when content changed, disappeared, or was quietly edited.
+              </p>
+
+              <h3><code className="inline">related:</code></h3>
+              <p>
+                Finds sites similar to another domain.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                related:competitor.com
+              </div>
+              <p>
+                Useful when you want adjacent sources or similar sites in the same research space.
+              </p>
+
+              <h3><code className="inline">AROUND(n)</code></h3>
+              <p>
+                Finds words that appear close together.
+              </p>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                Shane AROUND(3) Investigator
+              </div>
+              <p>
+                This helps when two terms only matter if they appear near each other in context.
+              </p>
+
+              <h3><code className="inline">define:</code></h3>
+              <p>
+                Not especially investigative, but useful when a term is unclear and you need a fast definition.
+              </p>
+
+              <h2>Useful Query Patterns</h2>
+
+              <p>
+                Most good searches are not built from one operator. They are built by combining a few operators with one clear target.
+              </p>
+
+              <p>
+                Strong queries usually use two to four operators, not ten.
+              </p>
+
+              <h3>Search one site only</h3>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                site:example.com keyword
+              </div>
+
+              <h3>Find PDFs about a person or topic</h3>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                filetype:pdf "target name" keyword
+              </div>
+
+              <h3>Find a phrase inside a URL</h3>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                inurl:keyword target
+              </div>
+
+              <h3>Find exact names while excluding junk</h3>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                "full name" -unwantedterm -anotherterm
+              </div>
+
+              <h3>Find likely login or admin areas</h3>
+              <div className="rounded-xl border border-slate-800 bg-slate-950/80 p-4 font-mono text-sm text-cyan-200 mb-4">
+                inurl:admin OR inurl:login site:example.com
+              </div>
+
+              <h2>The Right Search Logic</h2>
+
+              <p>
+                The best way to use Google dorks is simple:
+              </p>
+
+              <ul>
+                <li>start broad</li>
+                <li>see what the first pass gives you</li>
+                <li>tighten the search after that</li>
+              </ul>
+
+              <p>
+                A lot of people make the mistake of building an overcomplicated query too early.
+              </p>
+
+              <p>
+                That can kill recall and leave you with nothing.
+              </p>
+
+              <p>
+                The better approach is:
+              </p>
+
+              <ol className="list-decimal pl-5 mb-4">
+                <li className="mb-2">define the target clearly</li>
+                <li className="mb-2">start with a simple operator pattern</li>
+                <li className="mb-2">identify the main noise sources</li>
+                <li className="mb-2">exclude or narrow based on what you learned</li>
+              </ol>
+
+              <p>
+                In other words: broad first, tighten second.
+              </p>
+
+              <h2>Leads, Not Proof</h2>
+
+              <p>
+                This part matters.
+              </p>
+
+              <p>
+                A search hit is a lead, not proof.
+              </p>
+
+              <p>
+                A good dork can surface:
+              </p>
+
+              <ul>
+                <li>a document</li>
+                <li>a name match</li>
+                <li>a likely login page</li>
+                <li>a cached page</li>
+                <li>a buried mention</li>
+              </ul>
+
+              <p>
+                But it does not validate the meaning of that result by itself.
+              </p>
+
+              <p>
+                You still need to cross-check what you found, verify context, and decide whether the result actually supports the conclusion you are tempted to draw.
+              </p>
+
+              <h2>Safety and Ethics</h2>
+
+              <p>
+                Google dorks are powerful, but they are not a license to cross lines.
+              </p>
+
+              <p>
+                They can surface information that was left public by mistake. That does not mean you have permission to access private systems, misuse exposed data, or push past ethical limits.
+              </p>
+
+              <p>
+                Use them for legitimate research, learning, verification, and analysis.
+              </p>
+
+              <p>
+                Do not use them to access data or systems you do not have permission to access.
+              </p>
+
+              <h2>Final Thought</h2>
+
+              <p>
+                Most people do not need more search volume.
+              </p>
+
+              <p>
+                They need better search structure.
+              </p>
+
+              <p>
+                Google dorks help when they are tied to a purpose, built with restraint, and used as part of a disciplined workflow.
+              </p>
+
+              <p>
+                The goal is not to sound technical.
+              </p>
+
+              <p>
+                The goal is to get to useful information faster and with less noise in the way.
+              </p>
+            </article>
+
+            <aside className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Quick Summary
+                </div>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <div>• Google dorks are precision search queries, not magic tricks</div>
+                  <div>• Core operators help narrow results by site, file type, title, URL, and exact phrase</div>
+                  <div>• Strong queries usually use two to four operators with one clear target</div>
+                  <div>• Treat results as leads, not proof</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Operators Mentioned
+                </div>
+                <div className="space-y-2 text-sm text-slate-300">
+                  <div>site:</div>
+                  <div>filetype:</div>
+                  <div>intitle:</div>
+                  <div>inurl:</div>
+                  <div>intext:</div>
+                  <div>cache:</div>
+                  <div>related:</div>
+                  <div>AROUND(n)</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Download
+                </div>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <p className="leading-relaxed">
+                    Want the quick version? Save the Google Dorks Quick Reference as a downloadable cheat sheet for faster lookup while you work.
+                  </p>
+                  <a
+                    href="../downloads/google-dorks-quick-reference.pdf"
+                    className="inline-flex px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono text-[11px] tracking-[0.16em] uppercase"
+                    download
+                  >
+                    Download PDF
+                  </a>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Next Reads
+                </div>
+                <div className="space-y-3 text-sm">
+                  <a href="how-to-search-a-name-without-wasting-time.html" className="block text-slate-300 hover:text-white">
+                    How to Search a Name Without Wasting Time
+                  </a>
+                  <a href="how-to-check-whether-a-website-is-real.html" className="block text-slate-300 hover:text-white">
+                    How to Check Whether a Website Is Real
+                  </a>
+                  <a href="../blog.html" className="block text-cyan-400 hover:text-cyan-300 font-mono text-[11px] tracking-[0.16em] uppercase pt-1">
+                    View Full Archive →
+                  </a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              BLOG · GUIDES · SEARCH METHODS · WORKFLOWS
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <Article />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
