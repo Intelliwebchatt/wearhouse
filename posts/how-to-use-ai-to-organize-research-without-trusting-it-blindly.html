@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>How to Use NotebookLM and Gemini to Organize Research | Signal & Trace</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <meta name="description" content="How to use NotebookLM and Gemini together to organize online research, reduce drift, and find signal in the noise." />
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    .post-content p { margin-bottom: 1.15rem; line-height: 1.8; }
+    .post-content ul { margin-bottom: 1.15rem; padding-left: 1.25rem; }
+    .post-content li { margin-bottom: 0.6rem; }
+    .post-content h2 { margin-top: 2.25rem; margin-bottom: 1rem; font-size: 1.5rem; line-height: 1.2; font-weight: 700; color: white; }
+    .post-content h3 { margin-top: 1.75rem; margin-bottom: 0.85rem; font-size: 1.1rem; line-height: 1.3; font-weight: 700; color: white; }
+    .post-content strong { color: white; }
+    .post-content code.inline { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(51, 65, 85, 1); padding: 0.15rem 0.35rem; border-radius: 0.35rem; font-size: 0.9em; }
+    .post-content pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const NAV_ITEMS = [
+      { label: 'HOME', href: '../index.html' },
+      { label: 'TOOLS', href: '../tools.html' },
+      { label: 'BLOG', href: '../blog.html' },
+      { label: 'ABOUT', href: '../about.html' },
+    ];
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="../index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'BLOG' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-18 lg:py-22">
+            <div className="max-w-4xl">
+              <a
+                href="../blog.html"
+                className="inline-flex items-center gap-2 text-cyan-400 font-mono text-[11px] sm:text-xs tracking-[0.18em] uppercase mb-6 hover:text-cyan-300"
+              >
+                ← Back to Blog
+              </a>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                AI Workflows · Research Systems · Signal Over Noise
+              </div>
+
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1] text-white mb-6">
+                How to Use NotebookLM and Gemini to Organize Research and Find Signal in the Noise
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500 mb-6">
+                <span className="px-2 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                  AI Workflows
+                </span>
+                <span>Apr 10, 2026</span>
+                <span>Signal &amp; Trace</span>
+              </div>
+
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl">
+                A practical system for using NotebookLM as a central case file and Gemini as an analysis partner when online research starts turning into noise, drift, and scattered fragments.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Article() {
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+            <article className="post-content rounded-3xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 lg:p-10 shadow-glow text-slate-300">
+              <p>
+                If you have ever tried to seriously research a person, business, website, claim, or online pattern, you already know the main problem is not access to information.
+              </p>
+
+              <p>
+                It is staying organized long enough to make sense of it.
+              </p>
+
+              <p>
+                One search becomes fifty tabs. Names repeat. Businesses overlap. Domains connect in ways that are not obvious at first. Screenshots pile up. Notes scatter. Claims conflict. Halfway through, you are no longer sure what matters, what is verified, or where you found the detail that caught your attention in the first place.
+              </p>
+
+              <p>
+                That is where most people lose the thread.
+              </p>
+
+              <p>
+                The internet does not just contain information. It contains clutter, repetition, misdirection, stale data, half-truths, and noise. If you do not have a system, you do not have an investigation. You have a mess.
+              </p>
+
+              <p>
+                That is why I use <strong>NotebookLM</strong> and <strong>Gemini</strong> together.
+              </p>
+
+              <p>
+                Used the right way, they create a practical framework for collecting, organizing, analyzing, and presenting findings without drifting off course. They help turn scattered digital fragments into a structured working file. More important, they help surface patterns and contradictions that would otherwise stay buried.
+              </p>
+
+              <h2>Who this is for</h2>
+
+              <p>This workflow is useful for people researching:</p>
+
+              <ul>
+                <li>a person</li>
+                <li>a business</li>
+                <li>a website</li>
+                <li>a network of domains</li>
+                <li>a public claim</li>
+                <li>a suspicious pattern</li>
+                <li>a social media identity</li>
+                <li>a background trail</li>
+                <li>an organization with unclear connections</li>
+              </ul>
+
+              <h2>What this is not</h2>
+
+              <p>This is <strong>not</strong> a forensic workflow for court.</p>
+              <p>It is <strong>not</strong> a replacement for source verification.</p>
+              <p>It is <strong>not</strong> a magic truth machine.</p>
+              <p>It is a structure for keeping research organized, reducing drift, and making better sense of what you find.</p>
+
+              <h2>The Real Problem With Online Research</h2>
+
+              <p>
+                Most people research in a reactive way.
+              </p>
+
+              <p>
+                They search, click, read, copy, save, forget, reopen, chase side trails, and eventually drown in their own material.
+              </p>
+
+              <p>
+                That gets worse the deeper the search goes.
+              </p>
+
+              <p>
+                The deeper you go, the more structure matters.
+              </p>
+
+              <p>
+                Without structure, even good information becomes hard to use.
+              </p>
+
+              <h2>Why NotebookLM Works So Well</h2>
+
+              <p>
+                NotebookLM works best as a <strong>central case file</strong>.
+              </p>
+
+              <p>
+                Instead of leaving useful material scattered across tabs, copied notes, PDFs, transcripts, articles, summaries, and screenshots, I feed it into one organized space. That changes the whole process. Once the material is in one place, you can stop merely collecting and start analyzing.
+              </p>
+
+              <p>NotebookLM is useful because it helps you:</p>
+
+              <ul>
+                <li>keep source material together</li>
+                <li>preserve context</li>
+                <li>reduce tab chaos</li>
+                <li>compare related details</li>
+                <li>spot contradictions</li>
+                <li>extract recurring names and entities</li>
+                <li>build timelines</li>
+                <li>maintain focus on the actual target</li>
+              </ul>
+
+              <p>
+                In plain terms, it becomes the place where the investigation lives.
+              </p>
+
+              <h2>Why I Pair It With Gemini</h2>
+
+              <p>NotebookLM holds the source base.</p>
+              <p>Gemini becomes the active analysis partner attached to that source base.</p>
+
+              <p>
+                That distinction matters.
+              </p>
+
+              <p>
+                NotebookLM is where I store and structure the material. Gemini is where I pressure-test it, organize it, summarize it, and shape it into something usable.
+              </p>
+
+              <p>Used together, Gemini can help:</p>
+
+              <ul>
+                <li>identify patterns</li>
+                <li>compare claims</li>
+                <li>surface contradictions</li>
+                <li>organize findings</li>
+                <li>build entity maps</li>
+                <li>create timelines</li>
+                <li>draft summaries</li>
+                <li>prepare reports</li>
+                <li>turn raw research into something usable</li>
+              </ul>
+
+              <p>
+                Used correctly, AI is not there to replace judgment. It is there to help process complexity without losing the thread.
+              </p>
+
+              <h2>What This System Actually Does</h2>
+
+              <p>
+                This workflow helps with three things that matter in any serious investigation.
+              </p>
+
+              <h3>1. It keeps the material in one place</h3>
+              <p>
+                Instead of relying on memory, random bookmarks, or scattered notes, you create a central working file.
+              </p>
+
+              <h3>2. It helps you stay on target</h3>
+              <p>
+                The internet constantly pulls you sideways. A structured system reduces drift.
+              </p>
+
+              <h3>3. It helps you present your findings clearly</h3>
+              <p>
+                Once your research is organized, you can turn it into timelines, case summaries, connection tables, profiles, contradiction maps, or clean reports.
+              </p>
+
+              <p>
+                That is the difference between collecting data and building a usable picture.
+              </p>
+
+              <h2>My Basic Workflow</h2>
+
+              <p>Here is the simple version.</p>
+
+              <h3>Step 1: Define the target clearly</h3>
+              <p>
+                Before anything else, decide what you are trying to find.
+              </p>
+
+              <p>Examples:</p>
+
+              <ul>
+                <li>Who is this person connected to?</li>
+                <li>Is this business legitimate?</li>
+                <li>What entities keep appearing around this domain?</li>
+                <li>Are these two companies actually related?</li>
+                <li>What pattern emerges when the noise is stripped away?</li>
+              </ul>
+
+              <p>
+                If the target is vague, the investigation will drift.
+              </p>
+
+              <h3>Step 2: Feed NotebookLM the material</h3>
+
+              <p>This can include:</p>
+
+              <ul>
+                <li>copied text</li>
+                <li>notes</li>
+                <li>PDFs</li>
+                <li>transcripts</li>
+                <li>articles</li>
+                <li>public records</li>
+                <li>research summaries</li>
+                <li>extracted text from screenshots</li>
+                <li>prior AI-assisted findings</li>
+              </ul>
+
+              <p>
+                The goal is to create one grounded knowledge base instead of a scattered pile of fragments.
+              </p>
+
+              <h3>Step 3: Use a disciplined NotebookLM prompt</h3>
+
+              <p>
+                This is where many people get lazy, and it costs them.
+              </p>
+
+              <p>
+                A weak prompt gives you vague summaries and muddy conclusions. A strong prompt forces structure, evidence discipline, and clear separation between fact, inference, and unknowns.
+              </p>
+
+              <p>
+                Here is the NotebookLM prompt I used and later refined because it worked well in practice.
+              </p>
+
+              <h2>NotebookLM Prompt: OSINT Forensic Analyst and Network Mapper</h2>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/80 overflow-hidden my-6">
+                <div className="px-4 py-3 border-b border-slate-800 font-mono text-[10px] sm:text-xs tracking-[0.18em] uppercase text-cyan-400">
+                  NotebookLM Prompt
+                </div>
+                <pre className="p-4 sm:p-5 text-[11px] sm:text-xs font-mono text-slate-300 leading-6 overflow-x-auto">
+{`Prompt Name: OSINT Forensic Analyst and Network Mapper
+
+Act as Agent LM, an evidence-grounded case file analyst and network mapper for this investigation.
+
+Your role is to help build, maintain, and refine a structured case map centered on the target: myiq.
+
+You must use only the uploaded source materials in this notebook. Do not rely on outside knowledge. Do not invent connections, identities, motives, intent, ownership, or conclusions that are not supported by the provided sources.
+
+MISSION
+
+Your mission is to identify, organize, and explain relationships involving myiq, including related businesses, aliases, domains, contact details, identifiers, and affiliated individuals, while preserving strict evidence discipline.
+
+CORE RULES
+
+1. Source Restriction
+- Use only the uploaded source materials.
+- Do not use outside facts, assumptions, or general background knowledge.
+
+2. No Fabrication
+- Do not invent links, identities, motives, ownership claims, or operational roles.
+- If evidence is missing, say it is unknown.
+
+3. Evidence Levels
+Classify every meaningful connection using one of these labels:
+
+- Confirmed:
+  Directly supported by explicit source text or a clear documentary match.
+
+- Probable:
+  Supported by at least two independent source-linked facts, or one direct source plus one corroborating detail.
+
+- Possible:
+  Plausible and partially supported, but still missing strong corroboration.
+
+- Unverified Lead:
+  Worth noting for follow-up, but not supported enough to treat as a working conclusion.
+
+4. Link Discipline
+- For every claimed connection, explain exactly how the link is established.
+- Do not merge people, companies, websites, or identifiers unless the evidence supports that they are the same.
+- Similar names, overlapping themes, or partial matches are not enough by themselves.
+
+5. Citation Discipline
+- Cite the specific source text for every important claim.
+- For major findings, include a short direct quote when possible.
+- Clearly distinguish direct quotes from paraphrased summaries.
+
+6. Conflict Handling
+- If sources conflict, do not force a resolution unless one source clearly outweighs the other.
+- Flag the conflict and explain the nature of the inconsistency.
+
+7. Relevance Control
+- Keep the investigation centered on myiq.
+- Do not elevate side details unless they materially connect to the target, its network, or the research objective.
+
+8. Time Awareness
+- When dates are available, preserve them.
+- Distinguish current facts from older facts, and note when timelines are unclear or inconsistent.
+
+PRIMARY TASKS
+
+1. Network Map
+Maintain a structured map of entities related to myiq under these categories:
+- Companies and Organizations
+- People and Aliases
+- Emails
+- Phone Numbers
+- Websites and Domains
+- IP Addresses
+- Physical Addresses
+- Social Media Accounts
+- Other Identifiers
+
+2. Link Documentation
+For each entity, provide:
+- Entity
+- Category
+- Linked To
+- Evidence Level
+- Basis for Link
+- Supporting Source
+- Date or Time Context, if available
+
+3. Case Retrieval
+When asked a specific question, answer using only the uploaded source materials.
+- Be precise
+- Quote relevant source language where useful
+- Separate direct evidence from inference
+- State clearly what remains unknown
+
+4. Gap Analysis
+Identify:
+- missing links
+- unresolved identities
+- contradictions
+- weak points in the evidence chain
+- high-value next research targets
+
+5. Timeline Tracking
+When possible, track:
+- first appearance
+- most recent appearance
+- sequence of events
+- shifts in ownership, contact details, domains, or affiliations over time
+
+REQUIRED OUTPUT FORMAT
+
+When I ask for a case update, use this structure:
+
+Case Update: myiq
+
+A. Executive Summary
+- Brief summary of the most important findings
+
+B. Network Map
+- Organize findings by category
+
+C. Connection Table
+For each entity, show:
+- Entity:
+- Category:
+- Connected To:
+- Evidence Level:
+- Basis for Link:
+- Supporting Source:
+- Date or Time Context:
+
+D. Contradictions or Ambiguities
+- List conflicting, incomplete, or unclear points
+
+E. Gaps and Blind Spots
+- List missing information and unresolved questions
+
+F. Suggested Next Leads
+- List the most useful next research directions based on current evidence
+
+REASONING DISCIPLINE
+
+Always separate:
+- What the sources directly show
+- What can reasonably be inferred
+- What is still unknown
+
+Do not blur these categories. Do not overstate weak evidence. Do not confuse pattern recognition with proof.`}
+                </pre>
+              </div>
+
+              <h2>Why This Prompt Works</h2>
+
+              <p>
+                This prompt matters because it forces discipline.
+              </p>
+
+              <p>
+                It does not let NotebookLM drift into vague summarizing or overconfident merging. It requires evidence levels. It forces link explanations. It keeps similar names from being casually merged. It preserves contradictions instead of smoothing them over.
+              </p>
+
+              <p>
+                That is what makes it useful.
+              </p>
+
+              <p>
+                A weak research prompt creates noise in a cleaner format. A strong one creates structure.
+              </p>
+
+              <h3>Step 4: Attach NotebookLM as the knowledge base for Gemini</h3>
+
+              <p>
+                Once the NotebookLM side is grounded, Gemini becomes much more useful.
+              </p>
+
+              <p>
+                Instead of starting from scratch, Gemini works from a controlled evidence base. That allows it to help with analysis instead of guessing.
+              </p>
+
+              <p>
+                This is the Gemini companion prompt I would use for that stage.
+              </p>
+
+              <h2>Gemini Prompt: Investigation Strategist and Structured Analysis Partner</h2>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/80 overflow-hidden my-6">
+                <div className="px-4 py-3 border-b border-slate-800 font-mono text-[10px] sm:text-xs tracking-[0.18em] uppercase text-cyan-400">
+                  Gemini Prompt
+                </div>
+                <pre className="p-4 sm:p-5 text-[11px] sm:text-xs font-mono text-slate-300 leading-6 overflow-x-auto">
+{`Act as my investigation strategist and structured analysis partner.
+
+You are working with NotebookLM as the active case file and source-grounded knowledge base. Your job is not to invent facts, but to help me organize, analyze, pressure-test, and present findings clearly.
+
+CORE ROLE
+
+Help me turn source-grounded material into:
+- clean case structure
+- usable analysis
+- contradiction review
+- timelines
+- entity maps
+- professional output formats
+
+RULES
+
+1. Treat NotebookLM material as the working evidence base.
+2. Do not present unsupported claims as fact.
+3. Separate:
+- direct evidence
+- inference
+- speculation
+4. Challenge weak links, missing steps, and overconfident conclusions.
+5. When evidence is thin, say so clearly.
+6. Prefer structure over drama.
+7. Keep the investigation centered on the target and objective.
+8. Help reduce confusion, duplication, and rabbit trails.
+
+WHEN HELPING ME ANALYZE
+
+Always look for:
+- repeated entities
+- shared identifiers
+- ownership signals
+- reused contact details
+- timeline inconsistencies
+- contradictions
+- probable aliases
+- domain or business overlap
+- missing evidence needed to confirm a link
+
+WHEN HELPING ME PRESENT FINDINGS
+
+Help me generate:
+- executive summaries
+- connection tables
+- target profiles
+- timelines
+- research briefs
+- clean professional reports
+
+DEFAULT RESPONSE FORMAT
+
+Use these sections when useful:
+1. What the evidence shows
+2. What can be reasonably inferred
+3. What is still unknown
+4. Weak points or caution flags
+5. Best next move
+
+Your value is not in sounding certain. Your value is in staying organized, evidence-grounded, and useful.`}
+                </pre>
+              </div>
+
+              <h2>Why the Pairing Works</h2>
+
+              <p>
+                The pairing works because the tools have different jobs.
+              </p>
+
+              <p>
+                NotebookLM acts as the structured evidence file.
+              </p>
+
+              <p>
+                Gemini acts as the analyst working from that file.
+              </p>
+
+              <p>
+                That separation is the key.
+              </p>
+
+              <p>
+                One tool stores the material. One tool processes the material. The prompts keep both from slipping into confusion, drift, or unsupported claims.
+              </p>
+
+              <h2>What You Can Build From This</h2>
+
+              <p>Once the material is organized, you can turn it into:</p>
+
+              <ul>
+                <li>executive summaries</li>
+                <li>case updates</li>
+                <li>entity maps</li>
+                <li>timelines</li>
+                <li>contradiction tables</li>
+                <li>target profiles</li>
+                <li>research briefs</li>
+                <li>clean reports for presentation or review</li>
+              </ul>
+
+              <p>
+                That matters because many people can collect information. Far fewer can present it clearly.
+              </p>
+
+              <h2>The Biggest Advantage: It Keeps You on Track</h2>
+
+              <p>
+                The biggest danger in online investigations is not lack of effort. It is drift.
+              </p>
+
+              <p>
+                You start with a valid target and end up chasing ten side issues, five weak leads, and three emotional reactions that do not move the work forward.
+              </p>
+
+              <p>
+                This system helps cut that down.
+              </p>
+
+              <p>
+                NotebookLM keeps the evidence centralized. Gemini helps process what matters. The prompt structure keeps the objective visible.
+              </p>
+
+              <p>
+                That does not guarantee truth. Nothing does.
+              </p>
+
+              <p>
+                But it gives you a much better chance of seeing the truth when it is buried under clutter, repetition, and noise.
+              </p>
+
+              <h2>Reality Check</h2>
+
+              <p>
+                This workflow does not magically produce truth.
+              </p>
+
+              <p>
+                It produces order.
+              </p>
+
+              <p>
+                That matters because truth rarely appears as one dramatic discovery. More often, it emerges as a pattern that becomes visible only after you gather enough reliable pieces and keep them organized long enough to compare them honestly.
+              </p>
+
+              <p>
+                Bad research is usually not caused by lack of effort.
+              </p>
+
+              <p>
+                It is usually caused by lack of structure.
+              </p>
+
+              <p>
+                This is a structure.
+              </p>
+
+              <h2>Final Thought</h2>
+
+              <p>
+                If you do any serious online research, whether on a person, business, website, organization, or digital trail, having a system matters more than having more tabs open.
+              </p>
+
+              <p>
+                NotebookLM and Gemini, used together with the right prompts, can help you build that system.
+              </p>
+
+              <p>
+                The truth is usually there.
+              </p>
+
+              <p>
+                It is just buried in the noise.
+              </p>
+            </article>
+
+            <aside className="space-y-5">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Post Summary
+                </div>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <div>• NotebookLM works best as a central case file</div>
+                  <div>• Gemini works best as the analysis partner attached to that file</div>
+                  <div>• The prompts matter because they force structure and evidence discipline</div>
+                  <div>• The system helps reduce drift, clutter, and weak conclusions</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Tags
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['AI Workflows', 'NotebookLM', 'Gemini', 'Research', 'Verification'].map((tag) => (
+                    <span key={tag} className="text-[10px] font-mono tracking-[0.15em] uppercase text-slate-400 border border-slate-800 bg-slate-950 px-2 py-1 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-glow">
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                  Next Reads
+                </div>
+                <div className="space-y-3 text-sm">
+                  <a href="how-to-check-whether-a-website-is-real.html" className="block text-slate-300 hover:text-white">
+                    How to Check Whether a Website Is Real
+                  </a>
+                  <a href="how-to-search-a-name-without-wasting-time.html" className="block text-slate-300 hover:text-white">
+                    How to Search a Name Without Wasting Time
+                  </a>
+                  <a href="../blog.html" className="block text-cyan-400 hover:text-cyan-300 font-mono text-[11px] tracking-[0.16em] uppercase pt-1">
+                    View Full Archive →
+                  </a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              BLOG · GUIDES · SCAM ANALYSIS · WORKFLOWS
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <Article />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+  </script>
+</body>
+</html>
