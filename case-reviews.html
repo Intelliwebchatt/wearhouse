@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Case Reviews | Signal & Trace</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const NAV_ITEMS = [
+      { label: 'HOME', href: 'index.html' },
+      { label: 'TOOLS', href: 'tools.html' },
+      { label: 'HOW-TO', href: 'how-to.html' },
+      { label: 'CASE REVIEWS', href: 'case-reviews.html' },
+      { label: 'AI WORKFLOWS', href: 'ai-workflows.html' },
+      { label: 'ABOUT', href: 'about.html' },
+    ];
+
+    const POSTS = [
+      {
+        id: 'ST-005',
+        title: 'How Fake Sites Get Built to Look Legitimate',
+        slug: 'how-fake-sites-get-built-to-look-legitimate',
+        category: 'Scam Analysis',
+        date: '2026-04-05',
+        excerpt: 'What scam sites often have in common and where people miss the reused pattern.',
+        featured: true,
+        tags: ['scam', 'sites', 'patterns'],
+      },
+      {
+        id: 'ST-006',
+        title: 'Why Weak Source Tracking Corrupts Good Research',
+        slug: 'why-weak-source-tracking-corrupts-good-research',
+        category: 'Case Notes',
+        date: '2026-04-03',
+        excerpt: 'If you stop tracking where each claim came from, your notes turn into contamination.',
+        featured: true,
+        tags: ['sources', 'workflow', 'notes'],
+      },
+      {
+        id: 'ST-007',
+        title: 'What to Check Before Sending Money to an Online Business',
+        slug: 'what-to-check-before-sending-money-to-an-online-business',
+        category: 'Scam Analysis',
+        date: '2026-03-30',
+        excerpt: 'The basic checks most people skip before trusting a business they found online.',
+        featured: false,
+        tags: ['business', 'scam', 'checks'],
+      },
+    ];
+
+    const CATEGORY_ORDER = ['All', 'Scam Analysis', 'Case Notes'];
+
+    function formatDate(dateString) {
+      const date = new Date(dateString + 'T12:00:00');
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    }
+
+    function postUrl(slug) {
+      return `posts/${slug}.html`;
+    }
+
+    function Navbar() {
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'CASE REVIEWS' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Scam Analysis · Case Notes · Pattern Review
+              </div>
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
+                Case <span className="text-cyan-400">Reviews</span>
+              </h1>
+              <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                Breakdowns of scam sites, weak source patterns, suspicious claims, and public-facing material worth testing harder.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function FeaturedPosts({ featured }) {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="mb-8">
+            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">FEATURED REVIEWS</div>
+            <h2 className="text-2xl sm:text-3xl text-white font-bold">Current breakdowns</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {featured.map((post) => (
+              <a
+                key={post.id}
+                href={postUrl(post.slug)}
+                className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 hover:border-cyan-400/40 hover:bg-slate-900 transition-all shadow-glow"
+              >
+                <div className="flex items-center justify-between gap-3 mb-4">
+                  <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
+                    {post.category}
+                  </span>
+                  <span className="text-[10px] font-mono tracking-[0.16em] text-slate-500 uppercase">{formatDate(post.date)}</span>
+                </div>
+                <h3 className="text-xl text-white font-bold mb-3 leading-tight group-hover:text-cyan-300 transition-colors">
+                  {post.title}
+                </h3>
+                <p className="text-sm text-slate-400 leading-relaxed mb-5">{post.excerpt}</p>
+                <div className="font-mono text-xs tracking-[0.18em] uppercase text-cyan-400">Open Review →</div>
+              </a>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function FilterBar({ categories, activeCategory, setActiveCategory, query, setQuery, total }) {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden shadow-glow">
+            <div className="p-5 sm:p-6 border-b border-slate-800 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-white text-xl font-bold">Review Archive</h2>
+                <p className="text-xs font-mono tracking-[0.18em] uppercase text-slate-500 mt-1">Search and filter case reviews</p>
+              </div>
+
+              <div className="relative w-full lg:w-96">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search title, excerpt, tag, or category"
+                  className="w-full bg-slate-950 border border-slate-700 text-white pl-4 pr-10 py-3 rounded-xl focus:border-cyan-400 outline-none transition-all text-sm placeholder-slate-600"
+                />
+                <span className="absolute right-3 top-3.5 text-slate-500 text-sm">🔍</span>
+              </div>
+            </div>
+
+            <div className="p-5 sm:p-6 flex flex-wrap items-center gap-3 border-b border-slate-800">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-3 py-2 rounded-xl text-xs font-mono tracking-[0.16em] uppercase border transition-colors ${
+                    activeCategory === category
+                      ? 'border-cyan-400/40 bg-cyan-500/10 text-cyan-300'
+                      : 'border-slate-700 bg-slate-950 text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+
+              <div className="ml-auto text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
+                {total} review{total === 1 ? '' : 's'}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function ArchiveList({ posts, query }) {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden">
+            {posts.length === 0 ? (
+              <div className="px-6 py-16 text-center text-slate-500">
+                No reviews matched <span className="text-slate-300">"{query}"</span>.
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-800/70">
+                {posts.map((post) => (
+                  <a
+                    key={post.id}
+                    href={postUrl(post.slug)}
+                    className="block p-5 sm:p-6 hover:bg-slate-900/80 transition-colors group"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-3 mb-3">
+                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-slate-500">{post.id}</span>
+                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
+                            {post.category}
+                          </span>
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-white transition-colors mb-2">
+                          {post.title}
+                        </h3>
+                        <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">{post.excerpt}</p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {post.tags.map((tag) => (
+                            <span key={tag} className="text-[10px] font-mono tracking-[0.15em] uppercase text-slate-500 border border-slate-800 bg-slate-950 px-2 py-1 rounded-full">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex lg:flex-col items-start lg:items-end gap-3 lg:gap-2 shrink-0">
+                        <div className="text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
+                          {formatDate(post.date)}
+                        </div>
+                        <div className="text-xs font-mono tracking-[0.18em] uppercase text-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                          View Review →
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              CASE REVIEWS · SCAM ANALYSIS · PATTERN REVIEW
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      const [query, setQuery] = useState('');
+      const [activeCategory, setActiveCategory] = useState('All');
+
+      const featuredPosts = useMemo(() => POSTS.filter((post) => post.featured), []);
+
+      const filteredPosts = useMemo(() => {
+        const q = query.trim().toLowerCase();
+
+        return POSTS.filter((post) => {
+          const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
+          const haystack = [
+            post.title,
+            post.category,
+            post.excerpt,
+            post.id,
+            ...post.tags,
+          ].join(' ').toLowerCase();
+          const matchesQuery = !q || haystack.includes(q);
+          return matchesCategory && matchesQuery;
+        });
+      }, [query, activeCategory]);
+
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <FeaturedPosts featured={featuredPosts} />
+          <FilterBar
+            categories={CATEGORY_ORDER}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            query={query}
+            setQuery={setQuery}
+            total={filteredPosts.length}
+          />
+          <ArchiveList posts={filteredPosts} query={query} />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
