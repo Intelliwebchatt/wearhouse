@@ -1,0 +1,82 @@
+OSINT Masterclass: Deconstructing Digital Scams – The myIQ Investigative Case Study
+
+1. Introduction: The Architecture of Digital Deception
+
+In the contemporary digital economy, the proliferation of "dark pattern" subscription models represents a shift from traditional marketing to the engineering of automated billing traps. These systems are meticulously designed to move users through a low-friction "hook" into high-velocity recurring financial obligations. For the Lead OSINT Investigator, Open Source Intelligence has evolved beyond simple research; it is now a tactical mechanism for breaching the corporate veil and enforcing accountability.
+
+The "myIQ Investigation" serves as our primary case study in mapping a global deceptive architecture. The platform presents a front of academic rigor, even issuing formal IQ Certificates—such as the one granted to "Shane Lockhart" with a score of 128—validated by fictitious "Validation Officers" like O. Taylor and D. Miller. However, beneath this layer of "Director of Assessments" signatures lies a multi-jurisdictional web designed to insulate the Ultimate Beneficial Owners (UBO) from liability. This masterclass deconstructs how we breached the initial layer of anonymity to reveal the global machinery of this operation.
+
+2. The Investigative Engine: Disciplined OSINT Workflows
+
+Standard investigative methods frequently fail when confronted with sophisticated digital deceptive operations. These entities utilize Search Engine Optimization (SEO) "cloaking" to bury investigative leads under high-authority noise. To uncover hard evidence, a disciplined workflow is required to bypass this noise and identify unique digital and physical anchors that the operators cannot easily scrub.
+
+Precision Dorking: Bypassing SEO Noise
+
+The breakthrough in the myIQ investigation relied on "Google Dorks"—advanced search queries that target specific, non-obvious data points. We utilized temporal and physical anchors to bypass the brand’s marketing front.
+
+Search Target	Specific Query Used	Evidence Uncovered
+Operational Front	"2093 Philadelphia Pike #3129"	Identified Envest Research Inc. in Claymont, DE; found the NY-to-DE jurisdictional pivot.
+IP Holding Shell	"1309 Coffeen Ave" "MTA Global"	Linked brand assets to a Wyoming "Northwest Registered Agent" hub.
+Forensic Billing	"MYIQ.COM/EU ST. Julian S MelMT"	Connected the platform to the Maltese payment gateway Mellifera Kartiera Ltd.
+Temporal Anchor	site:wyobiz.wyo.gov "MTA Global LLC"	Verified January 22, 2025, as the "First-Use Date" for the trademark.
+
+The AI-Driven Research Stack
+
+To manage the high volume of disparate data, we synthesized an AI-driven research stack using NotebookLM and Gemini to create a comprehensive "Intelligence Map." This process followed a three-step cycle:
+
+1. Automatic Organization: We ingested every search result, MBR filing, and "Application for Authority" into NotebookLM. This created a centralized repository that automatically categorized corporate entities by jurisdiction.
+2. Correlation/Dot-Connecting: The AI identified the strategic migration of Envest Research Inc. from New York to Delaware (Claymont) as a calculated asset protection move to exploit Delaware’s corporate secrecy laws.
+3. Verification: Gemini functioned as the live research lead, cross-referencing physical addresses against the ICIJ Offshore Leaks Database to verify the legitimacy of various "gatekeepers."
+
+3. The Multi-Jurisdictional Shell Game: Mapping the Three-Layer Shield
+
+The myIQ operation utilizes jurisdictional layering—shifting assets and liabilities between New York, Delaware, Wyoming, and Malta—to shield beneficial owners from consumer protection litigation.
+
+1. The Operational Front (Envest Research Inc.): Based originally in NY but migrated to Delaware, this entity manages the platform and customer support (help@myiq.com). The move to Delaware was a strategic decision to mitigate domestic liability while maintaining a U.S. presence.
+2. The IP Shield (MTA GLOBAL LLC): This Wyoming entity serves as a "SEO Shield." The name "MTA Global" was chosen specifically for its "name collision" potential; search results are flooded by the NYC Metropolitan Transportation Authority and whitepapers regarding "Multi-Touch Attribution." This insulates the trademark assets (filed Feb 7, 2025) at the high-density hub of 1309 Coffeen Ave.
+3. The Offshore Treasury (Mellifera Kartiera Limited): This is the high-risk payment gateway located at the "Villa Malitah" hub in St. Julian’s, Malta. Referencing the Paradise Papers, we identified this address as a known legacy hub for high-density shell companies.
+
+Economic Intent Analysis
+
+The investigative saturation of the entity's financial filings reveals the "Economic Intent" behind the platform:
+
+Stated Purpose	Actual Economic Outcome
+Educational/Entertainment assessments.	High-velocity recurring revenue ($29.99/month).
+$0.50 – $1.00 trial for "self-discovery."	Capture of payment data for automated "trap" enrollment.
+Expert-Led "Brain Training."	$14.99 bi-weekly subscription (triggered after a 7-day trial).
+
+4. The "Dark Pattern" Financial Model: From Trial to Trap
+
+In professional OSINT, the payment gateway is the "smoking gun." The myIQ platform relies on Maltese Electronic Money Institutions (EMIs) to process global credit card volume that would be flagged by traditional U.S. banking filters for "dark pattern" billing.
+
+The definitive forensic link was identified via bank statements showing the string: "MYIQ.COM/EU ST. JULIAN S MelMT." The "MelMT" identifier is the technical signature for Mellifera Kartiera Limited (Registry IDs: C 77292 and C 107685), operating under the broader brand name Colibrix Ltd.
+
+Gatekeepers of the Money
+
+The Maltese node is supported by specific gatekeepers who provide regulatory legitimacy to this high-risk processing:
+
+* Stephen Balzan: The primary tax consultant and "architect" at the Villa Malitah hub.
+* Stanislav Sadykhov & Artjoms Grivkovs: Operational principals managing the Colibrix/Mellifera infrastructure.
+* Joseph Camilleri: Chairman of Mellifera, providing essential local regulatory standing.
+
+While the financial treasury is offshore, the ultimate leadership nexus is traced to Jawad Khan, founder of Evernex Pakistan in Islamabad. Khan utilizes "SEO Cloaking" to hide behind search results for a high-profile PIF executive and a Dubai transport owner, masking his role as the architect of the global subscription engine.
+
+5. The Confrontation Strategy: Turning Intelligence into Leverage
+
+Documentation of a scam's architecture fundamentally shifts the power dynamic. In our case study, the support agent ("David") initially attempted a "Partial Refund Gambit," offering to return only the $1.00 trial fee while retaining the $30.00 unauthorized charge.
+
+The investigator countered by presenting the Intelligence Map. By explicitly naming Envest Research (DE), MTA Global (WY), and the Mellifera/Colibrix gateway in Malta, the investigator signaled that the corporate veil was breached. The threat was clear: the victim had the data required to report the specific merchant account to the Maltese regulators, potentially jeopardizing the operators' multi-million dollar payment infrastructure.
+
+The result was a shift from "policy-driven denial" to an immediate concession: "the full refund has already been processed." Operators prioritize the survival of their processing gateways over the retention of a single $30.00 charge.
+
+6. The "Truth-Seeker" Toolkit: Professional OSINT Checklist
+
+Use this "Signal & Trace" methodology to map the architecture of any deceptive digital platform:
+
+* [ ] Dork the Anchors: Use exact-match queries for physical addresses found in Terms of Service and specific billing signatures (e.g., "MelMT").
+* [ ] Registry Verification: Cross-reference entities via the Malta Business Registry (MBR) and the WyoBiz portal to identify the registered agents and directors.
+* [ ] Technical Footprint Analysis: Analyze the Start of Authority (SOA) and DNS history for developer handles such as "jkhan_evernex" or tracking tags (Google UA codes) that bypass SEO cloaking.
+* [ ] Identify the UBO: Look for "Application for Authority" filings in Delaware or shareholder lists in the MBR to identify the Ultimate Beneficial Owner.
+* [ ] Show Your Work: When confronting a support agent, present a documented map of their multi-jurisdictional structure. Use their specific gateway ID to force an immediate refund.
+
+In the digital age, clarity and verified data are the ultimate forms of leverage. By replacing confusion with forensic evidence, we move from victimhood to investigative authority.
