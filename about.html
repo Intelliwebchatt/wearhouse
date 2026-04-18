@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>About | Shane Lockhart | Signal & Trace</title>
+  <title>About Shane Lockhart | Signal & Trace</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -52,43 +51,18 @@
       { label: 'ABOUT', href: 'about.html' },
     ];
 
-    const POSITIONS = {
-      law: [
-        'Criminal Investigator',
-        'Lieutenant Investigator',
-        'Patrol Supervisor',
-        'Deputy Sheriff',
-        'Drug and Violent Crimes Task Force Investigator',
+    const DATA = {
+      positions: [
+        { cat: 'INVESTIGATIONS', roles: ['Criminal Investigator', 'Lieutenant Investigator', 'Drug & Violent Crimes Task Force', 'Deputy Sheriff'] },
+        { cat: 'LEADERSHIP', roles: ['Patrol Supervisor', 'Jail Administrator', 'Corrections Officer'] },
+        { cat: 'EMERGENCY', roles: ['Tactical Operator / Sniper-Observer', 'Volunteer Firefighter', 'Emergency Medical Technician (EMT)'] }
       ],
-      corrections: [
-        'Corrections Officer',
-        'Jail Administrator',
-      ],
-      tactical: [
-        'Tactical Operator / Sniper-Observer',
-        'Volunteer Firefighter',
-        'Emergency Medical Technician',
-      ],
-    };
-
-    const TRAINING = {
-      investigations: [
-        'Interview and Interrogation (Reid Technique & Kinesic)',
-        'Homicide & Medical Death Investigation',
-        'Child Sexual Abuse Investigation',
-        'Compliance Investigations / Pharmaceutical Diversions',
-      ],
-      evidence: [
-        'Crime Scene Tech & Evidence Collection',
-        'Arson Scene Search & Recovery',
-        'Fire Investigator Certification',
-      ],
-      tactical: [
-        'FBI Basic & Advanced Sniper/Observer',
-        'Tactical Woodland Operations',
-        'Explosive Breaching & Tactical Entry',
-        'Terrorist Response & Hostage Rescue',
-      ],
+      training: [
+        { cat: 'INVESTIGATIVE LOGIC', items: ['Reid Technique (Basic & Advanced)', 'Kinesic Interview & Interrogation', 'Homicide Investigations', 'Medical Death Investigation', 'Child Sexual Abuse Investigation', 'Informant Management', 'Pharmaceutical Diversions'] },
+        { cat: 'FORENSICS & EVIDENCE', items: ['Crime Scene Technology', 'Arson Scene Search & Evidence Recovery', 'Electrical Fire Investigation', 'Drug Identification Training'] },
+        { cat: 'TACTICAL OPS', items: ['SWAT', 'FBI Basic & Advanced Sniper/Observer', 'Explosive Breaching', 'Tactical Woodland Operations', 'Multiple Terrorist Response Training', 'Hostage / Anti-Terror Training'] },
+        { cat: 'ADMIN & PUBLIC SAFETY', items: ['APOSTC Certification', 'Jail Administration & Management', 'Criminal Interdiction', 'Traffic Radar & Breath Alcohol Testing', 'Less-Lethal Launcher Instructor'] }
+      ]
     };
 
     function Navbar() {
@@ -96,10 +70,10 @@
         <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="index.html" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow uppercase">S</div>
               <div>
-                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
-                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em] uppercase">Signal &</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em] uppercase">Trace</div>
               </div>
             </a>
             <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400 uppercase">
@@ -118,13 +92,13 @@
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] uppercase mb-6 tracking-widest">
-                Shane Lockhart // Background // Evidence Logic
+                Shane Lockhart // Background // Case Logic
               </div>
               <h1 className="font-display text-4xl sm:text-6xl text-white mb-6 uppercase leading-tight">
-                About the <span className="text-cyan-400">Creator</span>
+                About <span className="text-cyan-400">Shane Lockhart</span>
               </h1>
               <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
-                Signal & Trace is built on a foundation of criminal investigations, tactical reasoning, and years spent identifying patterns in noisy, high-stakes environments.
+                Signal & Trace is the public application of twenty years in criminal investigations, tactical operations, and emergency response. This site exists to bridge the gap between professional investigative logic and everyday research.
               </p>
             </div>
           </div>
@@ -132,66 +106,12 @@
       );
     }
 
-    function Experience() {
+    function SectionHeader({ title, subtitle }) {
       return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid lg:grid-cols-2 gap-12">
-          <div>
-            <div className="font-mono text-xs tracking-[0.2em] text-cyan-400 mb-4 uppercase">The Methodology</div>
-            <h2 className="text-3xl text-white font-bold mb-6 tracking-tight uppercase">Direct. Analytical. Evidence-Driven.</h2>
-            <p className="text-slate-400 mb-6 leading-relaxed">
-              My background includes major felony investigations, tactical operations, and jail administration. The common thread was always the same: evidence discipline and pattern recognition.
-            </p>
-            <p className="text-slate-400 leading-relaxed">
-              I apply that same investigative mindset here—providing everyday people with better tools and structured workflows to verify the digital world.
-            </p>
-          </div>
-          <div className="grid gap-4">
-             <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 shadow-glow">
-                <h3 className="text-white font-bold mb-2 uppercase text-sm tracking-widest">Investigations</h3>
-                <p className="text-slate-500 text-sm italic">Lead role in capital murder, felony assault, and narcotics task force casework.</p>
-             </div>
-             <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 shadow-glow">
-                <h3 className="text-white font-bold mb-2 uppercase text-sm tracking-widest">Tactical</h3>
-                <p className="text-slate-500 text-sm italic">SWAT operator, FBI-trained Sniper/Observer, and high-risk operational planning.</p>
-             </div>
-          </div>
-        </section>
-      );
-    }
-
-    function TrainingGrid() {
-      return (
-        <section className="bg-slate-900/30 border-y border-slate-800 py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-             <div className="mb-12">
-                <div className="font-mono text-xs tracking-[0.2em] text-cyan-400 mb-2 uppercase">Training Highlights</div>
-                <h2 className="text-3xl text-white font-bold uppercase tracking-tight">Technical Certifications</h2>
-             </div>
-             <div className="grid md:grid-cols-3 gap-6">
-                {Object.entries(TRAINING).map(([key, items]) => (
-                  <div key={key} className="p-6 rounded-2xl border border-slate-800 bg-slate-950 shadow-glow">
-                    <h3 className="text-cyan-400 font-mono text-xs font-bold uppercase mb-4 tracking-widest">// {key}</h3>
-                    <ul className="space-y-3 text-xs text-slate-400">
-                      {items.map(i => <li key={i} className="flex gap-2"><span>•</span>{i}</li>)}
-                    </ul>
-                  </div>
-                ))}
-             </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Footer() {
-      return (
-        <footer className="border-t border-slate-800 py-12 text-center">
-          <div className="font-mono text-[10px] text-slate-600 tracking-[0.3em] uppercase mb-4">Signal & Trace // Shane Lockhart</div>
-          <div className="flex justify-center gap-6 text-[10px] font-mono text-slate-500 tracking-widest uppercase">
-            <a href="index.html" className="hover:text-cyan-400">Home</a>
-            <a href="tools.html" className="hover:text-cyan-400">Tools</a>
-            <a href="about.html" className="hover:text-cyan-400">About</a>
-          </div>
-        </footer>
+        <div className="mb-10">
+          <div className="font-mono text-xs tracking-[0.2em] text-cyan-400 mb-2 uppercase italic">// {subtitle}</div>
+          <h2 className="text-3xl text-white font-bold uppercase tracking-tight">{title}</h2>
+        </div>
       );
     }
 
@@ -200,9 +120,55 @@
         <div className="min-h-screen">
           <Navbar />
           <Hero />
-          <Experience />
-          <TrainingGrid />
-          <Footer />
+
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+            <SectionHeader title="Professional History" subtitle="Experience" />
+            <div className="grid md:grid-cols-3 gap-6">
+              {DATA.positions.map((group) => (
+                <div key={group.cat} className="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 shadow-glow">
+                  <h3 className="text-cyan-400 font-mono text-[10px] font-bold uppercase mb-4 tracking-widest">{group.cat}</h3>
+                  <ul className="space-y-3 text-sm text-slate-300">
+                    {group.roles.map(role => <li key={role} className="flex gap-2"><span>•</span>{role}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="bg-slate-900/30 border-y border-slate-800 py-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+              <SectionHeader title="Technical Training" subtitle="Certifications" />
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {DATA.training.map((group) => (
+                  <div key={group.cat} className="p-6 rounded-2xl border border-slate-800 bg-slate-950 shadow-glow">
+                    <h3 className="text-cyan-400 font-mono text-[10px] font-bold uppercase mb-4 tracking-widest">{group.cat}</h3>
+                    <ul className="space-y-2 text-[11px] text-slate-400 leading-relaxed">
+                      {group.items.map(item => <li key={item} className="flex gap-2"><span>•</span>{item}</li>)}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 pb-24">
+            <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-8 sm:p-12 shadow-glow">
+              <h2 className="text-2xl sm:text-3xl text-white font-bold mb-6 uppercase tracking-tight">Investigative Focus</h2>
+              <div className="grid md:grid-cols-2 gap-10 text-slate-400 text-sm sm:text-base leading-relaxed">
+                <p>Throughout my career as a lead investigator in capital murder, felony assault, and task force operations, the mission was always finding the <strong>Signal</strong>—the usable evidence—buried in the <strong>Trace</strong> of noise and deception. </p>
+                <p>This site is not a fake "authority" portal. It is a collection of the same disciplined reasoning, dorking methods, and evidence structures I used in the field, now adapted for public research and verification.</p>
+              </div>
+            </div>
+          </section>
+
+          <footer className="border-t border-slate-800 py-12 text-center">
+            <div className="font-mono text-[10px] text-slate-600 tracking-[0.3em] uppercase mb-4">Signal & Trace // Shane Lockhart</div>
+            <div className="flex justify-center gap-6 text-[10px] font-mono text-slate-500 tracking-widest uppercase italic">
+              <a href="index.html" className="hover:text-cyan-400">Home</a>
+              <a href="tools.html" className="hover:text-cyan-400">Tools</a>
+              <a href="how-to.html" className="hover:text-cyan-400">Guides</a>
+            </div>
+          </footer>
         </div>
       );
     }
@@ -212,3 +178,5 @@
   </script>
 </body>
 </html>
+
+      
