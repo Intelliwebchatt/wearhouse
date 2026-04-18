@@ -1,269 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>How-To Guides | Signal & Trace</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['"IBM Plex Mono"', 'monospace'],
-            sans: ['system-ui', 'sans-serif'],
-            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
-          },
-          boxShadow: {
-            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
-          }
-        }
-      }
-    }
-  </script>
-
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
-
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    body { background-color: #020617; color: #cbd5e1; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useMemo, useState } = React;
-
-    const NAV_ITEMS = [
-      { label: 'HOME', href: 'index.html' },
-      { label: 'TOOLS', href: 'tools.html' },
-      { label: 'HOW-TO', href: 'how-to.html' },
-      { label: 'CASE REVIEWS', href: 'case-reviews.html' },
-      { label: 'AI WORKFLOWS', href: 'ai-workflows.html' },
-      { label: 'ABOUT', href: 'about.html' },
-    ];
-
     const POSTS = [
       {
         id: 'ST-001',
-        title: 'How to Search a Name Without Wasting Time',
-        slug: 'how-to-search-a-name-without-wasting-time',
+        title: '[PLACEHOLDER: Name Search]', // Changed to Placeholder
+        slug: '#',
         category: 'Search Methods',
         date: '2026-04-14',
-        excerpt: 'A practical way to build cleaner searches, strip out junk results, and tighten your first-pass research.',
-        featured: true,
-        tags: ['people', 'search', 'research'],
+        excerpt: 'Content pending. This guide will cover building cleaner name searches.',
+        status: 'pending', // Added status
+        tags: ['pending'],
       },
       {
         id: 'ST-002',
-        title: 'How to Break a Claim Into Facts and Unknowns',
-        slug: 'how-to-break-a-claim-into-facts-assumptions-and-unknowns',
+        title: '[PLACEHOLDER: Claim Deconstruction]', // Changed to Placeholder
+        slug: '#',
         category: 'Verification Guides',
         date: '2026-04-12',
-        excerpt: 'Separate hard facts, inference, speculation, and noise before you lock onto a conclusion.',
-        featured: true,
-        tags: ['verification', 'claims', 'reasoning'],
+        excerpt: 'Content pending. This guide will cover breaking down claims into facts.',
+        status: 'pending',
+        tags: ['pending'],
       },
       {
         id: 'ST-003',
-        title: 'How to Use AI to Organize Research',
+        title: 'How to Use AI to Organize Research', // KEEPING REAL (This is your live post)
         slug: 'how-to-use-ai-to-organize-research-without-trusting-it-blindly',
         category: 'AI Workflows',
         date: '2026-04-10',
         excerpt: 'Use AI as a filter and structure tool, not as your primary source of truth.',
-        featured: true,
+        status: 'live',
         tags: ['ai', 'workflow', 'research'],
       },
       {
         id: 'ST-004',
-        title: 'How to Check Whether a Website Is Real',
-        slug: 'how-to-check-whether-a-website-is-real',
+        title: '[PLACEHOLDER: Website Verification]', 
+        slug: '#',
         category: 'Verification Guides',
         date: '2026-04-08',
-        excerpt: 'A basic workflow for checking domains, contact details, and technical legitimacy.',
-        featured: false,
-        tags: ['website', 'verification', 'scam'],
-      },
-      {
-        id: 'ST-009',
-        title: 'Mastering Google Dorks',
-        slug: 'mastering-google-dorks',
-        category: 'Search Methods',
-        date: '2026-04-16',
-        excerpt: 'A practical guide to search operators and query patterns for cleaner verification.',
-        featured: false,
-        tags: ['google dorks', 'search', 'operators'],
-      },
+        excerpt: 'Content pending. This guide will cover technical domain checks.',
+        status: 'pending',
+        tags: ['pending'],
+      }
     ];
-
-    const CATEGORY_ORDER = ['All', 'Search Methods', 'Verification Guides', 'AI Workflows'];
-
-    function formatDate(dateString) {
-      const date = new Date(dateString + 'T12:00:00');
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-    }
-
-    function postUrl(slug) {
-      return `posts/${slug}.html`;
-    }
-
-    function Navbar() {
-      return (
-        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="index.html" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow uppercase">S</div>
-              <div>
-                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em] uppercase">Signal &</div>
-                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em] uppercase">Trace</div>
-              </div>
-            </a>
-            <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400 uppercase">
-              {NAV_ITEMS.map((item) => (
-                <a key={item.label} href={item.href} className={item.label === 'HOW-TO' ? 'text-cyan-400' : 'hover:text-cyan-300 transition-colors'}>{item.label}</a>
-              ))}
-            </div>
-          </div>
-        </nav>
-      );
-    }
-
-    function Hero() {
-      return (
-        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] uppercase mb-5 tracking-widest">
-                Guides // Search // Verification
-              </div>
-              <h1 className="font-display text-4xl sm:text-6xl text-white mb-6 uppercase leading-[1.1]">
-                How-To <span className="text-cyan-400">Library</span>
-              </h1>
-              <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">
-                Structured workflows for digital investigation, evidence discipline, and finding clarity in complex information.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function FilterBar({ categories, activeCategory, setActiveCategory, query, setQuery, total }) {
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 shadow-glow overflow-hidden">
-            <div className="p-6 border-b border-slate-800 flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search Library..."
-                  className="w-full bg-slate-950 border border-slate-700 text-white pl-10 pr-4 py-3 rounded-xl focus:border-cyan-400 outline-none transition-all font-mono text-sm uppercase"
-                />
-                <span className="absolute left-3 top-3.5 text-slate-600">🔍</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setActiveCategory(c)}
-                    className={`px-4 py-2 rounded-lg text-[10px] font-mono tracking-widest uppercase border transition-all ${
-                      activeCategory === c ? 'bg-cyan-500/10 border-cyan-400/50 text-cyan-400' : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-300'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
 
     function ArchiveList({ posts }) {
       return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
           <div className="grid gap-4">
-            {posts.map((post) => (
-              <a key={post.id} href={postUrl(post.slug)} className="block p-6 rounded-2xl border border-slate-800 bg-slate-900/30 hover:bg-slate-900 hover:border-cyan-500/30 transition-all group shadow-glow">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest">{post.category}</span>
-                      <span className="text-[10px] font-mono text-slate-600 tracking-tighter uppercase">{formatDate(post.date)}</span>
+            {posts.map((post) => {
+              const isLive = post.status === 'live';
+              return (
+                <a 
+                  key={post.id} 
+                  href={isLive ? postUrl(post.slug) : '#'} 
+                  className={`block p-6 rounded-2xl border transition-all shadow-glow ${
+                    isLive 
+                      ? 'border-slate-800 bg-slate-900/30 hover:bg-slate-900 hover:border-cyan-500/30 group' 
+                      : 'border-slate-900 bg-slate-950 opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className={`text-[10px] font-mono uppercase tracking-widest ${isLive ? 'text-cyan-500' : 'text-slate-600'}`}>
+                          {isLive ? post.category : 'UNDER CONSTRUCTION'}
+                        </span>
+                      </div>
+                      <h3 className={`text-xl font-bold uppercase mb-2 ${isLive ? 'text-white group-hover:text-cyan-400' : 'text-slate-600'}`}>
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">{post.excerpt}</p>
                     </div>
-                    <h3 className="text-xl text-white font-bold uppercase group-hover:text-cyan-400 transition-colors mb-2">{post.title}</h3>
-                    <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">{post.excerpt}</p>
+                    {isLive && (
+                      <div className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase italic group-hover:translate-x-1 transition-transform">
+                        Read Guide →
+                      </div>
+                    )}
                   </div>
-                  <div className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase italic group-hover:translate-x-1 transition-transform">
-                    Read Guide →
-                  </div>
-                </div>
-              </a>
-            ))}
+                </a>
+              );
+            })}
           </div>
         </section>
       );
     }
-
-    function Footer() {
-      return (
-        <footer className="border-t border-slate-800 py-12 text-center px-4">
-          <div className="font-mono text-[10px] text-slate-600 tracking-[0.3em] uppercase mb-4">Signal & Trace // Archive</div>
-          <div className="flex justify-center gap-6 text-[10px] font-mono text-slate-500 tracking-widest uppercase italic">
-            <a href="index.html" className="hover:text-cyan-400">Home</a>
-            <a href="tools.html" className="hover:text-cyan-400">Tools</a>
-            <a href="about.html" className="hover:text-cyan-400">About</a>
-          </div>
-        </footer>
-      );
-    }
-
-    function App() {
-      const [query, setQuery] = useState('');
-      const [activeCategory, setActiveCategory] = useState('All');
-
-      const filteredPosts = useMemo(() => {
-        return POSTS.filter(p => {
-          const matchesCat = activeCategory === 'All' || p.category === activeCategory;
-          const haystack = `${p.title} ${p.excerpt} ${p.category}`.toLowerCase();
-          return matchesCat && haystack.includes(query.toLowerCase());
-        });
-      }, [query, activeCategory]);
-
-      return (
-        <div className="min-h-screen bg-slate-950 selection:bg-cyan-500/30">
-          <Navbar />
-          <Hero />
-          <FilterBar 
-            categories={CATEGORY_ORDER} 
-            activeCategory={activeCategory} 
-            setActiveCategory={setActiveCategory}
-            query={query}
-            setQuery={setQuery}
-          />
-          <ArchiveList posts={filteredPosts} />
-          <Footer />
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-</body>
-</html>
