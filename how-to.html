@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>How-To | Signal & Trace</title>
+  <title>How-To Guides | Signal & Trace</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -64,7 +64,7 @@
       },
       {
         id: 'ST-002',
-        title: 'How to Break a Claim Into Facts, Assumptions, and Unknowns',
+        title: 'How to Break a Claim Into Facts and Unknowns',
         slug: 'how-to-break-a-claim-into-facts-assumptions-and-unknowns',
         category: 'Verification Guides',
         date: '2026-04-12',
@@ -74,11 +74,11 @@
       },
       {
         id: 'ST-003',
-        title: 'How to Use AI to Organize Research Without Trusting It Blindly',
+        title: 'How to Use AI to Organize Research',
         slug: 'how-to-use-ai-to-organize-research-without-trusting-it-blindly',
         category: 'AI Workflows',
         date: '2026-04-10',
-        excerpt: 'Use AI as a filter and structure tool, not as your source of truth.',
+        excerpt: 'Use AI as a filter and structure tool, not as your primary source of truth.',
         featured: true,
         tags: ['ai', 'workflow', 'research'],
       },
@@ -88,19 +88,9 @@
         slug: 'how-to-check-whether-a-website-is-real',
         category: 'Verification Guides',
         date: '2026-04-08',
-        excerpt: 'A basic workflow for checking domains, contact details, copied content, trust signals, and linked pages.',
+        excerpt: 'A basic workflow for checking domains, contact details, and technical legitimacy.',
         featured: false,
         tags: ['website', 'verification', 'scam'],
-      },
-      {
-        id: 'ST-008',
-        title: 'Using Search Operators Without Turning It Into Nonsense',
-        slug: 'using-search-operators-without-turning-it-into-nonsense',
-        category: 'Search Methods',
-        date: '2026-03-26',
-        excerpt: 'Search operators help when they stay tied to a purpose. Most people stack them badly and kill recall.',
-        featured: false,
-        tags: ['operators', 'google', 'search'],
       },
       {
         id: 'ST-009',
@@ -108,7 +98,7 @@
         slug: 'mastering-google-dorks',
         category: 'Search Methods',
         date: '2026-04-16',
-        excerpt: 'A practical guide to Google dorks, search operators, and query patterns for cleaner search results and better digital verification.',
+        excerpt: 'A practical guide to search operators and query patterns for cleaner verification.',
         featured: false,
         tags: ['google dorks', 'search', 'operators'],
       },
@@ -134,22 +124,15 @@
         <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="index.html" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow uppercase">S</div>
               <div>
-                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
-                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em] uppercase">Signal &</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em] uppercase">Trace</div>
               </div>
             </a>
-
-            <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400">
+            <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400 uppercase">
               {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={item.label === 'HOW-TO' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
-                >
-                  {item.label}
-                </a>
+                <a key={item.label} href={item.href} className={item.label === 'HOW-TO' ? 'text-cyan-400' : 'hover:text-cyan-300 transition-colors'}>{item.label}</a>
               ))}
             </div>
           </div>
@@ -160,16 +143,16 @@
     function Hero() {
       return (
         <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
-                Guides · Search Methods · Verification
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] uppercase mb-5 tracking-widest">
+                Guides // Search // Verification
               </div>
-              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
-                How-To <span className="text-cyan-400">Guides</span>
+              <h1 className="font-display text-4xl sm:text-6xl text-white mb-6 uppercase leading-[1.1]">
+                How-To <span className="text-cyan-400">Library</span>
               </h1>
-              <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl">
-                Practical guides for search strategy, claim checking, verification, and AI-assisted research without wasted motion.
+              <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">
+                Structured workflows for digital investigation, evidence discipline, and finding clarity in complex information.
               </p>
             </div>
           </div>
@@ -177,32 +160,59 @@
       );
     }
 
-    function FeaturedPosts({ featured }) {
+    function FilterBar({ categories, activeCategory, setActiveCategory, query, setQuery, total }) {
       return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <div className="mb-8">
-            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">FEATURED GUIDES</div>
-            <h2 className="text-2xl sm:text-3xl text-white font-bold">Start here</h2>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 shadow-glow overflow-hidden">
+            <div className="p-6 border-b border-slate-800 flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
+              <div className="relative flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search Library..."
+                  className="w-full bg-slate-950 border border-slate-700 text-white pl-10 pr-4 py-3 rounded-xl focus:border-cyan-400 outline-none transition-all font-mono text-sm uppercase"
+                />
+                <span className="absolute left-3 top-3.5 text-slate-600">🔍</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setActiveCategory(c)}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-mono tracking-widest uppercase border transition-all ${
+                      activeCategory === c ? 'bg-cyan-500/10 border-cyan-400/50 text-cyan-400' : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-300'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+        </section>
+      );
+    }
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {featured.map((post) => (
-              <a
-                key={post.id}
-                href={postUrl(post.slug)}
-                className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 hover:border-cyan-400/40 hover:bg-slate-900 transition-all shadow-glow"
-              >
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
-                    {post.category}
-                  </span>
-                  <span className="text-[10px] font-mono tracking-[0.16em] text-slate-500 uppercase">{formatDate(post.date)}</span>
+    function ArchiveList({ posts }) {
+      return (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+          <div className="grid gap-4">
+            {posts.map((post) => (
+              <a key={post.id} href={postUrl(post.slug)} className="block p-6 rounded-2xl border border-slate-800 bg-slate-900/30 hover:bg-slate-900 hover:border-cyan-500/30 transition-all group shadow-glow">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest">{post.category}</span>
+                      <span className="text-[10px] font-mono text-slate-600 tracking-tighter uppercase">{formatDate(post.date)}</span>
+                    </div>
+                    <h3 className="text-xl text-white font-bold uppercase group-hover:text-cyan-400 transition-colors mb-2">{post.title}</h3>
+                    <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">{post.excerpt}</p>
+                  </div>
+                  <div className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase italic group-hover:translate-x-1 transition-transform">
+                    Read Guide →
+                  </div>
                 </div>
-                <h3 className="text-xl text-white font-bold mb-3 leading-tight group-hover:text-cyan-300 transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-5">{post.excerpt}</p>
-                <div className="font-mono text-xs tracking-[0.18em] uppercase text-cyan-400">Read Guide →</div>
               </a>
             ))}
           </div>
@@ -210,117 +220,14 @@
       );
     }
 
-    function FilterBar({ categories, activeCategory, setActiveCategory, query, setQuery, total }) {
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden shadow-glow">
-            <div className="p-5 sm:p-6 border-b border-slate-800 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between">
-              <div>
-                <h2 className="text-white text-xl font-bold">Guide Archive</h2>
-                <p className="text-xs font-mono tracking-[0.18em] uppercase text-slate-500 mt-1">Search and filter the how-to library</p>
-              </div>
-
-              <div className="relative w-full lg:w-96">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search title, excerpt, tag, or category"
-                  className="w-full bg-slate-950 border border-slate-700 text-white pl-4 pr-10 py-3 rounded-xl focus:border-cyan-400 outline-none transition-all text-sm placeholder-slate-600"
-                />
-                <span className="absolute right-3 top-3.5 text-slate-500 text-sm">🔍</span>
-              </div>
-            </div>
-
-            <div className="p-5 sm:p-6 flex flex-wrap items-center gap-3 border-b border-slate-800">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-3 py-2 rounded-xl text-xs font-mono tracking-[0.16em] uppercase border transition-colors ${
-                    activeCategory === category
-                      ? 'border-cyan-400/40 bg-cyan-500/10 text-cyan-300'
-                      : 'border-slate-700 bg-slate-950 text-slate-400 hover:text-slate-200 hover:border-slate-600'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-
-              <div className="ml-auto text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
-                {total} guide{total === 1 ? '' : 's'}
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function ArchiveList({ posts, query }) {
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden">
-            {posts.length === 0 ? (
-              <div className="px-6 py-16 text-center text-slate-500">
-                No guides matched <span className="text-slate-300">"{query}"</span>.
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-800/70">
-                {posts.map((post) => (
-                  <a
-                    key={post.id}
-                    href={postUrl(post.slug)}
-                    className="block p-5 sm:p-6 hover:bg-slate-900/80 transition-colors group"
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-3 mb-3">
-                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-slate-500">{post.id}</span>
-                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
-                            {post.category}
-                          </span>
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-white transition-colors mb-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">{post.excerpt}</p>
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {post.tags.map((tag) => (
-                            <span key={tag} className="text-[10px] font-mono tracking-[0.15em] uppercase text-slate-500 border border-slate-800 bg-slate-950 px-2 py-1 rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex lg:flex-col items-start lg:items-end gap-3 lg:gap-2 shrink-0">
-                        <div className="text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
-                          {formatDate(post.date)}
-                        </div>
-                        <div className="text-xs font-mono tracking-[0.18em] uppercase text-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity">
-                          View Guide →
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      );
-    }
-
     function Footer() {
       return (
-        <footer className="border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
-              © {new Date().getFullYear()} SIGNAL &amp; TRACE
-            </div>
-            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
-              HOW-TO · GUIDES · SEARCH METHODS · VERIFICATION
-            </div>
+        <footer className="border-t border-slate-800 py-12 text-center px-4">
+          <div className="font-mono text-[10px] text-slate-600 tracking-[0.3em] uppercase mb-4">Signal & Trace // Archive</div>
+          <div className="flex justify-center gap-6 text-[10px] font-mono text-slate-500 tracking-widest uppercase italic">
+            <a href="index.html" className="hover:text-cyan-400">Home</a>
+            <a href="tools.html" className="hover:text-cyan-400">Tools</a>
+            <a href="about.html" className="hover:text-cyan-400">About</a>
           </div>
         </footer>
       );
@@ -330,39 +237,26 @@
       const [query, setQuery] = useState('');
       const [activeCategory, setActiveCategory] = useState('All');
 
-      const featuredPosts = useMemo(() => POSTS.filter((post) => post.featured), []);
-
       const filteredPosts = useMemo(() => {
-        const q = query.trim().toLowerCase();
-
-        return POSTS.filter((post) => {
-          const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
-          const haystack = [
-            post.title,
-            post.category,
-            post.excerpt,
-            post.id,
-            ...post.tags,
-          ].join(' ').toLowerCase();
-          const matchesQuery = !q || haystack.includes(q);
-          return matchesCategory && matchesQuery;
+        return POSTS.filter(p => {
+          const matchesCat = activeCategory === 'All' || p.category === activeCategory;
+          const haystack = `${p.title} ${p.excerpt} ${p.category}`.toLowerCase();
+          return matchesCat && haystack.includes(query.toLowerCase());
         });
       }, [query, activeCategory]);
 
       return (
-        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+        <div className="min-h-screen bg-slate-950 selection:bg-cyan-500/30">
           <Navbar />
           <Hero />
-          <FeaturedPosts featured={featuredPosts} />
-          <FilterBar
-            categories={CATEGORY_ORDER}
-            activeCategory={activeCategory}
+          <FilterBar 
+            categories={CATEGORY_ORDER} 
+            activeCategory={activeCategory} 
             setActiveCategory={setActiveCategory}
             query={query}
             setQuery={setQuery}
-            total={filteredPosts.length}
           />
-          <ArchiveList posts={filteredPosts} query={query} />
+          <ArchiveList posts={filteredPosts} />
           <Footer />
         </div>
       );
