@@ -94,7 +94,7 @@
 
           {/* Mobile Navigation Dropdown */}
           {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1">
+            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
               {NAV_ITEMS.map((item) => (
                 <a 
                   key={item.label} 
@@ -160,26 +160,26 @@
     function FeatureGrid() {
       const CARDS = [
         {
-          title: "Coming Soon",
-          desc: "New investigative modules and automated verification routines in development.",
+          title: "COMING SOON",
+          desc: "New investigative modules currently in development.",
           link: "coming-soon.html",
           icon: "🚀"
         },
         {
-          title: "AI Workflows and Prompts that Work",
-          desc: "Step-by-step instructions on using AI partners to pressure-test evidence and map networks.",
+          title: "AI WORKFLOWS AND PROMPTS THAT WORK",
+          desc: "Step-by-step instructions on using Google Gemini and NotebookLM for deep research.",
           link: "ai-workflows.html",
           icon: "⚙️"
         },
         {
-          title: "Case Reviews",
-          desc: "Real-world breakdowns of scams and suspicious claims using public evidence, including the myIQ investigation.",
+          title: "CASE REVIEWS",
+          desc: "Real-world breakdowns of scams and suspicious claims, including the myIQ blog file.",
           link: "case-reviews.html",
           icon: "📑"
         },
         {
-          title: "Resource Vault",
-          desc: "Cheat sheets, diagrams, checklists, downloads, and other useful links to keep your investigation on track.",
+          title: "RESOURCE VAULT",
+          desc: "Downloads, links, and other useful things.",
           link: "resources.html",
           icon: "🗄️"
         }
@@ -191,7 +191,7 @@
             {CARDS.map((card, i) => (
               <div key={i} className="group rounded-2xl border border-slate-800 bg-slate-900/40 p-10 hover:border-cyan-500/30 transition-all shadow-glow">
                 <div className="text-4xl mb-6">{card.icon}</div>
-                <h3 className="text-2xl font-bold text-white mb-4">{card.title}</h3>
+                <h3 className="text-2xl font-bold text-white mb-4 uppercase tracking-tight">{card.title}</h3>
                 <p className="text-slate-400 leading-relaxed mb-8">{card.desc}</p>
                 <a href={card.link} className="inline-flex items-center text-cyan-500 font-mono text-xs tracking-widest font-bold group-hover:gap-2 transition-all uppercase">
                     Open &rarr;
@@ -206,12 +206,12 @@
     function AboutSection() {
         return (
             <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 pb-24">
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-10">
-                    <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wider">The Investigator Behind the Site</h2>
-                    <p className="text-slate-400 text-lg leading-relaxed mb-10 max-w-3xl">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-10 shadow-glow relative overflow-hidden">
+                    <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wider relative z-10">The Investigator Behind the Site</h2>
+                    <p className="text-slate-400 text-lg leading-relaxed mb-10 max-w-3xl relative z-10">
                         I am a case agent focused on building smarter research systems. My work is designed to help anyone use professional investigative logic without needing a forensic degree.
                     </p>
-                    <a href="about.html" className="inline-block px-8 py-4 rounded-xl border border-slate-700 text-slate-100 font-mono text-xs tracking-widest font-bold hover:bg-slate-800 transition-all">
+                    <a href="about.html" className="inline-block relative z-10 px-8 py-4 rounded-xl border border-slate-700 text-slate-100 font-mono text-xs tracking-widest font-bold hover:bg-slate-800 transition-all">
                         VIEW EXPERIENCE
                     </a>
                 </div>
@@ -223,7 +223,7 @@
       return (
         <footer className="border-t border-slate-800 py-12 bg-slate-950/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
-            <div className="font-mono text-[10px] text-slate-600 tracking-[0.4em] mb-8">
+            <div className="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-8">
                 SIGNAL &amp; TRACE // 2026
             </div>
             <div className="flex gap-8 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
