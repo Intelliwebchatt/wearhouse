@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Signal & Trace | Guides, Scam Analysis, and Research Workflows</title>
+  <title>Blog & Guides | Signal & Trace</title>
+  <meta name="description" content="Practical guides, methodologies, and case reviews for digital investigation and research." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -40,124 +41,53 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useMemo, useState } = React;
-
     const NAV_ITEMS = [
       { label: 'HOME', href: 'index.html' },
       { label: 'TOOLS', href: 'tools.html' },
       { label: 'BLOG', href: 'blog.html' },
+      { label: 'CASE REVIEWS', href: 'case-reviews.html' },
+      { label: 'AI WORKFLOWS', href: 'ai-workflows.html' },
       { label: 'ABOUT', href: 'about.html' },
     ];
 
     const POSTS = [
       {
-        id: 'ST-001',
-        title: 'How to Search a Name Without Wasting Time',
-        slug: 'how-to-search-a-name-without-wasting-time',
-        category: 'Search Methods',
-        date: '2026-04-14',
-        excerpt: 'A practical way to build cleaner searches, strip out junk results, and tighten your first-pass research.',
-        featured: true,
-        tags: ['people', 'search', 'research'],
+        title: "New to Research? Start with the \"Partner\" System.",
+        excerpt: "The internet is noisy. To find the truth, you need a system. Learn how I use NotebookLM and Gemini as a \"Digital Case File\" to organize scattered leads into clear facts.",
+        category: "METHODOLOGY",
+        date: "Apr 2026",
+        link: "posts/ai-research-workflows.html",
+        isPlaceholder: false
       },
       {
-        id: 'ST-002',
-        title: 'How to Break a Claim Into Facts, Assumptions, and Unknowns',
-        slug: 'how-to-break-a-claim-into-facts-assumptions-and-unknowns',
-        category: 'Verification Guides',
-        date: '2026-04-12',
-        excerpt: 'Separate hard facts, inference, speculation, and noise before you lock onto a conclusion.',
-        featured: true,
-        tags: ['verification', 'claims', 'reasoning'],
+        title: "The myIQ Investigation",
+        excerpt: "A deep dive into tracing source infrastructure, verifying claims, and testing an online business footprint without relying on surface-level trust badges.",
+        category: "CASE REVIEW",
+        date: "Mar 2026",
+        link: "posts/myiq-investigation.html",
+        isPlaceholder: false
       },
       {
-        id: 'ST-003',
-        title: 'How to Use AI to Organize Research Without Trusting It Blindly',
-        slug: 'how-to-use-ai-to-organize-research-without-trusting-it-blindly',
-        category: 'AI Workflows',
-        date: '2026-04-10',
-        excerpt: 'Use AI as a filter and structure tool, not as your source of truth.',
-        featured: true,
-        tags: ['ai', 'workflow', 'research'],
+        title: "How Weak Source Tracking Breaks Research",
+        excerpt: "Why losing track of where a fact came from is the fastest way to ruin an investigation. A practical guide to logging digital evidence.",
+        category: "TRADECRAFT",
+        date: "Coming Soon",
+        link: "#",
+        isPlaceholder: true
       },
       {
-        id: 'ST-004',
-        title: 'How to Check Whether a Website Is Real',
-        slug: 'how-to-check-whether-a-website-is-real',
-        category: 'Verification Guides',
-        date: '2026-04-08',
-        excerpt: 'A basic workflow for checking domains, contact details, copied content, trust signals, and linked pages.',
-        featured: false,
-        tags: ['website', 'verification', 'scam'],
-      },
-      {
-        id: 'ST-005',
-        title: 'How Fake Sites Get Built to Look Legitimate',
-        slug: 'how-fake-sites-get-built-to-look-legitimate',
-        category: 'Scam Analysis',
-        date: '2026-04-05',
-        excerpt: 'What scam sites often have in common and where people miss the reused pattern.',
-        featured: false,
-        tags: ['scam', 'sites', 'patterns'],
-      },
-      {
-        id: 'ST-006',
-        title: 'Why Weak Source Tracking Corrupts Good Research',
-        slug: 'why-weak-source-tracking-corrupts-good-research',
-        category: 'Case Notes',
-        date: '2026-04-03',
-        excerpt: 'If you stop tracking where each claim came from, your notes turn into contamination.',
-        featured: false,
-        tags: ['sources', 'workflow', 'notes'],
-      },
-      {
-        id: 'ST-007',
-        title: 'What to Check Before Sending Money to an Online Business',
-        slug: 'what-to-check-before-sending-money-to-an-online-business',
-        category: 'Scam Analysis',
-        date: '2026-03-30',
-        excerpt: 'The basic checks most people skip before trusting a business they found online.',
-        featured: false,
-        tags: ['business', 'scam', 'checks'],
-      },
-      {
-        id: 'ST-008',
-        title: 'Using Search Operators Without Turning It Into Nonsense',
-        slug: 'using-search-operators-without-turning-it-into-nonsense',
-        category: 'Search Methods',
-        date: '2026-03-26',
-        excerpt: 'Search operators help when they stay tied to a purpose. Most people stack them badly and kill recall.',
-        featured: false,
-        tags: ['operators', 'google', 'search'],
-      },
-      {
-  id: 'ST-009',
-  title: 'Mastering Google Dorks',
-  slug: 'mastering-google-dorks',
-  category: 'Search Methods',
-  date: '2026-04-16',
-  excerpt: 'A practical guide to Google dorks, search operators, and query patterns for cleaner search results and better digital verification.',
-  featured: false,
-  tags: ['google dorks', 'search', 'operators'],
-},
+        title: "Mastering Google Dorks for Business Filings",
+        excerpt: "Stop relying on standard search. Use these targeted search strings to uncover hidden PDFs, spreadsheets, and state business registrations.",
+        category: "OSINT",
+        date: "Coming Soon",
+        link: "#",
+        isPlaceholder: true
+      }
     ];
 
-    const CATEGORY_ORDER = ['All', 'Search Methods', 'Verification Guides', 'Scam Analysis', 'AI Workflows', 'Case Notes'];
-
-    function formatDate(dateString) {
-      const date = new Date(dateString + 'T12:00:00');
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-    }
-
-    function postUrl(slug) {
-      return `posts/${slug}.html`;
-    }
-
     function Navbar() {
+      const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
       return (
         <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -171,33 +101,62 @@
 
             <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
               {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={item.label === 'BLOG' ? 'text-cyan-400 hover:text-cyan-300 transition-colors' : 'hover:text-slate-100 transition-colors'}
+                <a 
+                  key={item.label} 
+                  href={item.href} 
+                  className={item.label === 'BLOG' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}
                 >
                   {item.label}
                 </a>
               ))}
             </div>
+
+            <div className="md:hidden flex items-center">
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-slate-400 hover:text-cyan-400 focus:outline-none transition-colors p-2"
+              >
+                <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12"></path>
+                  ) : (
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
+
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
+              {NAV_ITEMS.map((item) => (
+                <a 
+                  key={item.label} 
+                  href={item.href} 
+                  className="block px-3 py-3 rounded-lg font-mono text-xs font-semibold tracking-widest text-slate-300 hover:bg-slate-900 hover:text-cyan-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          )}
         </nav>
       );
     }
 
-    function Hero() {
+    function BlogHeader() {
       return (
         <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
-                Guides · Scam Analysis · Workflow Notes
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
+                Investigation · Methodology · Tradecraft
               </div>
-              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
-                The <span className="text-cyan-400">Blog</span> Archive
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
+                Research &amp; <br /><span className="text-cyan-400">Analysis</span>
               </h1>
-              <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl">
-                Practical writing on better searching, stronger verification, scam patterns, and AI-assisted research workflows.
+              <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
+                Step-by-step guides, verified case reviews, and structural workflows for finding the truth online.
               </p>
             </div>
           </div>
@@ -205,135 +164,47 @@
       );
     }
 
-    function FeaturedPosts({ featured }) {
+    function BlogList() {
       return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <div className="mb-8">
-            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">FEATURED POSTS</div>
-            <h2 className="text-2xl sm:text-3xl text-white font-bold">Start here</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {featured.map((post) => (
-              <a
-                key={post.id}
-                href={postUrl(post.slug)}
-                className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 hover:border-cyan-400/40 hover:bg-slate-900 transition-all shadow-glow"
-              >
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
-                    {post.category}
-                  </span>
-                  <span className="text-[10px] font-mono tracking-[0.16em] text-slate-500 uppercase">{formatDate(post.date)}</span>
-                </div>
-                <h3 className="text-xl text-white font-bold mb-3 leading-tight group-hover:text-cyan-300 transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-5">{post.excerpt}</p>
-                <div className="font-mono text-xs tracking-[0.18em] uppercase text-cyan-400">Read Post →</div>
-              </a>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function FilterBar({ categories, activeCategory, setActiveCategory, query, setQuery, total }) {
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden shadow-glow">
-            <div className="p-5 sm:p-6 border-b border-slate-800 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between">
-              <div>
-                <h2 className="text-white text-xl font-bold">Archive</h2>
-                <p className="text-xs font-mono tracking-[0.18em] uppercase text-slate-500 mt-1">Search and filter the full post list</p>
-              </div>
-
-              <div className="relative w-full lg:w-96">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search title, excerpt, tag, or category"
-                  className="w-full bg-slate-950 border border-slate-700 text-white pl-4 pr-10 py-3 rounded-xl focus:border-cyan-400 outline-none transition-all text-sm placeholder-slate-600"
-                />
-                <span className="absolute right-3 top-3.5 text-slate-500 text-sm">🔍</span>
-              </div>
-            </div>
-
-            <div className="p-5 sm:p-6 flex flex-wrap items-center gap-3 border-b border-slate-800">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-3 py-2 rounded-xl text-xs font-mono tracking-[0.16em] uppercase border transition-colors ${
-                    activeCategory === category
-                      ? 'border-cyan-400/40 bg-cyan-500/10 text-cyan-300'
-                      : 'border-slate-700 bg-slate-950 text-slate-400 hover:text-slate-200 hover:border-slate-600'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-
-              <div className="ml-auto text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
-                {total} post{total === 1 ? '' : 's'}
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function ArchiveList({ posts, query }) {
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden">
-            {posts.length === 0 ? (
-              <div className="px-6 py-16 text-center text-slate-500">
-                No posts matched <span className="text-slate-300">"{query}"</span>.
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-800/70">
-                {posts.map((post) => (
-                  <a
-                    key={post.id}
-                    href={postUrl(post.slug)}
-                    className="block p-5 sm:p-6 hover:bg-slate-900/80 transition-colors group"
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-3 mb-3">
-                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-slate-500">{post.id}</span>
-                          <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-cyan-400 border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 rounded-full">
-                            {post.category}
-                          </span>
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-white transition-colors mb-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">{post.excerpt}</p>
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {post.tags.map((tag) => (
-                            <span key={tag} className="text-[10px] font-mono tracking-[0.15em] uppercase text-slate-500 border border-slate-800 bg-slate-950 px-2 py-1 rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex lg:flex-col items-start lg:items-end gap-3 lg:gap-2 shrink-0">
-                        <div className="text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
-                          {formatDate(post.date)}
-                        </div>
-                        <div className="text-xs font-mono tracking-[0.18em] uppercase text-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity">
-                          View Post →
-                        </div>
-                      </div>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+          <div className="grid gap-6">
+            {POSTS.map((post, i) => (
+              post.isPlaceholder ? (
+                <div key={i} className="rounded-2xl border border-slate-800/50 bg-slate-900/20 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-70">
+                  <div className="max-w-3xl">
+                    <div className="flex items-center gap-4 mb-4">
+                      <span className="font-mono text-[10px] tracking-widest text-slate-500 uppercase">{post.category}</span>
+                      <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+                      <span className="font-mono text-[10px] tracking-widest text-slate-600 uppercase">{post.date}</span>
                     </div>
-                  </a>
-                ))}
-              </div>
-            )}
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-300 mb-3">{post.title}</h2>
+                    <p className="text-slate-500 leading-relaxed text-sm sm:text-base">{post.excerpt}</p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className="inline-block px-4 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-mono text-[10px] tracking-widest font-bold uppercase">
+                      In Production
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <a key={i} href={post.link} className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-cyan-500/30 transition-all shadow-glow hover:-translate-y-1">
+                  <div className="max-w-3xl">
+                    <div className="flex items-center gap-4 mb-4">
+                      <span className="font-mono text-[10px] tracking-widest text-cyan-500 uppercase">{post.category}</span>
+                      <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+                      <span className="font-mono text-[10px] tracking-widest text-slate-400 uppercase">{post.date}</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">{post.title}</h2>
+                    <p className="text-slate-400 leading-relaxed text-sm sm:text-base">{post.excerpt}</p>
+                  </div>
+                  <div className="shrink-0 mt-4 md:mt-0">
+                    <span className="inline-flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest font-bold group-hover:gap-3 transition-all">
+                      READ POST &rarr;
+                    </span>
+                  </div>
+                </a>
+              )
+            ))}
           </div>
         </section>
       );
@@ -341,13 +212,15 @@
 
     function Footer() {
       return (
-        <footer className="border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
-              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+        <footer className="border-t border-slate-800 py-12 bg-slate-950/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
+            <div className="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-8">
+                SIGNAL &amp; TRACE // 2026
             </div>
-            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
-              BLOG · GUIDES · SCAM ANALYSIS · WORKFLOWS
+            <div className="flex gap-8 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
+                <a href="tools.html" className="hover:text-cyan-400">TOOLS</a>
+                <a href="blog.html" className="hover:text-cyan-400">GUIDES</a>
+                <a href="about.html" className="hover:text-cyan-400">ABOUT</a>
             </div>
           </div>
         </footer>
@@ -355,42 +228,11 @@
     }
 
     function App() {
-      const [query, setQuery] = useState('');
-      const [activeCategory, setActiveCategory] = useState('All');
-
-      const featuredPosts = useMemo(() => POSTS.filter((post) => post.featured), []);
-
-      const filteredPosts = useMemo(() => {
-        const q = query.trim().toLowerCase();
-
-        return POSTS.filter((post) => {
-          const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
-          const haystack = [
-            post.title,
-            post.category,
-            post.excerpt,
-            post.id,
-            ...post.tags,
-          ].join(' ').toLowerCase();
-          const matchesQuery = !q || haystack.includes(q);
-          return matchesCategory && matchesQuery;
-        });
-      }, [query, activeCategory]);
-
       return (
-        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+        <div className="min-h-screen bg-slate-950 font-sans selection:bg-cyan-500/30">
           <Navbar />
-          <Hero />
-          <FeaturedPosts featured={featuredPosts} />
-          <FilterBar
-            categories={CATEGORY_ORDER}
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-            query={query}
-            setQuery={setQuery}
-            total={filteredPosts.length}
-          />
-          <ArchiveList posts={filteredPosts} query={query} />
+          <BlogHeader />
+          <BlogList />
           <Footer />
         </div>
       );
