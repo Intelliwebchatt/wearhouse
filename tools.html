@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Research Tools | Signal & Trace</title>
+  <meta name="description" content="Generate targeted search strings for people, addresses, businesses, and other research targets using the Signal & Trace dork builder." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -50,9 +51,8 @@
     const NAV_ITEMS = [
       { label: 'HOME', href: 'index.html' },
       { label: 'TOOLS', href: 'tools.html' },
-      { label: 'HOW-TO', href: 'how-to.html' },
-      { label: 'CASE REVIEWS', href: 'case-reviews.html' },
-      { label: 'AI WORKFLOWS', href: 'ai-workflows.html' },
+      { label: 'BLOG', href: 'blog.html' },
+      { label: 'RESOURCES', href: 'resources.html' },
       { label: 'ABOUT', href: 'about.html' },
     ];
 
@@ -97,6 +97,8 @@
     };
 
     function Navbar() {
+      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
       return (
         <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -107,13 +109,70 @@
                 <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
               </div>
             </a>
-            <div className="hidden lg:flex gap-5 font-mono text-[11px] font-semibold tracking-[0.16em] text-slate-400">
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
               {NAV_ITEMS.map((item) => (
-                <a key={item.label} href={item.href} className="hover:text-cyan-400 transition-colors uppercase">{item.label}</a>
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={item.label === 'TOOLS' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}
+                >
+                  {item.label}
+                </a>
               ))}
             </div>
+
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-slate-400 hover:text-cyan-400 focus:outline-none transition-colors p-2"
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12"></path>
+                  ) : (
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
+
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="block px-3 py-3 rounded-lg font-mono text-xs font-semibold tracking-widest text-slate-300 hover:bg-slate-900 hover:text-cyan-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          )}
         </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-18">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
+                Search Logic · OSINT · Structured Queries
+              </div>
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
+                Research <span className="text-cyan-400">Tools</span>
+              </h1>
+              <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
+                Build targeted search strings for people, addresses, businesses, and other research targets without relying on vague search habits.
+              </p>
+            </div>
+          </div>
+        </section>
       );
     }
 
@@ -153,13 +212,30 @@
           await navigator.clipboard.writeText(text);
           setCopiedId(index);
           setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) { alert("Copy failed."); }
+        } catch (err) {
+          alert("Copy failed.");
+        }
       };
 
-      const placeholder = dorkType === 'people' ? 'Name (e.g. John Doe)' : dorkType === 'address' ? 'Address (e.g. 123 Main St)' : 'Business or Topic';
+      const copyAll = async () => {
+        try {
+          await navigator.clipboard.writeText(generated.join('\n'));
+          setCopiedId('all');
+          setTimeout(() => setCopiedId(null), 2000);
+        } catch (err) {
+          alert("Copy failed.");
+        }
+      };
+
+      const placeholder =
+        dorkType === 'people'
+          ? 'Name (e.g. John Doe)'
+          : dorkType === 'address'
+          ? 'Address (e.g. 123 Main St)'
+          : 'Business or Topic';
 
       return (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden">
             <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -168,7 +244,7 @@
                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                 <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">Builder v2.0</span>
               </div>
-              <button 
+              <button
                 onClick={() => setShowHelp(!showHelp)}
                 className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1"
               >
@@ -182,15 +258,15 @@
                   <div className="flex-1">
                     <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Quick Start</h3>
                     <ul className="space-y-3 text-xs text-slate-300 leading-relaxed">
-                      <li><strong className="text-white">Target:</strong> Enter the main subject. The tool adds quotes automatically to stop "fuzzy" results.</li>
-                      <li><strong className="text-white">Details:</strong> Add cities, states, or employers to narrow down the target.</li>
-                      <li><strong className="text-white">The Pivot:</strong> If you find an email in a result, run it as a new search.</li>
+                      <li><strong className="text-white">Target:</strong> Enter the main subject. The tool adds quotes automatically to reduce fuzzy results.</li>
+                      <li><strong className="text-white">Details:</strong> Add cities, states, employers, or related anchors to narrow the target.</li>
+                      <li><strong className="text-white">The Pivot:</strong> If a result gives you an email, address, company name, or billing clue, run that as a new target.</li>
                     </ul>
                   </div>
                   <div className="flex-1 border-l border-slate-800 pl-8">
                     <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Deep Dive</h3>
-                    <p className="text-xs text-slate-400 mb-4 leading-relaxed">Want to understand how "Google Dorking" actually works?</p>
-                    <a href="posts/mastering-google-dorks.html" className="text-xs font-mono font-bold text-cyan-400 hover:underline tracking-widest uppercase italic">Read: Mastering Dorks →</a>
+                    <p className="text-xs text-slate-400 mb-4 leading-relaxed">Want to understand how targeted search logic actually works?</p>
+                    <a href="blog.html" className="text-xs font-mono font-bold text-cyan-400 hover:underline tracking-widest uppercase italic">Browse the archive →</a>
                   </div>
                 </div>
               </div>
@@ -218,18 +294,34 @@
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Main Search Target</label>
-                  <input type="text" value={target} onChange={(e) => setTarget(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && generateDorks()} placeholder={placeholder} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner" />
+                  <input
+                    type="text"
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && generateDorks()}
+                    placeholder={placeholder}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
+                  />
                 </div>
+
                 {modifiers.map((mod, i) => (
                   <div key={i} className="flex gap-2">
-                    <input type="text" value={mod} onChange={(e) => handleModifierChange(i, e.target.value)} placeholder='Detail (e.g. City or State)' className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
+                    <input
+                      type="text"
+                      value={mod}
+                      onChange={(e) => handleModifierChange(i, e.target.value)}
+                      placeholder="Detail (e.g. City, State, Employer)"
+                      className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
+                    />
                     <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
                   </div>
                 ))}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
-                <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">+ ADD DETAIL</button>
+                <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">
+                  + ADD DETAIL
+                </button>
                 <div className="flex gap-2">
                   <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
                     <option value="google">Google</option>
@@ -237,13 +329,15 @@
                     <option value="bing">Bing</option>
                     <option value="yandex">Yandex</option>
                   </select>
-                  <button onClick={generateDorks} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">▶ Build Dorks</button>
+                  <button onClick={generateDorks} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">
+                    ▶ Build Dorks
+                  </button>
                 </div>
               </div>
 
               <div className="mt-8 text-center border-t border-slate-800/50 pt-4">
                 <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest italic">
-                  Not sure how this works? <a href="posts/mastering-google-dorks.html" className="text-cyan-500 hover:text-cyan-300 transition-colors font-bold">Learn more about search logic here.</a>
+                  Build the string here, then pivot from result to result with better anchors.
                 </p>
               </div>
 
@@ -251,15 +345,36 @@
                 <div className="mt-8 pt-6 border-t border-slate-800 animate-dropdown">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-mono text-[10px] font-bold text-slate-500 tracking-widest uppercase italic">// Strings Built</h3>
-                    <span className="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">{generated.length} Ready</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">{generated.length} Ready</span>
+                      <button
+                        onClick={copyAll}
+                        className={`px-3 py-1 text-[10px] font-bold font-mono rounded border ${copiedId === 'all' ? 'bg-green-500/20 text-green-400 border-green-500/40' : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'}`}
+                      >
+                        {copiedId === 'all' ? '✓ COPIED ALL' : 'COPY ALL'}
+                      </button>
+                    </div>
                   </div>
+
                   <div className="space-y-3">
                     {generated.map((q, i) => (
                       <div key={i} className="flex flex-col sm:flex-row gap-3 bg-slate-950/60 border border-slate-800/80 p-3 rounded-lg shadow-glow">
                         <div className="flex-1 font-mono text-xs text-cyan-100/80 break-all">{q}</div>
                         <div className="flex gap-2 shrink-0">
-                          <a href={`${ENGINES[engine]}${encodeURIComponent(q)}`} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20 transition-colors">🔍 Run</a>
-                          <button onClick={() => copyToClipboard(q, i)} className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${copiedId === i ? 'bg-green-500/20 text-green-400 border-green-500/40' : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'}`}>{copiedId === i ? '✓ COPIED' : '📋 COPY'}</button>
+                          <a
+                            href={`${ENGINES[engine]}${encodeURIComponent(q)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20 transition-colors"
+                          >
+                            🔍 Run
+                          </a>
+                          <button
+                            onClick={() => copyToClipboard(q, i)}
+                            className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${copiedId === i ? 'bg-green-500/20 text-green-400 border-green-500/40' : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'}`}
+                          >
+                            {copiedId === i ? '✓ COPIED' : '📋 COPY'}
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -274,13 +389,17 @@
 
     function Footer() {
       return (
-        <footer className="border-t border-slate-800 py-12 text-center">
-          <div className="font-mono text-[10px] text-slate-600 tracking-[0.3em] uppercase mb-4">Signal & Trace // 2026</div>
-          <div className="flex justify-center gap-6 text-[10px] font-mono text-slate-500 tracking-widest uppercase">
-            <a href="index.html" className="hover:text-cyan-400">Home</a>
-            <a href="tools.html" className="hover:text-cyan-400">Tools</a>
-            <a href="how-to.html" className="hover:text-cyan-400">Guides</a>
-            <a href="about.html" className="hover:text-cyan-400">About</a>
+        <footer className="border-t border-slate-800 py-12 bg-slate-950/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
+            <div className="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-8">
+              SIGNAL &amp; TRACE // 2026
+            </div>
+            <div className="flex gap-8 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
+              <a href="tools.html" className="hover:text-cyan-400">TOOLS</a>
+              <a href="blog.html" className="hover:text-cyan-400">BLOG</a>
+              <a href="resources.html" className="hover:text-cyan-400">RESOURCES</a>
+              <a href="about.html" className="hover:text-cyan-400">ABOUT</a>
+            </div>
           </div>
         </footer>
       );
@@ -290,6 +409,7 @@
       return (
         <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
           <Navbar />
+          <Hero />
           <QueryBuilder />
           <Footer />
         </div>
