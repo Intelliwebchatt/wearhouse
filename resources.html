@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Resources | Signal & Trace</title>
-  <meta name="description" content="Resource vault for Signal & Trace. Download PDFs, prompt packs, research guides, and reference materials for verification and online investigation." />
+  <title>Blog | Signal & Trace</title>
+  <meta name="description" content="Signal & Trace blog archive for how-to guides, case reviews, AI workflows, and prompt packs focused on verification, research, and online investigation." />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -49,71 +49,63 @@
       { label: 'ABOUT', href: 'about.html' },
     ];
 
-    const RESOURCE_SECTIONS = [
+    const POSTS = [
       {
-        title: 'Guides and PDFs',
-        items: [
-          {
-            label: 'Structured Research Protocol',
-            type: 'PDF GUIDE',
-            description: 'A practical workflow for using NotebookLM and Gemini to organize findings, pressure-test claims, and keep online research grounded.',
-            href: 'Structured_Research_Protocol.pdf',
-            status: 'live',
-            action: 'DOWNLOAD PDF'
-          },
-          {
-            label: 'AI Powered Scam Mapping',
-            type: 'CASE FILE',
-            description: 'Case-file style reference document connected to the myIQ investigation and structured scam analysis workflow.',
-            href: 'AI_Powered_Scam_Mapping.pdf',
-            status: 'live',
-            action: 'DOWNLOAD PDF'
-          }
-        ]
+        title: "The myIQ Investigation",
+        excerpt: "A structured case review showing how OSINT, Google dorks, NotebookLM, and Gemini were used to map the hidden architecture of a deceptive subscription platform and force a full refund.",
+        category: "CASE REVIEW",
+        date: "Apr 2026",
+        link: "posts/myiq-investigation.html",
+        status: "live"
       },
       {
-        title: 'Prompt Packs',
-        items: [
-          {
-            label: 'Source Verification Prompt Pack',
-            type: 'PROMPT PACK',
-            description: 'A prompt set for pressure-testing source claims, checking evidentiary strength, and forcing cleaner reasoning from AI tools.',
-            href: '#',
-            status: 'coming_soon',
-            action: 'COMING SOON'
-          },
-          {
-            label: 'Entity Mapping Prompt Pack',
-            type: 'PROMPT PACK',
-            description: 'Prompt logic for mapping businesses, people, shell entities, payment paths, and supporting research links.',
-            href: '#',
-            status: 'coming_soon',
-            action: 'COMING SOON'
-          }
-        ]
+        title: "New to Research? Start with the Partner System",
+        excerpt: "A practical workflow for using NotebookLM as a central case file and Gemini as a research partner without trusting either blindly.",
+        category: "AI WORKFLOW",
+        date: "Apr 2026",
+        link: "posts/ai-research-workflows.html",
+        status: "live"
       },
       {
-        title: 'Reference Material',
-        items: [
-          {
-            label: 'How-To and Workflow Library',
-            type: 'BLOG CATEGORY',
-            description: 'Read the article archive for how-to guides, case reviews, workflow breakdowns, and AI-assisted research methods.',
-            href: 'blog.html',
-            status: 'live',
-            action: 'OPEN BLOG'
-          },
-          {
-            label: 'Research Toolset',
-            type: 'UTILITY',
-            description: 'Use the live tools page to generate targeted search strings and move from vague searches to structured lead generation.',
-            href: 'tools.html',
-            status: 'live',
-            action: 'OPEN TOOLS'
-          }
-        ]
+        title: "How to Check Whether a Website Is Real",
+        excerpt: "A repeatable process for checking a website’s trust signals, entity footprint, technical clues, and stacked red flags before you trust it.",
+        category: "HOW-TO",
+        date: "Coming Soon",
+        link: "#",
+        status: "placeholder"
+      },
+      {
+        title: "Source Verification Prompt Pack",
+        excerpt: "A prompt-driven method for forcing cleaner source checks, evidentiary grading, and contradiction testing when using AI for research.",
+        category: "PROMPT PACK",
+        date: "Coming Soon",
+        link: "#",
+        status: "placeholder"
+      },
+      {
+        title: "How Weak Source Tracking Breaks Research",
+        excerpt: "Why losing track of where a fact came from destroys credibility fast, and how to keep a cleaner research chain from the beginning.",
+        category: "HOW-TO",
+        date: "Coming Soon",
+        link: "#",
+        status: "placeholder"
+      },
+      {
+        title: "Entity Mapping for Normal People",
+        excerpt: "A simple logic model for tracing businesses, addresses, shell entities, and payment clues without needing a professional investigative background.",
+        category: "AI WORKFLOW",
+        date: "Coming Soon",
+        link: "#",
+        status: "placeholder"
       }
     ];
+
+    const CATEGORY_STYLES = {
+      "HOW-TO": "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
+      "CASE REVIEW": "text-cyan-400 border-cyan-400/30 bg-cyan-400/10",
+      "AI WORKFLOW": "text-violet-400 border-violet-400/30 bg-violet-400/10",
+      "PROMPT PACK": "text-amber-400 border-amber-400/30 bg-amber-400/10",
+    };
 
     function Navbar() {
       const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -136,7 +128,7 @@
                 <a
                   key={item.label}
                   href={item.href}
-                  className={item.label === 'RESOURCES' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}
+                  className={item.label === 'BLOG' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}
                 >
                   {item.label}
                 </a>
@@ -183,13 +175,13 @@
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
-                Downloads · Prompt Packs · Reference Material
+                How-To · Case Review · AI Workflow · Prompt Pack
               </div>
               <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
-                Resource <span className="text-cyan-400">Vault</span>
+                Research <span className="text-cyan-400">Archive</span>
               </h1>
               <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
-                Download practical guides, prompt packs, and reference material built to support verification, scam analysis, and structured online research.
+                The main Signal &amp; Trace content hub for practical guides, case reviews, AI-assisted research workflows, and prompt-driven verification methods.
               </p>
             </div>
           </div>
@@ -202,20 +194,20 @@
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
           <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-5">
             <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-7 shadow-glow">
-              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">WHAT THIS PAGE IS FOR</div>
-              <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">Reusable material, not filler.</h2>
+              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">WHAT THIS PAGE DOES</div>
+              <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">One archive. Clear categories.</h2>
               <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
-                This page is where Signal &amp; Trace keeps practical assets people can actually use. The goal is simple: reduce wasted motion, make workflows portable, and give visitors something useful they can keep after they leave the site.
+                This is the main written-content hub for the site. Instead of splitting guides across multiple archive pages, everything lives here and gets labeled by type. That keeps the public structure cleaner while still keeping the content separated logically.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 sm:p-7 shadow-glow">
-              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">INSIDE THE VAULT</div>
+              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">CONTENT TYPES</div>
               <ul className="space-y-3 text-sm sm:text-base text-slate-300">
-                <li className="flex gap-3"><span className="text-cyan-400">•</span><span>Downloadable PDFs and guides</span></li>
-                <li className="flex gap-3"><span className="text-cyan-400">•</span><span>Prompt packs and workflow assets</span></li>
-                <li className="flex gap-3"><span className="text-cyan-400">•</span><span>Direct links to live tools and archive content</span></li>
-                <li className="flex gap-3"><span className="text-cyan-400">•</span><span>Future reference material and cheat sheets</span></li>
+                <li className="flex gap-3"><span className="text-emerald-400">•</span><span>How-To guides</span></li>
+                <li className="flex gap-3"><span className="text-cyan-400">•</span><span>Case reviews and scam analysis</span></li>
+                <li className="flex gap-3"><span className="text-violet-400">•</span><span>AI workflows and process logic</span></li>
+                <li className="flex gap-3"><span className="text-amber-400">•</span><span>Prompt packs and reusable methods</span></li>
               </ul>
             </div>
           </div>
@@ -223,38 +215,65 @@
       );
     }
 
-    function ResourceSection({ section }) {
+    function PostList() {
       return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="mb-5">
-            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-2 uppercase">{section.title}</div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {section.items.map((item) => (
-              <div key={item.label} className={`rounded-2xl border p-6 shadow-glow ${item.status === 'live' ? 'border-slate-800 bg-slate-900/40' : 'border-slate-800/50 bg-slate-900/20 opacity-75'}`}>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
-                  {item.type}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-4 pb-16">
+          <div className="grid gap-6">
+            {POSTS.map((post, i) => (
+              post.status === "live" ? (
+                <a
+                  key={i}
+                  href={post.link}
+                  className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-cyan-500/30 transition-all shadow-glow hover:-translate-y-1"
+                >
+                  <div className="max-w-3xl">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <span className={`font-mono text-[10px] tracking-widest uppercase border px-2 py-1 rounded ${CATEGORY_STYLES[post.category] || 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10'}`}>
+                        {post.category}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+                      <span className="font-mono text-[10px] tracking-widest text-slate-400 uppercase">{post.date}</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                      {post.title}
+                    </h2>
+                    <p className="text-slate-400 leading-relaxed text-sm sm:text-base">
+                      {post.excerpt}
+                    </p>
+                  </div>
+                  <div className="shrink-0 mt-4 md:mt-0">
+                    <span className="inline-flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest font-bold group-hover:gap-3 transition-all">
+                      READ POST &rarr;
+                    </span>
+                  </div>
+                </a>
+              ) : (
+                <div
+                  key={i}
+                  className="rounded-2xl border border-slate-800/50 bg-slate-900/20 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-75"
+                >
+                  <div className="max-w-3xl">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <span className={`font-mono text-[10px] tracking-widest uppercase border px-2 py-1 rounded ${CATEGORY_STYLES[post.category] || 'text-slate-400 border-slate-700 bg-slate-800/50'}`}>
+                        {post.category}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-slate-700"></span>
+                      <span className="font-mono text-[10px] tracking-widest text-slate-500 uppercase">{post.date}</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-300 mb-3">
+                      {post.title}
+                    </h2>
+                    <p className="text-slate-500 leading-relaxed text-sm sm:text-base">
+                      {post.excerpt}
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className="inline-block px-4 py-2 rounded-lg border border-slate-700 bg-slate-800/50 text-slate-400 font-mono text-[10px] tracking-widest font-bold uppercase">
+                      In Production
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-white text-xl font-bold mb-3">{item.label}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-5">
-                  {item.description}
-                </p>
-
-                {item.status === 'live' ? (
-                  <a
-                    href={item.href}
-                    className="inline-flex px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono text-sm tracking-widest font-bold shadow-glow"
-                    {...(item.href.endsWith('.pdf') ? { download: true } : {})}
-                  >
-                    {item.action}
-                  </a>
-                ) : (
-                  <span className="inline-flex px-4 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-400 font-mono text-sm tracking-widest font-bold">
-                    {item.action}
-                  </span>
-                )}
-              </div>
+              )
             ))}
           </div>
         </section>
@@ -263,19 +282,19 @@
 
     function CTA() {
       return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 pb-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
           <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900/80 to-slate-950 p-8 sm:p-10 shadow-glow">
-            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">NEXT STEP</div>
-            <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">Use the vault with the rest of the site.</h2>
+            <div className="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3">USE THE FULL SYSTEM</div>
+            <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">Read the logic, then run the tool.</h2>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-4xl mb-6">
-              The strongest use of this site is layered. Use the tools to generate leads, use the blog to understand the logic, and use the vault to keep the best workflows and PDFs close at hand.
+              The best use of Signal &amp; Trace is layered: read the method here, run the tools to generate leads, and keep the strongest PDFs and prompt material in the resource vault.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href="tools.html" className="px-6 py-3 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono text-sm tracking-widest font-bold text-center shadow-glow">
                 OPEN TOOLS
               </a>
-              <a href="blog.html" className="px-6 py-3 rounded-xl bg-slate-900/70 border border-slate-700 text-slate-100 font-mono text-sm tracking-widest font-bold text-center">
-                BROWSE BLOG
+              <a href="resources.html" className="px-6 py-3 rounded-xl bg-slate-900/70 border border-slate-700 text-slate-100 font-mono text-sm tracking-widest font-bold text-center">
+                OPEN RESOURCES
               </a>
             </div>
           </div>
@@ -307,9 +326,7 @@
           <Navbar />
           <Hero />
           <Intro />
-          {RESOURCE_SECTIONS.map((section) => (
-            <ResourceSection key={section.title} section={section} />
-          ))}
+          <PostList />
           <CTA />
           <Footer />
         </div>
