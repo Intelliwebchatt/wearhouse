@@ -1,497 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Research Tools | Signal & Trace</title>
-  <meta name="description" content="Use Signal & Trace research tools to build targeted dorks, handle searches, and email or domain pivot queries for verification and OSINT work." />
+function QueryBuilder() {
+  const [searchType, setSearchType] = useState('social');
+  const [handle, setHandle] = useState('');
+  const [modifiers, setModifiers] = useState([]);
+  const [engine, setEngine] = useState('google');
+  const [generated, setGenerated] = useState([]);
+  const [copiedId, setCopiedId] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['\"IBM Plex Mono\"', 'monospace'],
-            sans: ['system-ui', 'sans-serif'],
-            display: ['\"Orbitron\"', 'system-ui', 'sans-serif'],
-          },
-          boxShadow: {
-            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
-          }
-        }
-      }
+  const SEARCHES = {
+    social: [
+      `"${"{h}"}" site:instagram.com OR site:x.com OR site:facebook.com OR site:tiktok.com`,
+      `"${"{h}"}" site:linkedin.com OR site:threads.net`,
+      `"${"{h}"}" "@${"{h}"}"`,
+      `"${"{h}"}" ${"{mods}"} site:instagram.com OR site:x.com`,
+      `"${"{h}"}" ${"{mods}"} -site:instagram.com -site:x.com -site:facebook.com`
+    ],
+    forums: [
+      `"${"{h}"}" site:reddit.com OR site:discord.com OR site:quora.com`,
+      `"${"{h}"}" site:steamcommunity.com OR site:twitch.tv`,
+      `"${"{h}"}" ${"{mods}"} site:reddit.com`,
+      `"${"{h}"}" "profile" OR "member" OR "user"`,
+      `"${"{h}"}" ${"{mods}"} -site:reddit.com -site:discord.com`
+    ],
+    dev: [
+      `"${"{h}"}" site:github.com OR site:gitlab.com OR site:stackoverflow.com`,
+      `"${"{h}"}" site:medium.com OR site:dev.to`,
+      `"${"{h}"}" ${"{mods}"} site:github.com`,
+      `"${"{h}"}" "commit" OR "repo" OR "developer"`,
+      `"${"{h}"}" ${"{mods}"} -site:github.com -site:gitlab.com`
+    ],
+    broad: [
+      `"${"{h}"}"`,
+      `"${"{h}"}" ${"{mods}"}`,
+      `"${"{h}"}" "email" OR "contact" OR "about"`,
+      `"${"{h}"}" filetype:pdf OR filetype:doc OR filetype:txt`,
+      `"${"{h}"}" ${"{mods}"} -site:instagram.com -site:x.com -site:facebook.com -site:reddit.com`
+    ]
+  };
+
+  const ENGINES = {
+    google: "https://www.google.com/search?q=",
+    ddg: "https://duckduckgo.com/?q=",
+    bing: "https://www.bing.com/search?q=",
+    yandex: "https://yandex.com/search/?text="
+  };
+
+  const handleAddModifier = () => setModifiers([...modifiers, '']);
+
+  const handleModifierChange = (index, value) => {
+    const newMods = [...modifiers];
+    newMods[index] = value;
+    setModifiers(newMods);
+  };
+
+  const handleRemoveModifier = (index) => {
+    setModifiers(modifiers.filter((_, i) => i !== index));
+  };
+
+  const generateSearches = () => {
+    if (!handle.trim()) return;
+
+    const cleanHandle = handle.trim().replace(/^@/, '');
+    const mods = modifiers
+      .map(m => m.trim())
+      .filter(Boolean)
+      .map(m => `"${m}"`)
+      .join(' ');
+
+    const results = SEARCHES[searchType].map(q =>
+      q.replaceAll('${"{h}"}', cleanHandle).replaceAll('${"{mods}"}', mods).replace(/\s+/g, ' ').trim()
+    );
+
+    setGenerated(results);
+  };
+
+  const copyToClipboard = async (text, index) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(index);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      alert("Copy failed.");
     }
-  </script>
+  };
 
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
-
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    body { background-color: #020617; color: #cbd5e1; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-    .animate-dropdown { animation: slideDown 0.3s ease-out forwards; }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+  const copyAll = async () => {
+    try {
+      await navigator.clipboard.writeText(generated.join('\n'));
+      setCopiedId('all');
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      alert("Copy failed.");
     }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
+  };
 
-  <script type="text/babel">
-    const { useState } = React;
+  return (
+    <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+            <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+            <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">
+              Handle Finder v1.0
+            </span>
+          </div>
+          <button
+            onClick={() => setShowHelp(!showHelp)}
+            className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1"
+          >
+            {showHelp ? 'Close Guide ▴' : 'Help & Logic ▾'}
+          </button>
+        </div>
 
-    const NAV_ITEMS = [
-      { label: 'HOME', href: 'index.html' },
-      { label: 'TOOLS', href: 'tools.html' },
-      { label: 'BLOG', href: 'blog.html' },
-      { label: 'RESOURCES', href: 'resources.html' },
-      { label: 'ABOUT', href: 'about.html' },
-    ];
-
-    const ENGINES = {
-      google: 'https://www.google.com/search?q=',
-      ddg: 'https://duckduckgo.com/?q=',
-      bing: 'https://www.bing.com/search?q=',
-      yandex: 'https://yandex.com/search/?text='
-    };
-
-    const DORKS = {
-      people: [
-        '"{t_q}" {mods} site:facebook.com OR site:instagram.com OR site:linkedin.com OR site:x.com',
-        '"{t_q}" {mods} site:linkedin.com inurl:/in/',
-        '"{t_q}" {mods} site:github.com OR site:reddit.com OR site:medium.com',
-        '"{t_q}" {mods} site:youtube.com OR site:vimeo.com',
-        'filetype:pdf "{t_q}" {mods} "resume" OR "cv" OR "bio"',
-        '"{t_q}" {mods} -site:linkedin.com -site:facebook.com -site:twitter.com',
-        'intitle:"index of" "{t_q}" {mods} OR "contacts" OR "directory"',
-        'intext:"{t_q}" {mods} "confidential" OR "private" OR "internal"'
-      ],
-      address: [
-        '"{t_q}" {mods} site:.gov filetype:pdf "permit" OR "zoning" OR "planning"',
-        '"{t_q}" {mods} site:zillow.com OR site:realtor.com OR site:redfin.com',
-        '"{t_q}" {mods} site:opencorporates.com OR site:crunchbase.com',
-        '"{t_q}" {mods} site:courtlistener.com OR site:justia.com',
-        'intitle:"index of" "{t_q}" {mods}',
-        'site:s3.amazonaws.com "{t_raw}" {mods}',
-        '"{t_q}" {mods} site:facebook.com OR site:x.com',
-        'filetype:xls OR filetype:xlsx OR filetype:csv "{t_q}" {mods}'
-      ],
-      other: [
-        '"{t_q}" {mods} -site:brand.com',
-        'site:.gov filetype:pdf "annual report" OR "budget" "{t_q}"',
-        'site:.edu filetype:pdf "thesis" OR "research" "{t_q}"',
-        '"press release" "fraud" OR "investigation" "{t_q}"',
-        'filetype:pdf "subpoena" OR "indictment" OR "lawsuit" "{t_q}"',
-        'site:sec.gov/Archives/edgar/data "{t_q}" {mods}',
-        'site:{t_raw} filetype:pdf OR filetype:doc "internal use only"',
-        'site:{t_raw} ext:bak OR ext:old OR ext:env "config"'
-      ]
-    };
-
-    const HANDLE_SEARCHES = {
-      social: [
-        '"{h}" site:instagram.com OR site:x.com OR site:facebook.com OR site:tiktok.com',
-        '"{h}" site:linkedin.com OR site:threads.net',
-        '"{h}" "@{h}"',
-        '"{h}" {mods} site:instagram.com OR site:x.com',
-        '"{h}" {mods} -site:instagram.com -site:x.com -site:facebook.com'
-      ],
-      forums: [
-        '"{h}" site:reddit.com OR site:discord.com OR site:quora.com',
-        '"{h}" site:steamcommunity.com OR site:twitch.tv',
-        '"{h}" {mods} site:reddit.com',
-        '"{h}" "profile" OR "member" OR "user"',
-        '"{h}" {mods} -site:reddit.com -site:discord.com'
-      ],
-      dev: [
-        '"{h}" site:github.com OR site:gitlab.com OR site:stackoverflow.com',
-        '"{h}" site:medium.com OR site:dev.to',
-        '"{h}" {mods} site:github.com',
-        '"{h}" "commit" OR "repo" OR "developer"',
-        '"{h}" {mods} -site:github.com -site:gitlab.com'
-      ],
-      broad: [
-        '"{h}"',
-        '"{h}" {mods}',
-        '"{h}" "email" OR "contact" OR "about"',
-        '"{h}" filetype:pdf OR filetype:doc OR filetype:txt',
-        '"{h}" {mods} -site:instagram.com -site:x.com -site:facebook.com -site:reddit.com'
-      ]
-    };
-
-    const EMAIL_SEARCHES = {
-      exact: [
-        '"{v}"',
-        '"{v}" "contact" OR "email" OR "reach"',
-        '"{v}" site:linkedin.com OR site:github.com OR site:reddit.com',
-        '"{v}" filetype:pdf OR filetype:doc OR filetype:xls',
-        '"{v}" -site:haveibeenpwned.com'
-      ],
-      prefix: [
-        '"{v}"',
-        '"{v}" gmail.com OR outlook.com OR yahoo.com',
-        '"{v}" "contact" OR "email" OR "about"',
-        '"{v}" site:instagram.com OR site:x.com OR site:reddit.com',
-        '"{v}" {mods}'
-      ],
-      domain: [
-        '"@{v}"',
-        'site:{v} filetype:pdf OR filetype:doc OR filetype:xls',
-        'site:{v} "contact" OR "team" OR "about" OR "staff"',
-        'site:{v} "email" OR "support" OR "press"',
-        '"@{v}" {mods}'
-      ]
-    };
-
-    function Navbar() {
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-      return (
-        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="index.html" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
-              <div>
-                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
-                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+        {showHelp && (
+          <div className="bg-cyan-500/5 border-b border-slate-800 p-6 sm:p-8 animate-dropdown">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1">
+                <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">
+                  Quick Start
+                </h3>
+                <ul className="space-y-3 text-xs text-slate-300 leading-relaxed">
+                  <li><strong className="text-white">Handle:</strong> Enter a username, alias, or @handle. The tool strips the @ automatically.</li>
+                  <li><strong className="text-white">Details:</strong> Add city, state, niche, employer, or known platform clues.</li>
+                  <li><strong className="text-white">Pivot:</strong> If you find a second alias, email prefix, or linked profile, run it again as a new search.</li>
+                </ul>
               </div>
-            </a>
-            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
-              {NAV_ITEMS.map((item) => (
-                <a key={item.label} href={item.href} className={item.label === 'TOOLS' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}>{item.label}</a>
-              ))}
+              <div className="flex-1 border-l border-slate-800 pl-8">
+                <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">
+                  Best Use
+                </h3>
+                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                  This works best for repeated usernames, gamer tags, aliases, burner identities, and cross-platform footprint checks.
+                </p>
+                <a href="blog.html" className="text-xs font-mono font-bold text-cyan-400 hover:underline tracking-widest uppercase italic">
+                  Browse the archive →
+                </a>
+              </div>
             </div>
-            <div className="md:hidden flex items-center">
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-400 hover:text-cyan-400 focus:outline-none transition-colors p-2" aria-label="Toggle menu">
-                <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMobileMenuOpen ? <path d="M6 18L18 6M6 6l12 12"></path> : <path d="M4 6h16M4 12h16M4 18h16"></path>}
-                </svg>
+          </div>
+        )}
+
+        <div className="p-4 sm:p-8">
+          <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
+            {[
+              { id: 'social', label: '🌐 SOCIAL' },
+              { id: 'forums', label: '💬 FORUMS' },
+              { id: 'dev', label: '🧠 DEV / PRO' },
+              { id: 'broad', label: '🛠️ BROAD WEB' }
+            ].map(type => (
+              <button
+                key={type.id}
+                onClick={() => setSearchType(type.id)}
+                className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${
+                  searchType === type.id
+                    ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400'
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4 mb-6">
+            <div>
+              <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">
+                Username / Handle
+              </label>
+              <input
+                type="text"
+                value={handle}
+                onChange={(e) => setHandle(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && generateSearches()}
+                placeholder="Handle (e.g. rydermccoy or @rydermccoy)"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
+              />
+            </div>
+
+            {modifiers.map((mod, i) => (
+              <div key={i} className="flex gap-2">
+                <input
+                  type="text"
+                  value={mod}
+                  onChange={(e) => handleModifierChange(i, e.target.value)}
+                  placeholder="Detail (e.g. Alabama, music, GitHub, developer)"
+                  className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
+                />
+                <button
+                  onClick={() => handleRemoveModifier(i)}
+                  className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
+            <button
+              onClick={handleAddModifier}
+              className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest"
+            >
+              + ADD DETAIL
+            </button>
+
+            <div className="flex gap-2">
+              <select
+                value={engine}
+                onChange={(e) => setEngine(e.target.value)}
+                className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono"
+              >
+                <option value="google">Google</option>
+                <option value="ddg">DuckDuckGo</option>
+                <option value="bing">Bing</option>
+                <option value="yandex">Yandex</option>
+              </select>
+
+              <button
+                onClick={generateSearches}
+                className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase"
+              >
+                ▶ Build Searches
               </button>
             </div>
           </div>
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
-              {NAV_ITEMS.map((item) => (
-                <a key={item.label} href={item.href} className="block px-3 py-3 rounded-lg font-mono text-xs font-semibold tracking-widest text-slate-300 hover:bg-slate-900 hover:text-cyan-400 transition-colors">{item.label}</a>
-              ))}
+
+          <div className="mt-8 text-center border-t border-slate-800/50 pt-4">
+            <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest italic">
+              Best for aliases, repeated usernames, gamer tags, and cross-platform identity pivots.
+            </p>
+          </div>
+
+          {generated.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-slate-800 animate-dropdown">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-mono text-[10px] font-bold text-slate-500 tracking-widest uppercase italic">
+                  // Searches Built
+                </h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">
+                    {generated.length} Ready
+                  </span>
+                  <button
+                    onClick={copyAll}
+                    className={`px-3 py-1 text-[10px] font-bold font-mono rounded border ${
+                      copiedId === 'all'
+                        ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                        : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'
+                    }`}
+                  >
+                    {copiedId === 'all' ? '✓ COPIED ALL' : 'COPY ALL'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {generated.map((q, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col sm:flex-row gap-3 bg-slate-950/60 border border-slate-800/80 p-3 rounded-lg shadow-glow"
+                  >
+                    <div className="flex-1 font-mono text-xs text-cyan-100/80 break-all">
+                      {q}
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <a
+                        href={`${ENGINES[engine]}${encodeURIComponent(q)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20 transition-colors"
+                      >
+                        🔍 Run
+                      </a>
+                      <button
+                        onClick={() => copyToClipboard(q, i)}
+                        className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${
+                          copiedId === i
+                            ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                            : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'
+                        }`}
+                      >
+                        {copiedId === i ? '✓ COPIED' : '📋 COPY'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-        </nav>
-      );
-    }
-
-    function Hero() {
-      return (
-        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-18">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
-                Search Logic · OSINT · Structured Queries
-              </div>
-              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
-                Research <span className="text-cyan-400">Tools</span>
-              </h1>
-              <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
-                Use targeted builders to pivot faster through names, handles, emails, domains, and public web traces.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function ToolSelector({ activeTool, setActiveTool }) {
-      const tools = [
-        { id: 'dorks', title: 'Dork Builder', desc: 'Build structured search strings for people, addresses, businesses, and broader targets.' },
-        { id: 'handles', title: 'Handle Finder', desc: 'Track repeated usernames, aliases, gamer tags, and cross-platform handle reuse.' },
-        { id: 'email', title: 'Email / Domain Pivot', desc: 'Pivot from an email, prefix, or domain into broader public search coverage.' }
-      ];
-      return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="grid md:grid-cols-3 gap-5">
-            {tools.map((tool) => (
-              <button key={tool.id} onClick={() => setActiveTool(tool.id)} className={`text-left rounded-2xl border p-6 shadow-glow transition-all ${activeTool === tool.id ? 'border-cyan-500/40 bg-slate-900/70 -translate-y-1' : 'border-slate-800 bg-slate-900/40 hover:border-cyan-500/25 hover:-translate-y-1'}`}>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">Tool</div>
-                <h2 className="text-white text-xl font-bold mb-3">{tool.title}</h2>
-                <p className="text-sm text-slate-400 leading-relaxed">{tool.desc}</p>
-              </button>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function BuilderShell({ title, subtitle, helpTitle, helpBody, children }) {
-      const [showHelp, setShowHelp] = useState(false);
-      return (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden">
-            <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-                <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">{title}</span>
-              </div>
-              <button onClick={() => setShowHelp(!showHelp)} className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1">
-                {showHelp ? 'Close Guide ▴' : 'Help & Logic ▾'}
-              </button>
-            </div>
-            {showHelp && (
-              <div className="bg-cyan-500/5 border-b border-slate-800 p-6 sm:p-8 animate-dropdown">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="flex-1">
-                    <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">{helpTitle}</h3>
-                    <p className="text-xs text-slate-300 leading-relaxed">{helpBody}</p>
-                  </div>
-                  <div className="flex-1 border-l border-slate-800 pl-8">
-                    <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Purpose</h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">{subtitle}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="p-4 sm:p-8">{children}</div>
-          </div>
-        </section>
-      );
-    }
-
-    function Results({ generated, engine, copiedId, setCopiedId, label='Searches Built' }) {
-      const copyToClipboard = async (text, index) => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopiedId(index);
-          setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) { alert('Copy failed.'); }
-      };
-      const copyAll = async () => {
-        try {
-          await navigator.clipboard.writeText(generated.join('\n'));
-          setCopiedId('all');
-          setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) { alert('Copy failed.'); }
-      };
-      if (!generated.length) return null;
-      return (
-        <div className="mt-8 pt-6 border-t border-slate-800 animate-dropdown">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-mono text-[10px] font-bold text-slate-500 tracking-widest uppercase italic">// {label}</h3>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">{generated.length} Ready</span>
-              <button onClick={copyAll} className={`px-3 py-1 text-[10px] font-bold font-mono rounded border ${copiedId === 'all' ? 'bg-green-500/20 text-green-400 border-green-500/40' : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'}`}>{copiedId === 'all' ? '✓ COPIED ALL' : 'COPY ALL'}</button>
-            </div>
-          </div>
-          <div className="space-y-3">
-            {generated.map((q, i) => (
-              <div key={i} className="flex flex-col sm:flex-row gap-3 bg-slate-950/60 border border-slate-800/80 p-3 rounded-lg shadow-glow">
-                <div className="flex-1 font-mono text-xs text-cyan-100/80 break-all">{q}</div>
-                <div className="flex gap-2 shrink-0">
-                  <a href={`${ENGINES[engine]}${encodeURIComponent(q)}`} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20 transition-colors">🔍 Run</a>
-                  <button onClick={() => copyToClipboard(q, i)} className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${copiedId === i ? 'bg-green-500/20 text-green-400 border-green-500/40' : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'}`}>{copiedId === i ? '✓ COPIED' : '📋 COPY'}</button>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-      );
-    }
-
-    function DorkBuilder() {
-      const [dorkType, setDorkType] = useState('people');
-      const [target, setTarget] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => { const newMods = [...modifiers]; newMods[index] = value; setModifiers(newMods); };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-      const generateDorks = () => {
-        if (!target.trim()) return;
-        const quote = (str) => (!str ? '' : (str.startsWith('"') && str.endsWith('"')) ? str : `"${str}"`);
-        const t_raw = target.replace(/(^"|"$)/g, '');
-        const t_q = quote(target);
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(quote).join(' ');
-        const results = DORKS[dorkType].map(d => d.replace(/\{t_raw\}/g, t_raw).replace(/\{t_q\}/g, t_q).replace(/\{mods\}/g, mods).replace(/\s+/g, ' ').trim());
-        setGenerated(results);
-      };
-      const placeholder = dorkType === 'people' ? 'Name (e.g. John Doe)' : dorkType === 'address' ? 'Address (e.g. 123 Main St)' : 'Business or Topic';
-      return (
-        <BuilderShell title="Builder v2.0" subtitle="Build structured search strings for names, addresses, businesses, and broader public web targets." helpTitle="Quick Start" helpBody="Enter the main target, add a few narrowing details when needed, then build and pivot from the best result into a second round of searches.">
-          <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-            {[{ id: 'people', label: '👤 PEOPLE' }, { id: 'address', label: '📍 ADDRESS' }, { id: 'other', label: '🛠️ OTHER' }].map(type => (
-              <button key={type.id} onClick={() => setDorkType(type.id)} className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${dorkType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'}`}>{type.label}</button>
-            ))}
-          </div>
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Main Search Target</label>
-              <input type="text" value={target} onChange={(e) => setTarget(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && generateDorks()} placeholder={placeholder} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner" />
-            </div>
-            {modifiers.map((mod, i) => (
-              <div key={i} className="flex gap-2">
-                <input type="text" value={mod} onChange={(e) => handleModifierChange(i, e.target.value)} placeholder="Detail (e.g. City, State, Employer)" className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
-                <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
-            <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">+ ADD DETAIL</button>
-            <div className="flex gap-2">
-              <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                <option value="google">Google</option><option value="ddg">DuckDuckGo</option><option value="bing">Bing</option><option value="yandex">Yandex</option>
-              </select>
-              <button onClick={generateDorks} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">▶ Build Dorks</button>
-            </div>
-          </div>
-          <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} label="Strings Built" />
-        </BuilderShell>
-      );
-    }
-
-    function HandleFinder() {
-      const [searchType, setSearchType] = useState('social');
-      const [handle, setHandle] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => { const newMods = [...modifiers]; newMods[index] = value; setModifiers(newMods); };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-      const generateSearches = () => {
-        if (!handle.trim()) return;
-        const cleanHandle = handle.trim().replace(/^@/, '');
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(m => `"${m}"`).join(' ');
-        const results = HANDLE_SEARCHES[searchType].map(q => q.replace(/\{h\}/g, cleanHandle).replace(/\{mods\}/g, mods).replace(/\s+/g, ' ').trim());
-        setGenerated(results);
-      };
-      return (
-        <BuilderShell title="Handle Finder v1.0" subtitle="Track repeated usernames, aliases, gamer tags, and cross-platform identity reuse." helpTitle="Quick Start" helpBody="Enter a handle or alias, add a few context clues, and use the result list to check social, forum, developer, and broader web traces.">
-          <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-            {[{ id: 'social', label: '🌐 SOCIAL' }, { id: 'forums', label: '💬 FORUMS' }, { id: 'dev', label: '🧠 DEV / PRO' }, { id: 'broad', label: '🛠️ BROAD WEB' }].map(type => (
-              <button key={type.id} onClick={() => setSearchType(type.id)} className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${searchType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'}`}>{type.label}</button>
-            ))}
-          </div>
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Username / Handle</label>
-              <input type="text" value={handle} onChange={(e) => setHandle(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && generateSearches()} placeholder="Handle (e.g. rydermccoy or @rydermccoy)" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner" />
-            </div>
-            {modifiers.map((mod, i) => (
-              <div key={i} className="flex gap-2">
-                <input type="text" value={mod} onChange={(e) => handleModifierChange(i, e.target.value)} placeholder="Detail (e.g. Alabama, music, developer)" className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
-                <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
-            <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">+ ADD DETAIL</button>
-            <div className="flex gap-2">
-              <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                <option value="google">Google</option><option value="ddg">DuckDuckGo</option><option value="bing">Bing</option><option value="yandex">Yandex</option>
-              </select>
-              <button onClick={generateSearches} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">▶ Build Searches</button>
-            </div>
-          </div>
-          <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} />
-        </BuilderShell>
-      );
-    }
-
-    function EmailPivotBuilder() {
-      const [pivotType, setPivotType] = useState('exact');
-      const [value, setValue] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => { const newMods = [...modifiers]; newMods[index] = value; setModifiers(newMods); };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-      const generateSearches = () => {
-        if (!value.trim()) return;
-        let cleanValue = value.trim();
-        if (pivotType === 'domain') cleanValue = cleanValue.replace(/^@/, '').replace(/^https?:\/\//, '').replace(/\/$/, '');
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(m => `"${m}"`).join(' ');
-        const results = EMAIL_SEARCHES[pivotType].map(q => q.replace(/\{v\}/g, cleanValue).replace(/\{mods\}/g, mods).replace(/\s+/g, ' ').trim());
-        setGenerated(results);
-      };
-      const placeholder = pivotType === 'exact' ? 'Email (e.g. jane@example.com)' : pivotType === 'prefix' ? 'Prefix (e.g. jane.doe)' : 'Domain (e.g. example.com)';
-      return (
-        <BuilderShell title="Email Pivot v1.0" subtitle="Pivot from an email address, email prefix, or domain into broader public search coverage." helpTitle="Quick Start" helpBody="Use exact email when you have a full address. Use prefix when you only know the left side. Use domain when you want staff, contact, document, or footprint pivots across a company site.">
-          <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-            {[{ id: 'exact', label: '✉️ EXACT EMAIL' }, { id: 'prefix', label: '🧩 PREFIX' }, { id: 'domain', label: '🌍 DOMAIN' }].map(type => (
-              <button key={type.id} onClick={() => setPivotType(type.id)} className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${pivotType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'}`}>{type.label}</button>
-            ))}
-          </div>
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Email / Prefix / Domain</label>
-              <input type="text" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && generateSearches()} placeholder={placeholder} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner" />
-            </div>
-            {modifiers.map((mod, i) => (
-              <div key={i} className="flex gap-2">
-                <input type="text" value={mod} onChange={(e) => handleModifierChange(i, e.target.value)} placeholder="Detail (e.g. company, city, team, role)" className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
-                <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800">
-            <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">+ ADD DETAIL</button>
-            <div className="flex gap-2">
-              <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                <option value="google">Google</option><option value="ddg">DuckDuckGo</option><option value="bing">Bing</option><option value="yandex">Yandex</option>
-              </select>
-              <button onClick={generateSearches} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">▶ Build Pivots</button>
-            </div>
-          </div>
-          <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} label="Pivots Built" />
-        </BuilderShell>
-      );
-    }
-
-    function Footer() {
-      return (
-        <footer className="border-t border-slate-800 py-12 bg-slate-950/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
-            <div className="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-8">SIGNAL &amp; TRACE // 2026</div>
-            <div className="flex gap-8 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
-              <a href="tools.html" className="hover:text-cyan-400">TOOLS</a>
-              <a href="blog.html" className="hover:text-cyan-400">BLOG</a>
-              <a href="resources.html" className="hover:text-cyan-400">RESOURCES</a>
-              <a href="about.html" className="hover:text-cyan-400">ABOUT</a>
-            </div>
-          </div>
-        </footer>
-      );
-    }
-
-    function App() {
-      const [activeTool, setActiveTool] = useState('dorks');
-      return (
-        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
-          <Navbar />
-          <Hero />
-          <ToolSelector activeTool={activeTool} setActiveTool={setActiveTool} />
-          {activeTool === 'dorks' && <DorkBuilder />}
-          {activeTool === 'handles' && <HandleFinder />}
-          {activeTool === 'email' && <EmailPivotBuilder />}
-          <Footer />
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-</body>
-</html>
+      </div>
+    </section>
+  );
+}
