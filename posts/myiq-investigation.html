@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Case Review | The myIQ Investigation | Signal & Trace</title>
+  <meta name="description" content="A Signal & Trace case review showing how OSINT, Google dorks, NotebookLM, and Gemini helped map the myIQ structure and force a full refund." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"IBM Plex Mono"', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { background-color: #020617; color: #cbd5e1; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+    .post-content p { margin-bottom: 1.15rem; line-height: 1.8; }
+    .post-content ul { margin-bottom: 1.15rem; padding-left: 1.15rem; }
+    .post-content li { margin-bottom: 0.65rem; line-height: 1.75; }
+    .post-content h2 {
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: white;
+    }
+    .post-content h3 {
+      margin-top: 1.75rem;
+      margin-bottom: 0.85rem;
+      font-size: 1.1rem;
+      line-height: 1.3;
+      font-weight: 700;
+      color: white;
+    }
+    .post-content strong { color: white; }
+    .post-content code.inline {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(51, 65, 85, 1);
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.35rem;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const NAV_ITEMS = [
+      { label: 'HOME', href: '../index.html' },
+      { label: 'TOOLS', href: '../tools.html' },
+      { label: 'BLOG', href: '../blog.html' },
+      { label: 'RESOURCES', href: '../resources.html' },
+      { label: 'ABOUT', href: '../about.html' },
+    ];
+
+    function Navbar() {
+      const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+      return (
+        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="../index.html" className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">
+                S
+              </div>
+              <div>
+                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+              </div>
+            </a>
+
+            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="hover:text-cyan-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-slate-400 hover:text-cyan-400 focus:outline-none transition-colors p-2"
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12"></path>
+                  ) : (
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="block px-3 py-3 rounded-lg font-mono text-xs font-semibold tracking-widest text-slate-300 hover:bg-slate-900 hover:text-cyan-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </nav>
+      );
+    }
+
+    function Hero() {
+      return (
+        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-18 lg:py-22">
+            <div className="max-w-4xl">
+              <a
+                href="../case-reviews.html"
+                className="inline-flex items-center gap-2 text-cyan-400 font-mono text-[11px] sm:text-xs tracking-[0.18em] uppercase mb-6 hover:text-cyan-300"
+              >
+                ← Back to Case Reviews
+              </a>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] sm:text-xs tracking-[0.22em] uppercase mb-5">
+                Case Review · Scam Analysis · OSINT Workflow
+              </div>
+
+              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6">
+                The <span className="text-cyan-400">myIQ</span> Investigation
+              </h1>
+
+              <p className="text-slate-300 text-base sm:text-lg lg:text-xl max-w-3xl leading-relaxed mb-6">
+                A case review showing how structured OSINT, Google dorks, NotebookLM, and Gemini helped map the hidden architecture of a deceptive subscription platform and force a full refund.
+              </p>
+
+              <div className="flex flex-wrap gap-3 text-[10px] sm:text-xs font-mono tracking-[0.16em] uppercase text-slate-500">
+                <span className="px-3 py-2 rounded-full border border-slate-700 bg-slate-900/60">Search Anchors</span>
+                <span className="px-3 py-2 rounded-full border border-slate-700 bg-slate-900/60">Entity Mapping</span>
+                <span className="px-3 py-2 rounded-full border border-slate-700 bg-slate-900/60">Refund Leverage</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function CaseSummary() {
+      const accomplished = [
+        'Identified the operating, trademark, and payment layers behind the platform.',
+        'Mapped the Delaware, Wyoming, and Malta structure used to separate risk, assets, and money flow.',
+        'Connected the billing signature to the Maltese processing side of the operation.',
+        'Used a structured intelligence map during the confrontation instead of a generic refund complaint.',
+        'Forced movement from a partial refund position to a full refund outcome.'
+      ];
+
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-5">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-7 shadow-glow">
+              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">CASE SUMMARY</div>
+              <h2 className="text-2xl sm:text-3xl text-white font-bold mb-4">What this review shows</h2>
+              <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
+                This case review is built for the everyday internet user. You do not need a background in private investigation to push back on a deceptive platform. You need structure, anchors the operator cannot easily hide, and enough discipline to turn scattered findings into usable leverage.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 sm:p-7 shadow-glow">
+              <div className="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3">WHAT WAS ACCOMPLISHED</div>
+              <ul className="space-y-3 text-sm sm:text-base text-slate-300">
+                {accomplished.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="text-cyan-400">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function DownloadSection() {
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-4">
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 shadow-glow">
+              <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                Download 01
+              </div>
+              <h3 className="text-white text-xl font-bold mb-3">Case File Summary PDF</h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-5">
+                Save the typed case file version for reference, sharing, or offline review.
+              </p>
+              <a
+                href="../AI_Powered_Scam_Mapping.pdf"
+                className="inline-flex px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono text-sm tracking-widest font-bold shadow-glow"
+                download
+              >
+                DOWNLOAD CASE FILE
+              </a>
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 shadow-glow">
+              <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">
+                Download 02
+              </div>
+              <h3 className="text-white text-xl font-bold mb-3">Structured Research Protocol PDF</h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-5">
+                Download the branded visual workflow guide for using NotebookLM and Gemini to organize, structure, and pressure-test online research.
+              </p>
+              <a
+                href="../Structured_Research_Protocol.pdf"
+                className="inline-flex px-4 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-mono text-sm tracking-widest font-bold"
+                download
+              >
+                DOWNLOAD PROTOCOL
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function ArticleBody() {
+      return (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+          <article className="rounded-3xl border border-slate-800 bg-slate-900/30 p-6 sm:p-8 lg:p-10 shadow-glow">
+            <div className="post-content text-slate-300 text-[15px] sm:text-base">
+              <h2>Deconstructing Digital Scams</h2>
+              <h3>Case Review: The myIQ Investigation</h3>
+              <p>
+                This case review is built for the everyday internet user. You do not need a degree in forensic science or a background in private investigation to uncover the truth. You need to know how to map the <strong>hidden architecture</strong> of a deceptive platform well enough to force accountability.
+              </p>
+
+              <h2>Part 1: The Investigative Engine</h2>
+              <h3>The Dorking Phase</h3>
+              <p>
+                The breakthrough in the myIQ case was not magic. It was a disciplined workflow using two primary tools: <strong>Google Dorks</strong> and a customized <strong>AI research stack</strong>.
+              </p>
+              <p>
+                We started with Google Dorks, which are targeted search queries built to bypass broad branded search results and surface harder evidence. Instead of searching for the brand name and getting buried in SEO noise, we dorked for anchors the operators could not easily hide:
+              </p>
+              <ul>
+                <li><strong>Physical anchors:</strong> exact addresses such as <code className="inline">"2093 Philadelphia Pike #3129"</code> and <code className="inline">"1309 Coffeen Ave, STE 1200"</code>.</li>
+                <li><strong>Billing signatures:</strong> strings such as <code className="inline">"MYIQ.COM EU ST. JULIANS MelMT"</code>.</li>
+                <li><strong>Entity IDs:</strong> search patterns aimed at Delaware and Wyoming corporate records.</li>
+              </ul>
+
+              <h3>The AI Workflow: NotebookLM + Gemini</h3>
+              <p>
+                The volume of scattered results would have been harder to manage manually, so the case moved into a structured AI workflow. The specific protocol behind that workflow is available on the site as a separate downloadable guide.
+              </p>
+              <ul>
+                <li><strong>Automatic organization:</strong> every search result, registry filing, complaint, and note was placed into <strong>NotebookLM</strong> as a source.</li>
+                <li><strong>Dot-connecting:</strong> NotebookLM helped organize the material into an intelligence map connecting U.S. shells to the Maltese payment side.</li>
+                <li><strong>Partner layer:</strong> <strong>Gemini</strong> was used as a live research partner to verify findings, test possibilities, and suggest next investigative steps.</li>
+              </ul>
+
+              <h2>Part 2: The Intelligence Map</h2>
+              <p>
+                Once the dork results were grounded and organized, the structure behind the platform became clearer. The operation appeared to use multiple entities across different jurisdictions to separate website operations, trademark protection, and payment processing.
+              </p>
+
+              <h3>The Multi-Jurisdictional Shell Game</h3>
+              <ul>
+                <li>
+                  <strong>The Operational Front: Envest Research Inc.</strong><br />
+                  Based in New York with a strategic move to <strong>Delaware</strong>, this entity appeared tied to the website and support side of the operation. Delaware adds a layer of corporate shielding and makes domestic accountability harder.
+                </li>
+                <li>
+                  <strong>The IP Shield: MTA GLOBAL LLC</strong><br />
+                  This <strong>Wyoming</strong> company appeared to hold the trademark side. That separation matters because if the operating side takes heat, brand assets can remain insulated in a different shell.
+                </li>
+                <li>
+                  <strong>The Offshore Treasury: Mellifera Kartiera Limited</strong><br />
+                  Located in <strong>St. Julian’s, Malta</strong>, this was the critical payment gateway node. That is where the billing side became more than suspicion. It became a pressure point.
+                </li>
+              </ul>
+
+              <h2>Part 3: The Confrontation Strategy</h2>
+              <p>
+                Support agents are trained to use policy as a wall. In this case, the support rep attempted what can be called a <strong>partial refund gambit</strong>, offering to return only <strong>$0.99</strong> while keeping the larger <strong>$30.00</strong> subscription fee.
+              </p>
+              <p>
+                The response was not another generic complaint. The response was to send a copy of the intelligence mapping already developed through the research workflow. The point was to show that the structure had been seen clearly enough to name it:
+              </p>
+              <ul>
+                <li><strong>Envest Research</strong> in Delaware</li>
+                <li><strong>MTA Global</strong> in Wyoming</li>
+                <li><strong>Mellifera</strong> in Malta</li>
+              </ul>
+
+              <h3>Why this method works</h3>
+              <p>
+                Knowledge is leverage. Once the operators understood they were dealing with someone who had already mapped the structure around the platform and the payment side, the posture changed. They did not want their payment infrastructure or merchant relationships pulled into a more serious reporting chain over a small dispute.
+              </p>
+              <p>
+                The result was a fast shift from <strong>"we cannot issue a full refund"</strong> to <strong>"the full refund has already been processed."</strong>
+              </p>
+
+              <h2>The Practical Takeaway</h2>
+              <p>
+                This is the core lesson from the myIQ case: the goal is not to sound angry or suspicious. The goal is to replace confusion with structure.
+              </p>
+              <p>
+                When you can show a deceptive operator that you understand their anchors, their entities, and their payment path, you change the power dynamic. You are no longer reacting to a policy script. You are confronting them with a map of their own system.
+              </p>
+
+              <h2>Your Truth-Seeker Checklist</h2>
+              <ul>
+                <li><strong>Dork the anchors:</strong> find addresses, billing strings, and filing references that branded search results cannot bury.</li>
+                <li><strong>Ground the data:</strong> use NotebookLM or another central source base so facts do not get scattered.</li>
+                <li><strong>Pressure-test the map:</strong> use AI carefully to compare, organize, and surface contradictions without inventing facts.</li>
+                <li><strong>Show your work:</strong> when confronting a deceptive platform, do not just complain. Present the structure you found.</li>
+              </ul>
+
+              <p>
+                <strong>Research. Verification. Clarity.</strong> That is the Signal &amp; Trace way.
+              </p>
+            </div>
+          </article>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="border-t border-slate-800 mt-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="font-mono text-[10px] sm:text-xs text-slate-600 tracking-[0.22em]">
+              © {new Date().getFullYear()} SIGNAL &amp; TRACE
+            </div>
+            <div className="font-mono text-[10px] sm:text-xs text-slate-500 tracking-[0.18em]">
+              CASE REVIEW · OSINT · RESEARCH · VERIFICATION
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+          <Navbar />
+          <Hero />
+          <CaseSummary />
+          <DownloadSection />
+          <ArticleBody />
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
