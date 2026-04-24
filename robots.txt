@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Add the live sitemap URL here after the final domain is locked.
+# Sitemap: https://your-domain.com/sitemap.xml
