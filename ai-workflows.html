@@ -23,6 +23,8 @@
           },
           boxShadow: {
             glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+            hard: '0 24px 80px rgba(0,0,0,0.65)',
+            cyan: '0 0 55px rgba(34,211,238,0.16)'
           }
         }
       }
@@ -32,17 +34,74 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
 
   <style>
-    body { background-color: #020617; color: #cbd5e1; }
+    body {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(34,211,238,0.12), transparent 34rem),
+        radial-gradient(circle at 80% 12%, rgba(14,165,233,0.10), transparent 30rem),
+        linear-gradient(180deg, #020617 0%, #020617 100%);
+      color: #cbd5e1;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(148,163,184,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent 80%);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at center, transparent 0%, rgba(2,6,23,0.22) 45%, rgba(2,6,23,0.85) 100%);
+      z-index: -1;
+    }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #020617; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    .premium-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(15,23,42,0.92), rgba(2,6,23,0.88));
+      border: 1px solid rgba(30,41,59,0.95);
+      box-shadow: 0 0 0 1px rgba(34,211,238,0.08), 0 24px 80px rgba(0,0,0,0.50);
+    }
+    .premium-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(34,211,238,0.10), transparent 32%, transparent 68%, rgba(14,165,233,0.06));
+      pointer-events: none;
+    }
+    .panel-grid {
+      background-image:
+        linear-gradient(rgba(34,211,238,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,211,238,0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .scanline { position: relative; }
+    .scanline::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(34,211,238,0.85), transparent);
+      opacity: 0.75;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
-  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
+  <nav class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
+        <div class="w-9 h-9 rounded-xl border border-cyan-500/40 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-cyan">S</div>
         <div>
           <div class="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
           <div class="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
@@ -57,7 +116,7 @@
         <a href="about.html" class="hover:text-cyan-400 transition-colors">ABOUT</a>
       </div>
     </div>
-    <div class="md:hidden border-t border-slate-800 bg-slate-950 px-4 py-3 overflow-x-auto whitespace-nowrap font-mono text-[10px] tracking-widest text-slate-400 flex gap-4">
+    <div class="md:hidden border-t border-slate-800/80 bg-slate-950/90 px-4 py-3 overflow-x-auto whitespace-nowrap font-mono text-[10px] tracking-widest text-slate-400 flex gap-4">
       <a href="index.html">HOME</a>
       <a href="tools.html">TOOLS</a>
       <a href="blog.html">BLOG</a>
@@ -67,21 +126,54 @@
     </div>
   </nav>
 
-  <header class="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-      <div class="max-w-4xl">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
-          Current Workflows · Tested Tools · Living Method
+  <header class="relative overflow-hidden border-b border-slate-800/80">
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-slate-950/70 to-slate-950"></div>
+    <div class="absolute -top-32 right-1/3 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-28">
+      <div class="grid lg:grid-cols-[1fr_0.85fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/25 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6 shadow-cyan">
+            Current Workflows · Tested Tools · Living Method
+          </div>
+          <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl leading-[0.92] text-white mb-6 uppercase tracking-tighter">
+            AI <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-cyan-400 to-sky-300">Workflows</span>
+          </h1>
+          <p class="text-slate-300 text-lg sm:text-xl leading-relaxed max-w-3xl mb-5">
+            AI research tools change fast. Signal &amp; Trace tracks what actually works and turns it into practical workflows normal people can use.
+          </p>
+          <p class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-3xl">
+            The tools change. The method stays disciplined. This page is about source control, evidence grading, contradiction testing, and usable outputs, not loyalty to one model or platform.
+          </p>
         </div>
-        <h1 class="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
-          AI <span class="text-cyan-400">Workflows</span>
-        </h1>
-        <p class="text-slate-300 text-lg sm:text-xl leading-relaxed max-w-3xl mb-5">
-          AI research tools change fast. Signal &amp; Trace tracks what actually works and turns it into practical workflows normal people can use.
-        </p>
-        <p class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-3xl">
-          The tools change. The method stays disciplined. This page is about source control, evidence grading, contradiction testing, and usable outputs, not loyalty to one model or platform.
-        </p>
+
+        <div class="premium-card rounded-3xl p-4 sm:p-5 shadow-hard">
+          <div class="relative rounded-2xl border border-slate-800 bg-slate-950/80 panel-grid overflow-hidden">
+            <div class="scanline flex items-center justify-between border-b border-slate-800 bg-slate-950/90 px-4 py-3">
+              <span class="font-mono text-[10px] tracking-[0.22em] text-cyan-400 uppercase">Workflow Monitor</span>
+              <span class="font-mono text-[10px] text-emerald-300">ACTIVE</span>
+            </div>
+            <div class="p-5 sm:p-6 space-y-4">
+              <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4">
+                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-2">Current Stack</div>
+                <div class="text-slate-100 font-mono text-sm">NotebookLM + Gemini</div>
+                <div class="text-slate-500 text-xs mt-2">Recommended now, not permanent.</div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-800 bg-slate-900/75 p-4"><div class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-2">Rule</div><div class="text-cyan-300 font-mono text-xs">TOOL-AGNOSTIC</div></div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/75 p-4"><div class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-2">Cycle</div><div class="text-emerald-300 font-mono text-xs">TEST / UPDATE</div></div>
+              </div>
+              <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-4">Workflow Priority</div>
+                <div class="space-y-3 font-mono text-xs">
+                  <div class="flex justify-between"><span class="text-slate-400">Source control</span><span class="text-cyan-300">HIGH</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Ease of use</span><span class="text-cyan-300">HIGH</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Output quality</span><span class="text-cyan-300">HIGH</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Platform loyalty</span><span class="text-red-300">NONE</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -89,44 +181,36 @@
   <main>
     <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
       <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-7 shadow-glow">
-          <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Why This Page Changes</div>
-          <h2 class="text-2xl sm:text-3xl text-white font-bold mb-4">The workflow is updated as the tools improve.</h2>
-          <p class="text-slate-400 text-base sm:text-lg leading-relaxed mb-4">
-            A workflow that feels advanced today can be outdated in a few months. I spend time testing new models, research tools, document systems, prompt methods, browser workflows, and free public options as they appear.
-          </p>
-          <p class="text-slate-400 text-base sm:text-lg leading-relaxed">
-            The goal is to keep the recommended process current, practical, and easy enough for a normal person to use without losing source discipline.
-          </p>
+        <div class="premium-card rounded-3xl p-6 sm:p-7">
+          <div class="relative">
+            <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Why This Page Changes</div>
+            <h2 class="text-2xl sm:text-3xl text-white font-bold mb-4">The workflow is updated as the tools improve.</h2>
+            <p class="text-slate-400 text-base sm:text-lg leading-relaxed mb-4">A workflow that feels advanced today can be outdated in a few months. I spend time testing new models, research tools, document systems, prompt methods, browser workflows, and free public options as they appear.</p>
+            <p class="text-slate-400 text-base sm:text-lg leading-relaxed">The goal is to keep the recommended process current, practical, and easy enough for a normal person to use without losing source discipline.</p>
+          </div>
         </div>
 
-        <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-6 sm:p-7 shadow-glow">
-          <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Tool-Agnostic Rule</div>
-          <p class="text-slate-300 leading-relaxed mb-4">
-            Signal &amp; Trace is not built around one model, one app, or one company.
-          </p>
-          <p class="text-slate-400 leading-relaxed text-sm sm:text-base">
-            Gemini, NotebookLM, ChatGPT, Claude, Grok, Perplexity, local models, browser tools, spreadsheets, PDFs, and manual search can all be part of the system. The point is not the tool. The point is the method.
-          </p>
+        <div class="premium-card rounded-3xl p-6 sm:p-7">
+          <div class="relative">
+            <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Tool-Agnostic Rule</div>
+            <p class="text-slate-300 leading-relaxed mb-4">Signal &amp; Trace is not built around one model, one app, or one company.</p>
+            <p class="text-slate-400 leading-relaxed text-sm sm:text-base">Gemini, NotebookLM, ChatGPT, Claude, Grok, Perplexity, local models, browser tools, spreadsheets, PDFs, and manual search can all be part of the system. The point is not the tool. The point is the method.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="border-y border-slate-800 bg-slate-900/30">
+    <section class="border-y border-slate-800/80 bg-slate-900/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
         <div class="mb-8">
           <div class="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3 uppercase">The Signal &amp; Trace Method</div>
           <h2 class="text-2xl sm:text-3xl text-white font-bold">The tools can change without breaking the system.</h2>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">01</span><h3 class="text-white font-bold mt-2 mb-2">Define the target</h3><p class="text-slate-400 text-sm">Name the person, company, website, claim, username, email, or question being tested.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">02</span><h3 class="text-white font-bold mt-2 mb-2">Generate search paths</h3><p class="text-slate-400 text-sm">Build targeted searches and pivots instead of wandering through random results.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">03</span><h3 class="text-white font-bold mt-2 mb-2">Preserve sources</h3><p class="text-slate-400 text-sm">Keep links, screenshots, PDFs, quotes, and context attached to each finding.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">04</span><h3 class="text-white font-bold mt-2 mb-2">Grade evidence</h3><p class="text-slate-400 text-sm">Separate confirmed facts, probable findings, possible leads, and unsupported assumptions.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">05</span><h3 class="text-white font-bold mt-2 mb-2">Map connections</h3><p class="text-slate-400 text-sm">Track entities, people, domains, companies, addresses, timelines, and contradictions.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">06</span><h3 class="text-white font-bold mt-2 mb-2">Pressure-test claims</h3><p class="text-slate-400 text-sm">Look for gaps, conflicts, weak links, missing context, and alternative explanations.</p></div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"><span class="font-mono text-cyan-400 text-xs">07</span><h3 class="text-white font-bold mt-2 mb-2">Build outputs</h3><p class="text-slate-400 text-sm">Turn the research file into summaries, reports, timelines, visual maps, decks, or scripts.</p></div>
-          <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5"><span class="font-mono text-cyan-400 text-xs">08</span><h3 class="text-white font-bold mt-2 mb-2">Update the workflow</h3><p class="text-slate-400 text-sm">Replace tools when better options appear. Keep the process alive.</p></div>
+          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">01</span><h3 class="relative text-white font-bold mt-2 mb-2">Define the target</h3><p class="relative text-slate-400 text-sm">Name the person, company, website, claim, username, email, or question being tested.</p></div>
+          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">02</span><h3 class="relative text-white font-bold mt-2 mb-2">Generate search paths</h3><p class="relative text-slate-400 text-sm">Build targeted searches and pivots instead of wandering through random results.</p></div>
+          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">03</span><h3 class="relative text-white font-bold mt-2 mb-2">Preserve sources</h3><p class="relative text-slate-400 text-sm">Keep links, screenshots, PDFs, quotes, and context attached to each finding.</p></div>
+          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">04</span><h3 class="relative text-white font-bold mt-2 mb-2">Grade evidence</h3><p class="relative text-slate-400 text-sm">Separate confirmed facts, probable findings, possible leads, and unsupported assumptions.</p></div>
         </div>
       </div>
     </section>
@@ -138,49 +222,30 @@
       </div>
 
       <div class="grid gap-6">
-        <a href="posts/ai-research-workflows.html" class="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-cyan-500/30 transition-all shadow-glow hover:-translate-y-1">
-          <div class="max-w-3xl">
+        <a href="posts/ai-research-workflows.html" class="premium-card group rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-300">
+          <div class="relative max-w-3xl">
             <div class="flex flex-wrap items-center gap-3 mb-4">
               <span class="font-mono text-[10px] tracking-widest text-cyan-400 border border-cyan-400/30 px-2 py-1 rounded uppercase bg-cyan-400/10">CURRENT STACK</span>
               <span class="font-mono text-[10px] tracking-widest text-slate-400 uppercase">+ NotebookLM</span>
               <span class="font-mono text-[10px] tracking-widest text-slate-400 uppercase">+ Gemini</span>
             </div>
             <h3 class="text-xl sm:text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">Start with the current best free research stack</h3>
-            <p class="text-slate-400 leading-relaxed text-sm sm:text-base">
-              NotebookLM connected to Gemini is currently one of the strongest free out-of-the-box workflows I have found. NotebookLM works well as a source-grounded case file, and Gemini can use that notebook as a working knowledge base. That gives beginners summaries, briefings, timelines, reports, and reusable outputs without much setup.
-            </p>
+            <p class="text-slate-400 leading-relaxed text-sm sm:text-base">NotebookLM connected to Gemini is currently one of the strongest free out-of-the-box workflows I have found. NotebookLM works well as a source-grounded case file, and Gemini can use that notebook as a working knowledge base. That gives beginners summaries, briefings, timelines, reports, and reusable outputs without much setup.</p>
           </div>
-          <div class="shrink-0 mt-4 md:mt-0">
-            <span class="inline-flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest font-bold group-hover:gap-3 transition-all">ACCESS WORKFLOW &rarr;</span>
-          </div>
+          <div class="relative shrink-0 mt-4 md:mt-0"><span class="inline-flex items-center gap-2 text-cyan-400 font-mono text-xs tracking-widest font-bold group-hover:gap-3 transition-all">ACCESS WORKFLOW &rarr;</span></div>
         </a>
 
-        <div class="rounded-2xl border border-slate-800/50 bg-slate-900/20 p-6 sm:p-8 opacity-85">
-          <div class="font-mono text-[10px] tracking-widest text-slate-500 uppercase mb-4">In Production</div>
-          <h3 class="text-xl sm:text-2xl font-bold text-slate-300 mb-3">Source Verification Prompt Pack</h3>
-          <p class="text-slate-500 leading-relaxed text-sm sm:text-base">
-            A platform-flexible prompt sequence for forcing AI to identify sources, grade claims, flag contradictions, and separate evidence from inference before producing a final answer.
-          </p>
-        </div>
-
-        <div class="rounded-2xl border border-slate-800/50 bg-slate-900/20 p-6 sm:p-8 opacity-85">
-          <div class="font-mono text-[10px] tracking-widest text-slate-500 uppercase mb-4">In Production</div>
-          <h3 class="text-xl sm:text-2xl font-bold text-slate-300 mb-3">Entity Mapping Workflow</h3>
-          <p class="text-slate-500 leading-relaxed text-sm sm:text-base">
-            A workflow for mapping businesses, aliases, domains, addresses, payment clues, people, filings, documents, and timeline conflicts using whatever AI and public search tools are strongest at the time.
-          </p>
-        </div>
+        <div class="premium-card rounded-3xl p-6 sm:p-8 opacity-85"><div class="relative"><div class="font-mono text-[10px] tracking-widest text-slate-500 uppercase mb-4">In Production</div><h3 class="text-xl sm:text-2xl font-bold text-slate-300 mb-3">Source Verification Prompt Pack</h3><p class="text-slate-500 leading-relaxed text-sm sm:text-base">A platform-flexible prompt sequence for forcing AI to identify sources, grade claims, flag contradictions, and separate evidence from inference before producing a final answer.</p></div></div>
+        <div class="premium-card rounded-3xl p-6 sm:p-8 opacity-85"><div class="relative"><div class="font-mono text-[10px] tracking-widest text-slate-500 uppercase mb-4">In Production</div><h3 class="text-xl sm:text-2xl font-bold text-slate-300 mb-3">Entity Mapping Workflow</h3><p class="text-slate-500 leading-relaxed text-sm sm:text-base">A workflow for mapping businesses, aliases, domains, addresses, payment clues, people, filings, documents, and timeline conflicts using whatever AI and public search tools are strongest at the time.</p></div></div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-800 py-12 bg-slate-950/50">
+  <footer class="border-t border-slate-800/80 py-12 bg-slate-950/70">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
-      <div class="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-3">SIGNAL &amp; TRACE // 2026</div>
-      <div class="font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold mb-6">OSINT · RESEARCH · VERIFICATION</div>
-      <p class="text-slate-500 text-xs leading-relaxed max-w-3xl mb-6">
-        Signal &amp; Trace is for lawful public-record and open-source research only. Users are responsible for following applicable laws, platform rules, and ethical boundaries.
-      </p>
+      <div class="font-display text-[14px] text-slate-500 tracking-[0.4em] mb-3">SIGNAL &amp; TRACE // 2026</div>
+      <div class="font-mono text-[10px] text-cyan-400/80 tracking-[0.2em] font-bold mb-6">OSINT · RESEARCH · VERIFICATION</div>
+      <p class="text-slate-500 text-xs leading-relaxed max-w-3xl mb-6">Signal &amp; Trace is for lawful public-record and open-source research only. Users are responsible for following applicable laws, platform rules, and ethical boundaries.</p>
       <div class="flex flex-wrap justify-center gap-6 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
         <a href="tools.html" class="hover:text-cyan-400">TOOLS</a>
         <a href="blog.html" class="hover:text-cyan-400">BLOG</a>
