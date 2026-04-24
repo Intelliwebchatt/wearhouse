@@ -1,0 +1,9 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signal & Trace mark">
+  <rect width="96" height="96" rx="22" fill="#020617"/>
+  <rect x="1.5" y="1.5" width="93" height="93" rx="20.5" stroke="#22D3EE" stroke-opacity="0.28" stroke-width="3"/>
+  <path d="M71.4 29.2C66.2 22.9 58.4 19 49.6 19C33.9 19 21.2 31.7 21.2 47.4C21.2 63.1 33.9 75.8 49.6 75.8C58.5 75.8 66.5 71.7 71.7 65.2" stroke="#22D3EE" stroke-width="5" stroke-linecap="round"/>
+  <path d="M48 29V67" stroke="#F8FAFC" stroke-width="4" stroke-linecap="round"/>
+  <path d="M34 48H62" stroke="#22D3EE" stroke-width="4" stroke-linecap="round" stroke-opacity="0.9"/>
+  <circle cx="70" cy="48" r="4.5" fill="#22D3EE"/>
+  <circle cx="48" cy="48" r="3" fill="#F8FAFC"/>
+</svg>
