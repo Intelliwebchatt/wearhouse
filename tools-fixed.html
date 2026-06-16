@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research Tools | Signal & Trace</title>
+  <meta name="description" content="Use Signal & Trace research tools to build targeted dorks, handle searches, and email or domain pivot queries for verification and OSINT work." />
+  <meta name="theme-color" content="#020617" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['IBM Plex Mono', 'monospace'],
+            sans: ['system-ui', 'sans-serif'],
+            display: ['Orbitron', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
+            cyan: '0 0 55px rgba(34,211,238,0.16)'
+          }
+        }
+      }
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #020617; color: #cbd5e1; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 20% 0%, rgba(34,211,238,0.12), transparent 34rem),
+        radial-gradient(circle at 80% 12%, rgba(14,165,233,0.10), transparent 30rem),
+        linear-gradient(rgba(148,163,184,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,0.035) 1px, transparent 1px);
+      background-size: auto, auto, 44px 44px, 44px 44px;
+      z-index: -2;
+    }
+    .premium-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(15,23,42,0.92), rgba(2,6,23,0.88));
+      border: 1px solid rgba(30,41,59,0.95);
+      box-shadow: 0 0 0 1px rgba(34,211,238,0.08), 0 24px 80px rgba(0,0,0,0.50);
+    }
+    .tab-active { background: rgba(8,145,178,0.18); color: #67e8f9; border-color: rgba(34,211,238,0.4); }
+    .tab-idle { background: rgba(15,23,42,0.75); color: #94a3b8; border-color: #1e293b; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
+  <nav class="border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl border border-cyan-500/40 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-cyan">S</div>
+        <div>
+          <div class="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
+          <div class="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
+        </div>
+      </a>
+      <div class="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
+        <a href="index.html" class="hover:text-cyan-400">HOME</a>
+        <a href="tools.html" class="text-cyan-400">TOOLS</a>
+        <a href="blog.html" class="hover:text-cyan-400">BLOG</a>
+        <a href="case-reviews.html" class="hover:text-cyan-400">CASE REVIEWS</a>
+        <a href="ai-workflows.html" class="hover:text-cyan-400">AI WORKFLOWS</a>
+        <a href="resources.html" class="hover:text-cyan-400">RESOURCES</a>
+        <a href="about.html" class="hover:text-cyan-400">ABOUT</a>
+      </div>
+    </div>
+    <div class="md:hidden border-t border-slate-800/80 bg-slate-950/95 px-4 py-3 overflow-x-auto whitespace-nowrap font-mono text-[10px] tracking-widest text-slate-400 flex gap-4">
+      <a href="index.html">HOME</a>
+      <a href="tools.html" class="text-cyan-400">TOOLS</a>
+      <a href="blog.html">BLOG</a>
+      <a href="case-reviews.html">CASE REVIEWS</a>
+      <a href="ai-workflows.html">AI WORKFLOWS</a>
+      <a href="resources.html">RESOURCES</a>
+      <a href="about.html">ABOUT</a>
+    </div>
+  </nav>
+
+  <header class="border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/25 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6 shadow-cyan">
+          Search Logic · OSINT · Structured Queries
+        </div>
+        <h1 class="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
+          Research <span class="text-cyan-400">Tools</span>
+        </h1>
+        <p class="text-slate-400 text-base sm:text-xl leading-relaxed">
+          Build safer targeted searches for names, addresses, handles, emails, domains, companies, and public web traces. Quote handling is sanitized before queries are built.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+    <noscript>
+      <div class="premium-card rounded-2xl p-6 text-slate-200">JavaScript is required for the research tools.</div>
+    </noscript>
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-12 bg-slate-950/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
+      <div class="font-display text-[14px] text-slate-500 tracking-[0.4em] mb-3">SIGNAL &amp; TRACE // 2026</div>
+      <div class="font-mono text-[10px] text-cyan-400/80 tracking-[0.2em] font-bold mb-6">OSINT · RESEARCH · VERIFICATION</div>
+      <p class="text-slate-500 text-xs leading-relaxed max-w-3xl">Signal &amp; Trace is for lawful public-record and open-source research only. Users are responsible for following applicable laws, platform rules, and ethical boundaries.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const engines = {
+        google: 'https://www.google.com/search?q=',
+        ddg: 'https://duckduckgo.com/?q=',
+        bing: 'https://www.bing.com/search?q=',
+        yandex: 'https://yandex.com/search/?text='
+      };
+
+      const data = {
+        dorks: {
+          title: 'Dork Builder',
+          button: 'Build Dorks',
+          resultLabel: 'Strings Built',
+          modes: [
+            { id: 'people', label: 'People', placeholder: 'Name, e.g. John Doe' },
+            { id: 'address', label: 'Address', placeholder: 'Address, e.g. 123 Main St' },
+            { id: 'other', label: 'Business / Topic', placeholder: 'Business, domain, or topic' }
+          ],
+          sets: {
+            people: {
+              core: [
+                '{target} {mods} (site:facebook.com OR site:instagram.com OR site:linkedin.com OR site:x.com)',
+                '{target} {mods} ("directory" OR "staff" OR "team" OR "alumni" OR "member")',
+                '{target} {mods} ("news" OR "article" OR "interview" OR "press")',
+                '{target} {mods} (filetype:pdf OR filetype:doc OR filetype:docx) ("resume" OR "cv" OR "bio" OR "contact")',
+                '{target} {mods} (site:.gov OR site:.us OR site:.org) ("court" OR "record" OR "permit")'
+              ],
+              deep: [
+                '{target} {mods} -site:facebook.com -site:twitter.com -site:instagram.com -site:linkedin.com -site:pinterest.com',
+                '{target} {mods} (site:youtube.com OR site:vimeo.com OR site:twitch.tv)',
+                '{target} {mods} (site:github.com OR site:reddit.com OR site:medium.com)'
+              ],
+              long: [
+                '{target} {mods} (site:pastebin.com OR site:scribd.com OR site:archive.org)',
+                'intitle:"index of" {target} {mods} ("contacts" OR "staff" OR "directory" OR "emails")',
+                '{target} {mods} (site:drive.google.com OR site:docs.google.com OR site:s3.amazonaws.com)',
+                '{target} {mods} ("speaker" OR "agenda" OR "panel" OR "conference")',
+                '{target} {mods} ("username" OR "alias" OR "handle")'
+              ]
+            },
+            address: {
+              core: [
+                '{target} {mods} (site:zillow.com OR site:realtor.com OR site:redfin.com OR site:loopnet.com)',
+                '{target} {mods} ("LLC" OR "Inc" OR "Corporation" OR "Company")',
+                '{target} {mods} ("police" OR "incident" OR "news" OR "arrest" OR "fire")'
+              ],
+              deep: [
+                '{target} {mods} site:.gov (filetype:pdf OR filetype:xls OR filetype:xlsx) ("tax" OR "zoning" OR "owner")',
+                '{target} {mods} (site:courtlistener.com OR site:justia.com)',
+                '{target} {mods} (filetype:xls OR filetype:xlsx OR filetype:csv)'
+              ],
+              long: [
+                '{target} {mods} -site:zillow.com -site:realtor.com -site:redfin.com',
+                'intitle:"index of" {target} {mods}',
+                '(site:s3.amazonaws.com OR site:drive.google.com OR site:docs.google.com) {target} {mods}',
+                '{target} {mods} ("tenant" OR "lease" OR "auction" OR "code enforcement")',
+                '{target} {mods} ("map" OR "parcel" OR "assessor" OR "GIS")'
+              ]
+            },
+            other: {
+              core: [
+                '{target} {mods} ("contact" OR "support" OR "about us" OR "locations")',
+                '{target} {mods} ("review" OR "complaint" OR "scam" OR "fraud" OR "better business bureau")',
+                '{target} {mods} (site:linkedin.com OR site:indeed.com OR site:glassdoor.com)',
+                '{target} {mods} (filetype:pdf OR filetype:xls OR filetype:csv)'
+              ],
+              deep: [
+                '(site:.gov OR site:.edu) (filetype:pdf OR filetype:xlsx) {target} {mods}',
+                '"press release" ("fraud" OR "investigation" OR "lawsuit" OR "subpoena") {target} {mods}',
+                'site:{raw} (filetype:pdf OR filetype:doc OR filetype:docx OR filetype:xlsx)'
+              ],
+              long: [
+                '{target} (filetype:pdf OR filetype:doc OR filetype:docx) ("internal use only" OR "confidential")',
+                'intitle:"index of" site:{raw}',
+                'site:{raw} ("pricing" OR "proposal" OR "statement of work" OR "capabilities")',
+                '{target} ("RFP" OR "bid" OR "vendor" OR "contract")',
+                '{target} (site:pastebin.com OR site:scribd.com OR site:archive.org)'
+              ]
+            }
+          }
+        },
+        handles: {
+          title: 'Handle Finder',
+          button: 'Build Searches',
+          resultLabel: 'Searches Built',
+          modes: [
+            { id: 'social', label: 'Social', placeholder: 'Handle, e.g. jsmith or @jsmith' },
+            { id: 'forums', label: 'Forums', placeholder: 'Alias, forum name, or gamer tag' },
+            { id: 'dev', label: 'Dev / Pro', placeholder: 'Developer, creator, or pro handle' },
+            { id: 'broad', label: 'Broad Web', placeholder: 'Any repeated username or alias' }
+          ],
+          sets: {
+            social: {
+              core: [
+                '{handle} (site:instagram.com OR site:x.com OR site:tiktok.com)',
+                '{handle} site:facebook.com',
+                '{handle} "@{raw}"'
+              ],
+              deep: [
+                '{handle} {mods} (site:instagram.com OR site:x.com)',
+                '{handle} (site:linkedin.com OR site:threads.net)'
+              ],
+              long: [
+                '{handle} {mods} -site:instagram.com -site:x.com -site:facebook.com -site:tiktok.com -site:linkedin.com',
+                '{handle} ("old username" OR "formerly" OR "aka")'
+              ]
+            },
+            forums: {
+              core: [
+                '{handle} (site:reddit.com OR site:quora.com)',
+                '{handle} ("profile" OR "user" OR "member" OR "joined")'
+              ],
+              deep: [
+                '{handle} (site:steamcommunity.com OR site:xbox.com OR site:playstation.com)',
+                '{handle} (site:discord.com OR site:twitch.tv)'
+              ],
+              long: [
+                '{handle} {mods} -site:reddit.com -site:quora.com -site:steamcommunity.com',
+                '{handle} (site:pastebin.com OR site:ghostbin.com OR site:archive.org)'
+              ]
+            },
+            dev: {
+              core: [
+                '{handle} (site:youtube.com OR site:twitch.tv OR site:github.com)',
+                '{handle} ("author" OR "creator" OR "streamer" OR "channel" OR "developer")'
+              ],
+              deep: [
+                '{handle} (site:medium.com OR site:dev.to OR site:hashnode.com)',
+                '{handle} (site:gitlab.com OR site:stackoverflow.com)'
+              ],
+              long: [
+                '{handle} "commit" -site:github.com',
+                'inurl:"{raw}" -site:github.com -site:twitter.com -site:instagram.com'
+              ]
+            },
+            broad: {
+              core: [
+                '{handle}',
+                '{handle} ("contact" OR "email" OR "reach me")',
+                '{handle} (filetype:pdf OR filetype:txt OR filetype:csv)'
+              ],
+              deep: [
+                '{handle} {mods}',
+                '{handle} ("username" OR "alias" OR "handle")'
+              ],
+              long: [
+                '{handle} (site:pastebin.com OR site:trello.com OR site:ghostbin.com)',
+                'inurl:"{raw}" -site:github.com -site:twitter.com -site:instagram.com'
+              ]
+            }
+          }
+        },
+        email: {
+          title: 'Email / Domain Pivot',
+          button: 'Build Pivots',
+          resultLabel: 'Pivots Built',
+          modes: [
+            { id: 'exact', label: 'Exact Email', placeholder: 'Email, e.g. jane@example.com' },
+            { id: 'prefix', label: 'Prefix', placeholder: 'Prefix, e.g. jane.doe' },
+            { id: 'domain', label: 'Domain', placeholder: 'Domain, e.g. example.com' }
+          ],
+          sets: {
+            exact: {
+              core: [
+                '{value}',
+                '{value} ("contact" OR "directory" OR "team" OR "staff")',
+                '{value} (site:linkedin.com OR site:facebook.com OR site:github.com)'
+              ],
+              deep: [
+                '{value} (filetype:pdf OR filetype:xls OR filetype:csv)',
+                '{value} (site:reddit.com OR site:medium.com)'
+              ],
+              long: [
+                '{value} (site:pastebin.com OR site:trello.com OR site:scribd.com)',
+                '{value} ("speaker" OR "agenda" OR "conference" OR "panel")'
+              ]
+            },
+            prefix: {
+              core: [
+                '{value}',
+                '{value} (gmail.com OR outlook.com OR yahoo.com OR icloud.com OR protonmail.com)',
+                '{value} ("contact" OR "profile" OR "user")'
+              ],
+              deep: [
+                '{value} (site:instagram.com OR site:x.com OR site:reddit.com)',
+                '{value} {mods}'
+              ],
+              long: [
+                '{value} (site:pastebin.com OR site:scribd.com OR site:archive.org)',
+                '{value} (filetype:pdf OR filetype:txt OR filetype:csv)'
+              ]
+            },
+            domain: {
+              core: [
+                '"@{raw}"',
+                'site:{raw} ("contact" OR "team" OR "staff" OR "about" OR "directory")',
+                'site:{raw} (filetype:pdf OR filetype:doc OR filetype:csv)'
+              ],
+              deep: [
+                '"@{raw}" {mods}',
+                'site:{raw} ("support" OR "press" OR "leadership" OR "careers")'
+              ],
+              long: [
+                'site:{raw} intitle:"index of"',
+                'site:{raw} ("statement of work" OR "proposal" OR "capabilities" OR "vendor")',
+                '"@{raw}" (site:pastebin.com OR site:scribd.com OR site:archive.org)'
+              ]
+            }
+          }
+        }
+      };
+
+      const state = {
+        tool: 'dorks',
+        mode: { dorks: 'people', handles: 'social', email: 'exact' },
+        engine: 'google',
+        includeDeep: true,
+        includeLong: false,
+        modifiers: [],
+        results: []
+      };
+
+      const app = document.getElementById('app');
+
+      function normalizeSpaces(value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+      }
+
+      function removeUnsafeQuotes(value) {
+        return normalizeSpaces(value)
+          .replace(/^[\s"“”]+|[\s"“”]+$/g, '')
+          .replace(/["“”]/g, '')
+          .trim();
+      }
+
+      function quoteExact(value) {
+        const clean = removeUnsafeQuotes(value);
+        return clean ? '"' + clean + '"' : '';
+      }
+
+      function cleanHandle(value) {
+        return removeUnsafeQuotes(value).replace(/^@+/, '').trim();
+      }
+
+      function cleanDomain(value) {
+        return removeUnsafeQuotes(value)
+          .replace(/^@+/, '')
+          .replace(/^https?:\/\//i, '')
+          .replace(/^www\./i, '')
+          .replace(/\/.*$/, '')
+          .trim();
+      }
+
+      function getModifiers() {
+        return Array.from(document.querySelectorAll('[data-modifier]'))
+          .map(input => quoteExact(input.value))
+          .filter(Boolean)
+          .join(' ');
+      }
+
+      function collapseQuery(q) {
+        return q.replace(/\s+/g, ' ').replace(/\s+\)/g, ')').replace(/\(\s+/g, '(').trim();
+      }
+
+      function currentConfig() {
+        return data[state.tool];
+      }
+
+      function currentMode() {
+        return state.mode[state.tool];
+      }
+
+      function switchTool(tool) {
+        state.tool = tool;
+        state.results = [];
+        render();
+      }
+
+      function switchMode(mode) {
+        state.mode[state.tool] = mode;
+        state.results = [];
+        render();
+      }
+
+      function addModifier() {
+        state.modifiers.push('');
+        render();
+      }
+
+      function removeModifier(index) {
+        state.modifiers.splice(index, 1);
+        render();
+      }
+
+      function buildResults() {
+        const main = document.getElementById('mainInput').value;
+        const rawMain = state.tool === 'handles' ? cleanHandle(main) : state.tool === 'email' && currentMode() === 'domain' ? cleanDomain(main) : removeUnsafeQuotes(main);
+        if (!rawMain) return;
+
+        const config = currentConfig();
+        const mode = currentMode();
+        const set = config.sets[mode];
+        const mods = getModifiers();
+        let templates = set.core.slice();
+        if (state.includeDeep) templates = templates.concat(set.deep || []);
+        if (state.includeLong) templates = templates.concat(set.long || []);
+
+        const replacements = {
+          raw: rawMain,
+          target: quoteExact(rawMain),
+          handle: quoteExact(rawMain),
+          value: mode === 'domain' ? rawMain : quoteExact(rawMain),
+          mods
+        };
+
+        state.results = templates.map(template => {
+          return collapseQuery(template
+            .replace(/\{raw\}/g, replacements.raw)
+            .replace(/\{target\}/g, replacements.target)
+            .replace(/\{handle\}/g, replacements.handle)
+            .replace(/\{value\}/g, replacements.value)
+            .replace(/\{mods\}/g, replacements.mods));
+        });
+        render();
+      }
+
+      async function copyText(text, button) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = button.textContent;
+          button.textContent = 'COPIED';
+          button.classList.add('text-green-400', 'border-green-500/40');
+          setTimeout(() => {
+            button.textContent = original;
+            button.classList.remove('text-green-400', 'border-green-500/40');
+          }, 1400);
+        } catch (error) {
+          alert('Copy failed. Long press the text and copy manually.');
+        }
+      }
+
+      function resultHtml() {
+        if (!state.results.length) return '';
+        const rows = state.results.map((q, index) => {
+          const safe = escapeHtml(q);
+          const url = engines[state.engine] + encodeURIComponent(q);
+          return `
+            <div class="flex flex-col sm:flex-row gap-3 bg-slate-950/60 border border-slate-800/80 p-3 rounded-lg shadow-glow">
+              <div class="flex-1 font-mono text-xs text-cyan-100/80 break-all">${safe}</div>
+              <div class="flex gap-2 shrink-0">
+                <a href="${url}" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20">Run</a>
+                <button data-copy-index="${index}" class="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase">Copy</button>
+              </div>
+            </div>`;
+        }).join('');
+
+        return `
+          <div class="mt-8 pt-6 border-t border-slate-800">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h3 class="font-mono text-[10px] font-bold text-slate-500 tracking-widest uppercase italic">// ${currentConfig().resultLabel}</h3>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">${state.results.length} Ready</span>
+                <button id="copyAllBtn" class="px-3 py-1 text-[10px] font-bold font-mono rounded border bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase">Copy All</button>
+              </div>
+            </div>
+            <div class="space-y-3">${rows}</div>
+          </div>`;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function render() {
+        const config = currentConfig();
+        const mode = currentMode();
+        const modeConfig = config.modes.find(item => item.id === mode) || config.modes[0];
+
+        app.innerHTML = `
+          <section class="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
+            <aside class="premium-card rounded-3xl p-5 sm:p-6">
+              <div class="relative">
+                <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Tool Select</div>
+                <div class="grid gap-3">
+                  ${toolButton('dorks', 'Dork Builder', 'People, addresses, businesses, topics')}
+                  ${toolButton('handles', 'Handle Finder', 'Aliases and repeated usernames')}
+                  ${toolButton('email', 'Email / Domain Pivot', 'Emails, prefixes, and domains')}
+                </div>
+                <div class="mt-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 text-xs text-slate-300 leading-relaxed">
+                  <span class="font-mono text-cyan-300 uppercase tracking-widest">Fix applied:</span><br />
+                  Pasted quote marks are stripped before exact-match quotes are added. Copy All now joins lines with a safe newline character.
+                </div>
+              </div>
+            </aside>
+
+            <section class="premium-card rounded-3xl p-5 sm:p-8">
+              <div class="relative">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                  <div>
+                    <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Active Tool</div>
+                    <h2 class="text-2xl sm:text-3xl text-white font-bold">${config.title}</h2>
+                  </div>
+                  <select id="engineSelect" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-3 text-xs text-slate-300 font-mono">
+                    <option value="google">Google</option>
+                    <option value="ddg">DuckDuckGo</option>
+                    <option value="bing">Bing</option>
+                    <option value="yandex">Yandex</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-${Math.min(config.modes.length, 4)} gap-2 mb-6">
+                  ${config.modes.map(item => `
+                    <button data-mode="${item.id}" class="px-3 py-3 rounded-xl border font-mono text-[10px] sm:text-xs uppercase tracking-widest ${item.id === mode ? 'tab-active' : 'tab-idle'}">${item.label}</button>
+                  `).join('')}
+                </div>
+
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Main Search Input</label>
+                    <input id="mainInput" type="text" placeholder="${escapeHtml(modeConfig.placeholder)}" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner" />
+                  </div>
+                  <div id="modifiers" class="space-y-3">
+                    ${state.modifiers.map((value, index) => `
+                      <div class="flex gap-2">
+                        <input data-modifier="${index}" type="text" value="${escapeHtml(value)}" placeholder="Detail, e.g. city, employer, state" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono" />
+                        <button data-remove-mod="${index}" class="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">×</button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mt-5 pt-5 border-t border-slate-800">
+                  <button id="deepBtn" class="px-3 py-2 rounded-lg border font-mono text-[10px] uppercase tracking-widest ${state.includeDeep ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300' : 'bg-slate-950 border-slate-700 text-slate-400'}">${state.includeDeep ? '✓ Deep Included' : '+ Include Deep'}</button>
+                  <button id="longBtn" class="px-3 py-2 rounded-lg border font-mono text-[10px] uppercase tracking-widest ${state.includeLong ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-slate-950 border-slate-700 text-slate-400'}">${state.includeLong ? '✓ Long Shot Included' : '+ Include Long Shot'}</button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-5 border-t border-slate-800 mt-5">
+                  <button id="addModBtn" class="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">+ Add Detail</button>
+                  <button id="buildBtn" class="px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">${config.button}</button>
+                </div>
+
+                ${resultHtml()}
+              </div>
+            </section>
+          </section>
+        `;
+
+        attachEvents();
+      }
+
+      function toolButton(id, title, desc) {
+        const active = state.tool === id;
+        return `
+          <button data-tool="${id}" class="text-left rounded-2xl border p-4 ${active ? 'border-cyan-500/40 bg-cyan-500/10' : 'border-slate-800 bg-slate-900/50'}">
+            <div class="font-mono text-[10px] tracking-[0.18em] uppercase ${active ? 'text-cyan-300' : 'text-slate-500'} mb-2">${active ? 'Active' : 'Open'}</div>
+            <div class="text-white font-bold mb-1">${title}</div>
+            <div class="text-xs text-slate-400 leading-relaxed">${desc}</div>
+          </button>`;
+      }
+
+      function attachEvents() {
+        const engineSelect = document.getElementById('engineSelect');
+        engineSelect.value = state.engine;
+        engineSelect.addEventListener('change', event => { state.engine = event.target.value; render(); });
+
+        document.querySelectorAll('[data-tool]').forEach(button => button.addEventListener('click', () => switchTool(button.dataset.tool)));
+        document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => switchMode(button.dataset.mode)));
+        document.getElementById('addModBtn').addEventListener('click', addModifier);
+        document.getElementById('deepBtn').addEventListener('click', () => { state.includeDeep = !state.includeDeep; render(); });
+        document.getElementById('longBtn').addEventListener('click', () => { state.includeLong = !state.includeLong; render(); });
+        document.getElementById('buildBtn').addEventListener('click', buildResults);
+        document.getElementById('mainInput').addEventListener('keydown', event => { if (event.key === 'Enter') buildResults(); });
+
+        document.querySelectorAll('[data-remove-mod]').forEach(button => button.addEventListener('click', () => removeModifier(Number(button.dataset.removeMod))));
+        document.querySelectorAll('[data-modifier]').forEach(input => {
+          input.addEventListener('input', event => { state.modifiers[Number(input.dataset.modifier)] = event.target.value; });
+          input.addEventListener('keydown', event => { if (event.key === 'Enter') buildResults(); });
+        });
+
+        const copyAllBtn = document.getElementById('copyAllBtn');
+        if (copyAllBtn) copyAllBtn.addEventListener('click', () => copyText(state.results.join('\n'), copyAllBtn));
+
+        document.querySelectorAll('[data-copy-index]').forEach(button => {
+          button.addEventListener('click', () => copyText(state.results[Number(button.dataset.copyIndex)], button));
+        });
+      }
+
+      window.addEventListener('error', function (event) {
+        app.innerHTML = '<div class="premium-card rounded-2xl p-6 text-slate-200"><div class="text-red-400 font-bold mb-2">Tool error caught.</div><div class="text-sm text-slate-400">' + escapeHtml(event.message || 'Unknown script error') + '</div></div>';
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
