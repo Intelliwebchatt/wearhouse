@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "/tools.html"
+  to = "/tools-fixed.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools-fixed.html"
+  status = 200
+  force = true
