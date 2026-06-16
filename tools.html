@@ -465,8 +465,9 @@
       const generateDorks = () => {
         if (!target.trim()) return;
         const quote = (str) => (!str ? '' : (str.startsWith('"') && str.endsWith('"')) ? str : `"${str}"`);
-        const t_raw = target.replace(/(^"|"$)/g, '');
-        const t_q = quote(target);
+        // Templates already wrap {t_q} in quotes, so t_q must be the RAW (unquoted) value.
+        const t_raw = target.trim().replace(/(^"|"$)/g, '');
+        const t_q = t_raw;
         const mods = modifiers.map(m => m.trim()).filter(Boolean).map(quote).join(' ');
 
         const results = buildTieredQueries(DORKS[dorkType], { t_q, t_raw, mods });
@@ -690,7 +691,7 @@
                   value={handle}
                   onChange={(e) => setHandle(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && generateSearches()}
-                  placeholder="Handle (e.g. rydermccoy or @rydermccoy)"
+                  placeholder="Handle (e.g. jsmith or @jsmith)"
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
                 />
               </div>
