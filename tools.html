@@ -1,1005 +1,1313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Research Tools | Signal & Trace</title>
-  <meta name="description" content="Use Signal & Trace research tools to build targeted dorks, handle searches, and email or domain pivot queries for verification and OSINT work." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Query Builder | Signal &amp; Trace</title>
+<meta name="description" content="Build focused, engine-aware searches for verification and public-record research with the Operator's Logic method.">
+<link rel="canonical" href="https://lockhartinv.netlify.app/tools">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Research Query Builder | Signal &amp; Trace">
+<meta property="og:description" content="Turn one identifier into focused searches for verification, public records, and source discovery.">
+<meta property="og:url" content="https://lockhartinv.netlify.app/tools">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b1120;
+    --surface: #111827;
+    --surface-raised: #162033;
+    --surface-soft: #0f172a;
+    --border: #263449;
+    --border-strong: #3a4a63;
+    --text: #e7edf6;
+    --muted: #9aa9bd;
+    --soft: #74859d;
+    --blue: #3b82f6;
+    --blue-hover: #60a5fa;
+    --blue-soft: rgba(59, 130, 246, 0.12);
+    --blue-border: rgba(96, 165, 250, 0.38);
+    --danger: #fca5a5;
+    --radius: 10px;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['"IBM Plex Mono"', 'monospace'],
-            sans: ['system-ui', 'sans-serif'],
-            display: ['"Orbitron"', 'system-ui', 'sans-serif'],
-          },
-          boxShadow: {
-            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
-          }
-        }
-      }
-    }
-  </script>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  [hidden] { display: none !important; }
+  :focus-visible {
+    outline: 2px solid var(--blue-hover);
+    outline-offset: 2px;
+  }
+  ::selection { background: rgba(59, 130, 246, 0.35); }
 
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  /* Navigation */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11, 17, 32, 0.94);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-in {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 11px; min-width: 0; }
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--blue);
+    color: #07101f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .brand-name {
+    color: #f5f8fc;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .brand-name span { color: var(--blue-hover); }
+  .nav-links { display: flex; align-items: center; gap: 26px; }
+  .nav-links a {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .nav-links a:hover,
+  .nav-links a.on { color: #f4f7fb; }
+  .nav-links a.on { position: relative; }
+  .nav-links a.on::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -22px;
+    height: 2px;
+    background: var(--blue);
+  }
+  .burger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+  }
+  .mnav {
+    padding: 6px 20px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .mnav a {
+    display: block;
+    padding: 11px 8px;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .mnav a:hover,
+  .mnav a.on { color: var(--text); background: var(--surface); }
 
-  <style>
-    body { background-color: #020617; color: #cbd5e1; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-    .animate-dropdown { animation: slideDown 0.22s ease-out forwards; }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  /* Intro */
+  .hero { border-bottom: 1px solid var(--border); }
+  .hero-in { padding: 42px 0 38px; }
+  .kicker {
+    margin: 0 0 10px;
+    color: var(--blue-hover);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: clamp(34px, 5vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+  .lead {
+    max-width: 700px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  main { padding: 34px 0 60px; }
+
+  .responsible-note {
+    margin: 0 0 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--blue-border);
+    border-radius: var(--radius);
+    background: var(--blue-soft);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .responsible-note strong { color: var(--text); }
+
+  /* Builder */
+  .panel {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  #tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: thin;
+  }
+  .tab {
+    position: relative;
+    flex: 0 0 auto;
+    padding: 16px 13px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--soft);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+  .tab:hover { color: var(--text); }
+  .tab-on { color: #f5f8fc; }
+  .tab-on::after {
+    content: "";
+    position: absolute;
+    left: 13px;
+    right: 13px;
+    bottom: -1px;
+    height: 2px;
+    background: var(--blue);
+  }
+  .body { padding: 26px; }
+  #hint {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .flabel,
+  .section-label {
+    display: block;
+    margin: 0 0 8px;
+    color: #dce5f1;
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .sub { color: var(--soft); font-weight: 400; }
+  .in-row { display: flex; gap: 10px; }
+  input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface-soft);
+    padding: 12px 14px;
+    color: #f1f5f9;
+    font-size: 15px;
+  }
+  input[type="text"]::placeholder { color: #60718a; }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--blue-hover);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  .build {
+    min-width: 142px;
+    border: 1px solid var(--blue);
+    border-radius: var(--radius);
+    background: var(--blue);
+    padding: 12px 18px;
+    color: #07101f;
+    font-size: 13px;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+  .build:hover { border-color: var(--blue-hover); background: var(--blue-hover); }
+
+  .mods { margin-top: 17px; }
+  .mods-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .mods-head .flabel { margin: 0; }
+  .text-btn {
+    border: 0;
+    background: transparent;
+    padding: 5px 0;
+    color: var(--blue-hover);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .text-btn:hover { color: #bfdbfe; }
+  #modsEmpty { margin: 5px 0 0; color: var(--soft); font-size: 12px; }
+  #mods { margin-top: 10px; }
+  .mod-row { display: flex; gap: 8px; margin-top: 8px; }
+  .mod-input { font-family: var(--sans); font-size: 13px !important; padding: 10px 12px !important; }
+  .mod-x {
+    width: 42px;
+    flex: 0 0 42px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--soft);
+    font-size: 17px;
+    line-height: 1;
+  }
+  .mod-x:hover { border-color: #7f1d1d; color: var(--danger); }
+
+  .settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+  .settings-block { min-width: 0; }
+  #engines,
+  .toggles { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip {
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--surface-soft);
+    padding: 8px 10px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .chip:hover { border-color: #52637c; color: var(--text); }
+  .chip-on {
+    border-color: var(--blue-border);
+    background: var(--blue-soft);
+    color: #bfdbfe;
+  }
+  #engNote,
+  #buildNote {
+    margin: 9px 0 0;
+    color: var(--soft);
+    font-size: 12px;
+  }
+  #buildNote.error { color: var(--danger); }
+  .guide-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .legend-btn { padding: 4px 0; }
+  #legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+    margin-top: 13px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-soft);
+  }
+  #legend .row { display: grid; grid-template-columns: minmax(112px, auto) 1fr; gap: 10px; font-size: 12px; }
+  #legend .op { color: #bfdbfe; font-family: var(--mono); }
+  #legend .meaning { color: var(--soft); }
+
+  /* Results */
+  #results { margin-top: 0; }
+  .res-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 28px;
+    padding: 22px 0 12px;
+    border-top: 1px solid var(--border);
+  }
+  .res-title { margin: 0; color: #dce5f1; font-size: 14px; font-weight: 700; }
+  .res-head-right { display: flex; align-items: center; gap: 10px; }
+  .count { color: var(--soft); font-size: 12px; }
+  .res-rows { border-top: 1px solid var(--border); }
+  .res-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .res-q {
+    color: #cbd8e8;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    user-select: text;
+  }
+  .res-acts { display: flex; gap: 7px; }
+  .action {
+    min-width: 58px;
+    border: 1px solid var(--border-strong);
+    border-radius: 7px;
+    background: transparent;
+    padding: 7px 10px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .action:hover { border-color: var(--blue-border); color: #bfdbfe; }
+  .action.primary { border-color: var(--blue-border); background: var(--blue-soft); color: #bfdbfe; }
+  .action.ok { border-color: var(--blue-border); background: var(--blue-soft); color: #dbeafe; }
+
+  footer { border-top: 1px solid var(--border); }
+  .foot-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 0;
+    color: var(--soft);
+    font-size: 12px;
+  }
+  .foot-brand { color: var(--muted); font-weight: 700; }
+  .foot-note { max-width: 560px; text-align: right; }
+
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+    .burger { display: grid; }
+    .settings { grid-template-columns: 1fr; gap: 19px; }
+    .guide-row { justify-content: flex-start; }
+  }
+  @media (max-width: 640px) {
+    .wrap { width: min(100% - 28px, 1080px); }
+    .hero-in { padding: 32px 0 30px; }
+    .lead { font-size: 15px; }
+    main { padding-top: 22px; }
+    #tabs { padding: 0 8px; }
+    .tab { padding-left: 10px; padding-right: 10px; }
+    .tab-on::after { left: 10px; right: 10px; }
+    .body { padding: 19px 16px; }
+    .in-row { flex-direction: column; }
+    .build { width: 100%; }
+    #legend { grid-template-columns: 1fr; }
+    .res-head { align-items: flex-start; }
+    .res-head-right { flex-wrap: wrap; justify-content: flex-end; }
+    .res-row { grid-template-columns: 1fr; gap: 11px; }
+    .res-acts { justify-content: flex-end; }
+    .foot-in { align-items: flex-start; flex-direction: column; }
+    .foot-note { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
 </head>
 <body>
-  <div id="root"></div>
+<nav aria-label="Primary navigation">
+  <div class="wrap nav-in">
+    <a href="/" class="brand" aria-label="Signal and Trace home">
+      <span class="brand-mark" aria-hidden="true">ST</span>
+      <span class="brand-name">Signal <span>&amp; Trace</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/tools" class="on" aria-current="page">Tools</a>
+      <a href="/blog">Blog</a>
+      <a href="/case-reviews">Case Files</a>
+      <a href="/ai-workflows">Workflows</a>
+      <a href="/about">About</a>
+    </div>
+    <button class="burger" id="burger" type="button" aria-label="Open navigation" aria-controls="mnav" aria-expanded="false">
+      <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+  </div>
+  <div class="mnav" id="mnav" hidden>
+    <a href="/">Home</a>
+    <a href="/tools" class="on" aria-current="page">Tools</a>
+    <a href="/blog">Blog</a>
+    <a href="/case-reviews">Case Files</a>
+    <a href="/ai-workflows">Workflows</a>
+    <a href="/about">About</a>
+  </div>
+</nav>
 
-  <script type="text/babel">
-    const { useState } = React;
+<header class="hero">
+  <div class="wrap hero-in">
+    <p class="kicker">The Operator's Logic method</p>
+    <h1>Research Query Builder</h1>
+    <p class="lead">Turn one identifier into focused searches for verification, public records, and source discovery.</p>
+  </div>
+</header>
 
-    const NAV_ITEMS = [
-      { label: 'HOME', href: 'index.html' },
-      { label: 'TOOLS', href: 'tools.html' },
-      { label: 'BLOG', href: 'blog.html' },
-      { label: 'RESOURCES', href: 'resources.html' },
-      { label: 'ABOUT', href: 'about.html' },
-    ];
+<main>
+  <div class="wrap">
+    <div class="responsible-note" role="note">
+      <strong>Use public sources responsibly.</strong> Search only information you are lawfully allowed to access. Do not use this tool to harass people, expose private information, or access accounts and systems.
+    </div>
+    <section class="panel" aria-labelledby="builderHeading">
+      <h2 class="sr-only" id="builderHeading">Build search queries</h2>
+      <div id="tabs" role="tablist" aria-label="Identifier type"></div>
+      <div class="body" id="builderPanel" role="tabpanel">
+        <p id="hint"></p>
 
-    const ENGINES = {
-      google: 'https://www.google.com/search?q=',
-      ddg: 'https://duckduckgo.com/?q=',
-      bing: 'https://www.bing.com/search?q=',
-      yandex: 'https://yandex.com/search/?text='
+        <label class="flabel" id="inLabel" for="target"></label>
+        <div class="in-row">
+          <input type="text" id="target" autocomplete="off" spellcheck="false">
+          <button class="build" id="buildBtn" type="button">Build queries</button>
+        </div>
+
+        <div class="mods">
+          <div class="mods-head">
+            <label class="flabel">Modifiers <span class="sub">Optional AND terms</span></label>
+            <button class="text-btn" id="addMod" type="button">Add modifier</button>
+          </div>
+          <p id="modsEmpty">Add a location, employer, year, or another term to narrow every query.</p>
+          <div id="mods"></div>
+        </div>
+
+        <div class="settings">
+          <div class="settings-block">
+            <span class="section-label">Search engine</span>
+            <div id="engines" role="group" aria-label="Search engine"></div>
+            <p id="engNote"></p>
+          </div>
+          <div class="settings-block">
+            <span class="section-label">Query sets</span>
+            <div class="toggles">
+              <button class="chip" id="tDeep" type="button">Deep included</button>
+              <button class="chip" id="tLong" type="button">Include long shot</button>
+            </div>
+            <div class="guide-row">
+              <button class="text-btn legend-btn" id="legendBtn" type="button" aria-controls="legend" aria-expanded="false">Show operator guide</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="legend" hidden>
+          <div class="row"><span class="op">"exact phrase"</span><span class="meaning">Words together and in order</span></div>
+          <div class="row"><span class="op">site:domain.com</span><span class="meaning">Restrict results to one site</span></div>
+          <div class="row"><span class="op">-term</span><span class="meaning">Reduce results containing a term</span></div>
+          <div class="row"><span class="op" id="legendFile">filetype:pdf</span><span class="meaning">Restrict results by file type</span></div>
+          <div class="row"><span class="op" id="legendTitle">intitle:term</span><span class="meaning" id="legendTitleMeaning">Target a term in the page title</span></div>
+          <div class="row"><span class="op" id="legendUrl">inurl:term</span><span class="meaning" id="legendUrlMeaning">Target a term in the page address</span></div>
+          <div class="row"><span class="op" id="legendOr">A OR B</span><span class="meaning">Match either term</span></div>
+          <div class="row" id="legendDateRow"><span class="op">before: / after:</span><span class="meaning">Limit Google results by date</span></div>
+        </div>
+
+        <p id="buildNote" role="status" aria-live="polite"></p>
+        <div id="results" aria-live="polite"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="foot-brand">Signal &amp; Trace</div>
+    <div class="foot-note">Built with the Operator's Logic method. For lawful verification and public-record research.</div>
+  </div>
+</footer>
+
+<script>
+/* ================= QUERY PRIMITIVES ================= */
+const normalizeText = (value) => String(value == null ? '' : value)
+  .replace(/[\u201c\u201d]/g, '"')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const unquote = (value) => {
+  const s = normalizeText(value);
+  return s.length >= 2 && s.startsWith('"') && s.endsWith('"') ? s.slice(1, -1).trim() : s;
+};
+
+const phrase = (value) => {
+  const s = unquote(value).replace(/"/g, '').trim();
+  return s ? '"' + s + '"' : '';
+};
+
+const modifierTerm = (value) => {
+  const s = normalizeText(value);
+  if (!s) return '';
+  if (/^"[^"\n]+"$/.test(s)) return phrase(s);
+  if (!/\s/.test(s) || /^(?:site:|-site:|filetype:|intitle:|inurl:|before:|after:)/i.test(s)) return s;
+  return phrase(s);
+};
+
+const buildMods = (mods) => (mods || []).map(modifierTerm).filter(Boolean).join(' ');
+
+const clean = (query) => String(query || '')
+  .replace(/\(\s*\)/g, '')
+  .replace(/\(\s*(?:OR|\|)\s+/gi, '(')
+  .replace(/\s+(?:OR|\|)\s*\)/gi, ')')
+  .replace(/\bOR\s+OR\b/gi, 'OR')
+  .replace(/\|\s*\|/g, '|')
+  .replace(/\s{2,}/g, ' ')
+  .replace(/\s+\)/g, ')')
+  .replace(/\(\s+/g, '(')
+  .trim();
+
+const finalize = (templates, replacements, modString) => {
+  const output = templates.map((template) => {
+    let query = template;
+    Object.keys(replacements).forEach((key) => {
+      query = query.split('{' + key + '}').join(replacements[key]);
+    });
+    if (modString) query += ' ' + modString;
+    return clean(query);
+  }).filter((query) => query && !/\{[a-z]+\}/i.test(query));
+  return Array.from(new Set(output));
+};
+
+const normalizeDomain = (value) => {
+  let s = unquote(value).toLowerCase();
+  s = s.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '').replace(/^\/\//, '');
+  s = s.split(/[/?#]/)[0].replace(/:\d+$/, '').replace(/^www\./, '').replace(/\.$/, '');
+  if (/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9-]{2,63}$/i.test(s)) return s;
+  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(s) && s.split('.').every((part) => Number(part) <= 255)) return s;
+  return '';
+};
+
+/* input classifiers */
+const nameRep = (full) => {
+  const value = unquote(full);
+  const parts = value.split(/\s+/).filter(Boolean);
+  const first = parts[0] || '';
+  const last = parts.length > 1 ? parts[parts.length - 1] : '';
+  const reverse = parts.length > 1 ? phrase(last + ', ' + parts.slice(0, -1).join(' ')) : phrase(value);
+  const loose = last ? first + ' ' + last : phrase(value);
+  return { full: phrase(value), rev: reverse, loose: loose };
+};
+
+const phoneFormats = (raw) => {
+  const digits = String(raw).replace(/\D/g, '');
+  const ten = digits.length === 11 && digits[0] === '1' ? digits.slice(1) : digits;
+  if (ten.length !== 10) return null;
+  const area = ten.slice(0, 3);
+  const exchange = ten.slice(3, 6);
+  const line = ten.slice(6);
+  return Array.from(new Set([
+    '(' + area + ') ' + exchange + '-' + line,
+    area + '-' + exchange + '-' + line,
+    area + '.' + exchange + '.' + line,
+    area + ' ' + exchange + ' ' + line,
+    area + exchange + line,
+    '+1 ' + area + ' ' + exchange + ' ' + line
+  ]));
+};
+
+/* ================= BUILDERS ================= */
+const NAME_T = {
+  core: [
+    '{full}',
+    '{full} (site:linkedin.com OR site:facebook.com OR site:instagram.com OR site:x.com)',
+    '{full} ("email" OR "contact" OR "phone" OR "@")',
+    '({full} OR {rev}) ("directory" OR "staff" OR "team" OR "profile" OR "bio")'
+  ],
+  deep: [
+    '{full} (filetype:pdf OR filetype:doc OR filetype:docx) ("resume" OR "cv" OR "bio")',
+    '{full} (site:.gov OR site:.us) ("court" OR "case" OR "docket" OR "record" OR "license" OR "permit")',
+    '{loose}',
+    '{full} ("obituary" OR "wedding" OR "graduated" OR "survived by")'
+  ],
+  longShot: [
+    '{full} -site:linkedin.com -site:facebook.com -site:instagram.com -site:x.com',
+    '{full} (site:archive.org OR site:loc.gov OR site:newspapers.com)',
+    '{full} ("meeting minutes" OR "public notice" OR "press release" OR "agenda")',
+    '{full} ("license" OR "registration" OR "professional profile")'
+  ]
+};
+
+const ADDR_T = {
+  core: [
+    '{address}',
+    '{address} (site:zillow.com OR site:realtor.com OR site:redfin.com OR site:trulia.com OR site:homes.com)',
+    '{address} ("property" OR "parcel" OR "permit" OR "assessment")',
+    '{address} (site:.gov OR site:.us) ("property" OR "parcel" OR "permit" OR "assessment")'
+  ],
+  deep: [
+    '{address} (site:.gov OR site:.us) ("assessor" OR "parcel" OR "tax" OR "deed" OR "zoning" OR "owner")',
+    '{address} ("LLC" OR "Inc" OR "registered agent" OR "business license")',
+    '{address} ("planning commission" OR "zoning board" OR "public notice" OR "meeting minutes")'
+  ],
+  longShot: [
+    '{address} (filetype:pdf OR filetype:xls OR filetype:xlsx OR filetype:csv)',
+    '{address} ("for sale" OR "for rent" OR "foreclosure" OR "eviction" OR "auction")',
+    '{address} (site:archive.org OR site:loc.gov)'
+  ]
+};
+
+const USER_T = {
+  core: [
+    '{handle}',
+    '"@{raw}"',
+    '{handle} (site:instagram.com OR site:x.com OR site:tiktok.com OR site:facebook.com)',
+    '{handle} (site:reddit.com OR site:github.com OR site:youtube.com OR site:twitch.tv)'
+  ],
+  deep: [
+    '{handle} (site:steamcommunity.com OR site:t.me OR site:discord.com OR site:linkedin.com)',
+    '{handle} ("profile" OR "member" OR "joined" OR "bio" OR "about me")',
+    'inurl:{raw} ("profile" OR "user" OR "@")'
+  ],
+  longShot: [
+    '{handle} -site:instagram.com -site:x.com -site:facebook.com -site:tiktok.com',
+    '{handle} (site:archive.org OR site:github.com OR site:medium.com)',
+    '{handle} ("formerly" OR "old username" OR "changed username" OR "contributor")'
+  ]
+};
+
+const emailBuild = (raw) => {
+  const input = unquote(raw);
+  const fullEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+  if (fullEmail) {
+    const at = input.lastIndexOf('@');
+    const prefix = input.slice(0, at);
+    const domain = input.slice(at + 1).toLowerCase();
+    const email = phrase(input);
+    return {
+      core: [
+        email,
+        email + ' (site:linkedin.com OR site:github.com OR site:facebook.com OR site:x.com)',
+        email + ' ("contact" OR "directory" OR "team" OR "profile")',
+        phrase(prefix)
+      ],
+      deep: [
+        email + ' (filetype:pdf OR filetype:xls OR filetype:xlsx OR filetype:csv)',
+        email + ' (site:reddit.com OR site:medium.com OR site:disqus.com)',
+        'inurl:' + prefix + ' ("profile" OR "user")'
+      ],
+      longShot: [
+        email + ' (site:archive.org OR site:loc.gov OR site:sec.gov)',
+        '"' + prefix + '@" -' + domain,
+        email + ' ("speaker" OR "author" OR "conference" OR "public contact")'
+      ]
     };
+  }
 
-    const DORKS = {
-      people: {
-        core: [
-          '"{t_q}" {mods} (site:facebook.com OR site:instagram.com OR site:linkedin.com OR site:x.com)',
-          '"{t_q}" {mods} ("directory" OR "staff" OR "team" OR "alumni" OR "member")',
-          '"{t_q}" {mods} ("news" OR "article" OR "interview" OR "press")',
-          '"{t_q}" {mods} (filetype:pdf OR filetype:doc OR filetype:docx) ("resume" OR "cv" OR "bio" OR "contact")',
-          '"{t_q}" {mods} (site:.gov OR site:.us OR site:.org) ("court" OR "record" OR "permit")'
-        ],
-        deep: [
-          '"{t_q}" {mods} -site:facebook.com -site:twitter.com -site:instagram.com -site:linkedin.com -site:pinterest.com',
-          '"{t_q}" {mods} (site:youtube.com OR site:vimeo.com OR site:twitch.tv)',
-          '"{t_q}" {mods} (site:github.com OR site:reddit.com OR site:medium.com)'
-        ],
-        longShot: [
-          '"{t_q}" {mods} (site:pastebin.com OR site:scribd.com OR site:archive.org)',
-          'intitle:"index of" "{t_raw}" {mods} ("contacts" OR "staff" OR "directory" OR "emails")',
-          '"{t_q}" {mods} (site:drive.google.com OR site:docs.google.com OR site:s3.amazonaws.com)',
-          '"{t_q}" {mods} ("speaker" OR "agenda" OR "panel" OR "conference")',
-          '"{t_q}" {mods} ("username" OR "alias" OR "handle")'
-        ]
-      },
-
-      address: {
-        core: [
-          '"{t_q}" {mods} (site:zillow.com OR site:realtor.com OR site:redfin.com OR site:loopnet.com)',
-          '"{t_q}" {mods} ("LLC" OR "Inc" OR "Corporation" OR "Company")',
-          '"{t_q}" {mods} ("police" OR "incident" OR "news" OR "arrest" OR "fire")'
-        ],
-        deep: [
-          '"{t_q}" {mods} site:.gov (filetype:pdf OR filetype:xls OR filetype:xlsx) ("tax" OR "zoning" OR "owner")',
-          '"{t_q}" {mods} (site:courtlistener.com OR site:justia.com)',
-          '"{t_q}" {mods} (filetype:xls OR filetype:xlsx OR filetype:csv)'
-        ],
-        longShot: [
-          '"{t_q}" {mods} -site:zillow.com -site:realtor.com -site:redfin.com',
-          'intitle:"index of" "{t_raw}" {mods}',
-          '(site:s3.amazonaws.com OR site:drive.google.com OR site:docs.google.com) "{t_raw}" {mods}',
-          '"{t_q}" {mods} ("tenant" OR "lease" OR "auction" OR "code enforcement")',
-          '"{t_q}" {mods} ("map" OR "parcel" OR "assessor" OR "GIS")'
-        ]
-      },
-
-      other: {
-        core: [
-          '"{t_q}" {mods} ("contact" OR "support" OR "about us" OR "locations")',
-          '"{t_q}" {mods} ("review" OR "complaint" OR "scam" OR "fraud" OR "better business bureau")',
-          '"{t_q}" {mods} (site:linkedin.com OR site:indeed.com OR site:glassdoor.com)',
-          '"{t_q}" {mods} (filetype:pdf OR filetype:xls OR filetype:csv)'
-        ],
-        deep: [
-          '(site:.gov OR site:.edu) (filetype:pdf OR filetype:xlsx) "{t_q}" {mods}',
-          '"press release" ("fraud" OR "investigation" OR "lawsuit" OR "subpoena") "{t_q}" {mods}',
-          'site:{t_raw} (filetype:pdf OR filetype:doc OR filetype:docx OR filetype:xlsx)'
-        ],
-        longShot: [
-          '"{t_q}" (filetype:pdf OR filetype:doc OR filetype:docx) ("internal use only" OR "confidential")',
-          'intitle:"index of" site:{t_raw}',
-          'site:{t_raw} ("pricing" OR "proposal" OR "statement of work" OR "capabilities")',
-          '"{t_q}" ("RFP" OR "bid" OR "vendor" OR "contract")',
-          '"{t_q}" (site:pastebin.com OR site:scribd.com OR site:archive.org)'
-        ]
-      }
+  const domain = normalizeDomain(input);
+  if (domain) {
+    return {
+      core: [
+        '"@' + domain + '"',
+        'site:' + domain + ' ("contact" OR "team" OR "staff" OR "directory" OR "email")',
+        'site:' + domain + ' (filetype:pdf OR filetype:doc OR filetype:csv)',
+        '"@' + domain + '" ("email" OR "contact")'
+      ],
+      deep: [
+        '"@' + domain + '" (filetype:xls OR filetype:xlsx OR filetype:csv OR filetype:pdf)',
+        'site:' + domain + ' ("support" OR "press" OR "leadership" OR "careers" OR "about")',
+        'site:' + domain + ' ("privacy" OR "terms" OR "security" OR "accessibility")'
+      ],
+      longShot: [
+        '"@' + domain + '" (site:archive.org OR site:sec.gov OR site:loc.gov)',
+        'site:' + domain + ' ("history" OR "leadership" OR "locations" OR "partners")'
+      ]
     };
+  }
 
-    const HANDLE_SEARCHES = {
-      social: {
-        core: [
-          '"{h}" (site:instagram.com OR site:x.com OR site:tiktok.com)',
-          '"{h}" site:facebook.com',
-          '"{h}" "@{h}"'
-        ],
-        deep: [
-          '"{h}" {mods} site:instagram.com OR site:x.com',
-          '"{h}" site:linkedin.com OR site:threads.net'
-        ],
-        longShot: [
-          '"{h}" {mods} -site:instagram.com -site:x.com -site:facebook.com -site:tiktok.com -site:linkedin.com',
-          '"{h}" ("old username" OR "formerly" OR "aka")'
-        ]
-      },
+  const prefix = input.replace(/\s+/g, '');
+  return {
+    core: [
+      '"' + prefix + '@"',
+      phrase(prefix) + ' (gmail.com OR outlook.com OR yahoo.com OR "proton.me" OR icloud.com)',
+      phrase(prefix) + ' ("contact" OR "profile" OR "user")'
+    ],
+    deep: [
+      phrase(prefix) + ' (site:instagram.com OR site:x.com OR site:reddit.com OR site:github.com)',
+      'inurl:' + prefix + ' ("profile" OR "user")'
+    ],
+    longShot: [
+      phrase(prefix) + ' (site:archive.org OR site:github.com OR site:medium.com)',
+      phrase(prefix) + ' (filetype:pdf OR filetype:doc OR filetype:csv) ("contact" OR "directory")'
+    ]
+  };
+};
 
-      forums: {
-        core: [
-          '"{h}" (site:reddit.com OR site:quora.com)',
-          '"{h}" ("profile" OR "user" OR "member" OR "joined")'
-        ],
-        deep: [
-          '"{h}" (site:steamcommunity.com OR site:xbox.com OR site:playstation.com)',
-          '"{h}" (site:discord.com OR site:twitch.tv)'
-        ],
-        longShot: [
-          '"{h}" {mods} -site:reddit.com -site:quora.com -site:steamcommunity.com',
-          '"{h}" (site:pastebin.com OR site:ghostbin.com OR site:archive.org)'
-        ]
-      },
-
-      dev: {
-        core: [
-          '"{h}" (site:youtube.com OR site:twitch.tv OR site:github.com)',
-          '"{h}" ("author" OR "creator" OR "streamer" OR "channel" OR "developer")'
-        ],
-        deep: [
-          '"{h}" (site:medium.com OR site:dev.to OR site:hashnode.com)',
-          '"{h}" site:gitlab.com OR site:stackoverflow.com'
-        ],
-        longShot: [
-          '"{h}" "commit" -site:github.com',
-          'inurl:"{h}" -site:github.com -site:twitter.com -site:instagram.com'
-        ]
-      },
-
-      broad: {
-        core: [
-          '"{h}"',
-          '"{h}" ("contact" OR "email" OR "reach me")',
-          '"{h}" (filetype:pdf OR filetype:txt OR filetype:csv)'
-        ],
-        deep: [
-          '"{h}" {mods}',
-          '"{h}" ("username" OR "alias" OR "handle")'
-        ],
-        longShot: [
-          '"{h}" (site:pastebin.com OR site:trello.com OR site:ghostbin.com)',
-          'inurl:"{h}" -site:github.com -site:twitter.com -site:instagram.com'
-        ]
-      }
+const domainBuild = (raw) => {
+  const input = unquote(raw);
+  const domain = normalizeDomain(input);
+  if (domain) {
+    return {
+      core: [
+        'site:' + domain + ' ("about" OR "team" OR "leadership" OR "staff" OR "contact")',
+        'site:' + domain + ' (filetype:pdf OR filetype:doc OR filetype:xlsx OR filetype:pptx)',
+        '"@' + domain + '"',
+        '-site:' + domain + ' "' + domain + '"'
+      ],
+      deep: [
+        'site:' + domain + ' ("privacy" OR "terms" OR "security" OR "accessibility")',
+        'site:' + domain + ' ("history" OR "leadership" OR "locations" OR "partners")',
+        '"' + domain + '" ("competitor" OR "alternative" OR "similar")'
+      ],
+      longShot: [
+        'site:' + domain + ' (filetype:pdf OR filetype:xls OR filetype:csv OR filetype:pptx)',
+        'site:' + domain + ' ("annual report" OR "audit" OR "policy" OR "meeting minutes")',
+        '"' + domain + '" (site:archive.org OR site:sec.gov OR site:courtlistener.com)'
+      ]
     };
+  }
 
-    const EMAIL_SEARCHES = {
-      exact: {
-        core: [
-          '"{v}"',
-          '"{v}" ("contact" OR "directory" OR "team" OR "staff")',
-          '"{v}" (site:linkedin.com OR site:facebook.com OR site:github.com)'
-        ],
-        deep: [
-          '"{v}" (filetype:pdf OR filetype:xls OR filetype:csv)',
-          '"{v}" site:reddit.com OR site:medium.com'
-        ],
-        longShot: [
-          '"{v}" (site:pastebin.com OR site:trello.com OR site:scribd.com)',
-          '"{v}" ("speaker" OR "agenda" OR "conference" OR "panel")'
-        ]
-      },
+  const organization = phrase(input);
+  return {
+    core: [
+      organization + ' ("review" OR "complaint" OR "scam" OR "lawsuit" OR "fraud" OR "BBB")',
+      organization + ' (site:linkedin.com OR site:glassdoor.com OR site:indeed.com)',
+      organization + ' ("contact" OR "headquarters" OR "leadership" OR "owner" OR "CEO")'
+    ],
+    deep: [
+      organization + ' (filetype:pdf OR filetype:pptx) ("proposal" OR "capabilities" OR "annual report" OR "statement of work")',
+      organization + ' ("press release" OR "investigation" OR "subpoena" OR "settlement")',
+      organization + ' (site:sec.gov OR site:.gov) ("filing" OR "registration" OR "violation")'
+    ],
+    longShot: [
+      organization + ' (site:archive.org OR site:sec.gov OR site:courtlistener.com)',
+      organization + ' ("RFP" OR "bid" OR "vendor" OR "contract" OR "purchase order")',
+      organization + ' ("audit" OR "meeting minutes" OR "public notice" OR "annual report")'
+    ]
+  };
+};
 
-      prefix: {
-        core: [
-          '"{v}"',
-          '"{v}" (gmail.com OR outlook.com OR yahoo.com OR icloud.com OR protonmail.com)',
-          '"{v}" ("contact" OR "profile" OR "user")'
-        ],
-        deep: [
-          '"{v}" (site:instagram.com OR site:x.com OR site:reddit.com)',
-          '"{v}" {mods}'
-        ],
-        longShot: [
-          '"{v}" (site:pastebin.com OR site:scribd.com OR site:archive.org)',
-          '"{v}" (filetype:pdf OR filetype:txt OR filetype:csv)'
-        ]
-      },
+const phoneBuild = (raw) => {
+  const formats = phoneFormats(raw);
+  let block;
+  let note = '';
+  if (formats) {
+    block = '(' + formats.map(phrase).join(' OR ') + ')';
+  } else {
+    const digits = String(raw).replace(/\D/g, '');
+    const versions = Array.from(new Set([digits, normalizeText(raw)].filter(Boolean).map(phrase)));
+    block = versions.length > 1 ? '(' + versions.join(' OR ') + ')' : (versions[0] || '');
+    note = 'This is not a 10-digit US or Canada number. The builder used the raw digits instead.';
+  }
+  return {
+    note: note,
+    core: [
+      block,
+      block + ' ("business" OR "contact" OR "directory" OR "public notice")',
+      block + ' ("spam" OR "scam" OR "robocall" OR "complaint")'
+    ],
+    deep: [
+      block + ' (site:.gov OR site:.us OR site:.org)',
+      block + ' ("resume" OR "cv" OR "vcard" OR "signature")',
+      block + ' (filetype:pdf OR filetype:doc OR filetype:xls)'
+    ],
+    longShot: [
+      block + ' (site:archive.org OR site:loc.gov)',
+      block + ' (filetype:pdf OR filetype:doc OR filetype:csv) ("phone" OR "contact" OR "directory")',
+      block + ' ("spam" OR "scam" OR "robocall" OR "complaint")'
+    ]
+  };
+};
 
-      domain: {
-        core: [
-          '"@{v}"',
-          'site:{v} ("contact" OR "team" OR "staff" OR "about" OR "directory")',
-          'site:{v} (filetype:pdf OR filetype:doc OR filetype:csv)'
-        ],
-        deep: [
-          '"@{v}" {mods}',
-          'site:{v} ("support" OR "press" OR "leadership" OR "careers")'
-        ],
-        longShot: [
-          'site:{v} intitle:"index of"',
-          'site:{v} ("statement of work" OR "proposal" OR "capabilities" OR "vendor")',
-          '"@{v}" (site:pastebin.com OR site:scribd.com OR site:archive.org)'
-        ]
-      }
+const CATS = [
+  {
+    id: 'name', label: 'Name', input: 'Full name', placeholder: 'Example: John A Doe',
+    hint: 'Builds exact, reversed-name, directory, document, government, and open-web passes.',
+    run: (value, mods) => {
+      const replacements = nameRep(value);
+      const modString = buildMods(mods);
+      return {
+        core: finalize(NAME_T.core, replacements, modString),
+        deep: finalize(NAME_T.deep, replacements, modString),
+        longShot: finalize(NAME_T.longShot, replacements, modString)
+      };
+    }
+  },
+  {
+    id: 'address', label: 'Address', input: 'Street address', placeholder: 'Example: 123 Main Street',
+    hint: 'Builds property, resident, assessor, business, incident, and document searches.',
+    run: (value, mods) => {
+      const replacements = { address: phrase(value) };
+      const modString = buildMods(mods);
+      return {
+        core: finalize(ADDR_T.core, replacements, modString),
+        deep: finalize(ADDR_T.deep, replacements, modString),
+        longShot: finalize(ADDR_T.longShot, replacements, modString)
+      };
+    }
+  },
+  {
+    id: 'username', label: 'Username', input: 'Handle or username', placeholder: 'Example: operators_logic',
+    hint: 'Builds social, forum, profile-URL, archive, and contact searches from one handle.',
+    run: (value, mods) => {
+      const raw = unquote(value).replace(/^@/, '').trim();
+      const replacements = { handle: phrase(raw), raw: raw };
+      const modString = buildMods(mods);
+      return {
+        core: finalize(USER_T.core, replacements, modString),
+        deep: finalize(USER_T.deep, replacements, modString),
+        longShot: finalize(USER_T.longShot, replacements, modString)
+      };
+    }
+  },
+  {
+    id: 'email', label: 'Email', input: 'Email, prefix, or domain', placeholder: 'Example: jdoe@acme.com, jdoe, or acme.com',
+    hint: 'Detects a full email, bare prefix, domain, or pasted domain URL and builds the appropriate set.',
+    validate: (value) => {
+      const input = unquote(value);
+      return input.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)
+        ? 'Enter a complete email address with one @ symbol and a valid domain.'
+        : '';
+    },
+    run: (value, mods) => {
+      const result = emailBuild(value);
+      const modString = buildMods(mods);
+      return {
+        core: finalize(result.core, {}, modString),
+        deep: finalize(result.deep, {}, modString),
+        longShot: finalize(result.longShot, {}, modString)
+      };
+    }
+  },
+  {
+    id: 'phone', label: 'Phone', input: 'Phone number', placeholder: 'Example: (205) 555-1234',
+    hint: 'Expands a US or Canada number into six common formats and searches them together.',
+    run: (value, mods) => {
+      const result = phoneBuild(value);
+      const modString = buildMods(mods);
+      return {
+        note: result.note,
+        core: finalize(result.core, {}, modString),
+        deep: finalize(result.deep, {}, modString),
+        longShot: finalize(result.longShot, {}, modString)
+      };
+    }
+  },
+  {
+    id: 'domain', label: 'Domain or org', input: 'Domain or organization', placeholder: 'Example: acme.com or Acme Holdings LLC',
+    hint: 'A domain builds site and document searches. An organization name builds reputation, filing, and mention searches.',
+    run: (value, mods) => {
+      const result = domainBuild(value);
+      const modString = buildMods(mods);
+      return {
+        core: finalize(result.core, {}, modString),
+        deep: finalize(result.deep, {}, modString),
+        longShot: finalize(result.longShot, {}, modString)
+      };
+    }
+  }
+];
+
+/* ================= ENGINE ADAPTERS ================= */
+const ENGINES = {
+  google: {
+    url: 'https://www.google.com/search?q=',
+    label: 'Google',
+    note: 'Uses Google syntax. Some advanced operators can still be interpreted inconsistently.'
+  },
+  bing: {
+    url: 'https://www.bing.com/search?q=',
+    label: 'Bing',
+    note: 'Uses Bing syntax and converts intext: to the documented inbody: operator.'
+  },
+  ddg: {
+    url: 'https://duckduckgo.com/?q=',
+    label: 'DuckDuckGo',
+    note: 'Uses documented DuckDuckGo syntax. Complex OR groups are simplified for compatibility.'
+  },
+  yandex: {
+    url: 'https://yandex.com/search/?text=',
+    label: 'Yandex',
+    note: 'Converts OR to | and filetype: to mime:. Unsupported constraints are softened.'
+  }
+};
+
+const yandexMime = (extension) => {
+  const ext = String(extension).toLowerCase();
+  const map = { docx: 'doc', xlsx: 'xls', pptx: 'ppt' };
+  const supported = ['pdf', 'xls', 'ods', 'rtf', 'ppt', 'odp', 'swf', 'odt', 'odg', 'doc'];
+  const converted = map[ext] || ext;
+  return supported.includes(converted) ? 'mime:' + converted : phrase(ext);
+};
+
+const adaptQuery = (query, engine) => {
+  let output = clean(query);
+  if (engine === 'google') return output;
+
+  output = output.replace(/\b([\w.-]+)\s+AROUND\(\d+\)\s+([\w.-]+)\b/gi, '$1 $2');
+
+  if (engine === 'bing') {
+    return clean(output
+      .replace(/\bintitle:"([^"]+)"/gi, (match, words) => words.split(/\s+/).map((word) => 'intitle:' + word).join(' '))
+      .replace(/\bintext:/gi, 'inbody:')
+      .replace(/\binurl:/gi, '')
+      .replace(/\brelated:([^\s)]+)/gi, '"$1"'));
+  }
+
+  if (engine === 'ddg') {
+    return clean(output
+      .replace(/\bintext:/gi, '')
+      .replace(/\brelated:([^\s)]+)/gi, '"$1"')
+      .replace(/\s+OR\s+/gi, ' '));
+  }
+
+  if (engine === 'yandex') {
+    return clean(output
+      .replace(/\bfiletype:([a-z0-9]+)/gi, (match, ext) => yandexMime(ext))
+      .replace(/\bintitle:/gi, '')
+      .replace(/\bintext:/gi, '')
+      .replace(/\binurl:([^\s)]+)/gi, 'url:*$1*')
+      .replace(/\brelated:([^\s)]+)/gi, '"$1"')
+      .replace(/\s+OR\s+/gi, ' | '));
+  }
+
+  return output;
+};
+
+/* ================= STATE AND RENDER ================= */
+const state = {
+  catId: 'name',
+  engine: 'google',
+  includeDeep: true,
+  includeLong: false,
+  result: null,
+  showHelp: false,
+  message: '',
+  messageType: ''
+};
+
+const $ = (selector, root) => (root || document).querySelector(selector);
+const el = (tag, className, text) => {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+};
+const cat = () => CATS.find((item) => item.id === state.catId);
+
+function currentMods() {
+  return Array.from(document.querySelectorAll('.mod-input')).map((input) => input.value);
+}
+
+function combined() {
+  if (!state.result) return [];
+  let all = state.result.core.slice();
+  if (state.includeDeep) all = all.concat(state.result.deep);
+  if (state.includeLong) all = all.concat(state.result.longShot);
+  const adapted = all.map((query) => adaptQuery(query, state.engine)).filter(Boolean);
+  return Array.from(new Set(adapted));
+}
+
+function setMessage(message, type) {
+  state.message = message || '';
+  state.messageType = type || '';
+  const host = $('#buildNote');
+  host.textContent = state.message;
+  host.className = state.messageType;
+}
+
+function renderTabs() {
+  const host = $('#tabs');
+  host.innerHTML = '';
+  CATS.forEach((item) => {
+    const selected = item.id === state.catId;
+    const button = el('button', 'tab' + (selected ? ' tab-on' : ''), item.label);
+    button.type = 'button';
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', String(selected));
+    button.setAttribute('aria-controls', 'builderPanel');
+    button.tabIndex = selected ? 0 : -1;
+    button.onclick = () => {
+      state.catId = item.id;
+      state.result = null;
+      setMessage('', '');
+      syncCat();
+      renderResults();
+      $('#target').focus();
     };
+    button.onkeydown = (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const index = CATS.findIndex((category) => category.id === item.id);
+      let next = index;
+      if (event.key === 'ArrowLeft') next = (index - 1 + CATS.length) % CATS.length;
+      if (event.key === 'ArrowRight') next = (index + 1) % CATS.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = CATS.length - 1;
+      state.catId = CATS[next].id;
+      state.result = null;
+      setMessage('', '');
+      syncCat();
+      renderResults();
+      const active = $('#tabs [aria-selected="true"]');
+      if (active) active.focus();
+    };
+    host.appendChild(button);
+  });
+}
 
-    function Navbar() {
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+function syncCat() {
+  renderTabs();
+  $('#hint').textContent = cat().hint;
+  $('#inLabel').textContent = cat().input;
+  $('#target').placeholder = cat().placeholder;
+}
 
-      return (
-        <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="index.html" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-glow">S</div>
-              <div>
-                <div className="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
-                <div className="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
-              </div>
-            </a>
+function renderEngines() {
+  const host = $('#engines');
+  host.innerHTML = '';
+  Object.keys(ENGINES).forEach((key) => {
+    const selected = key === state.engine;
+    const button = el('button', 'chip' + (selected ? ' chip-on' : ''), ENGINES[key].label);
+    button.type = 'button';
+    button.setAttribute('aria-pressed', String(selected));
+    button.onclick = () => {
+      state.engine = key;
+      renderEngines();
+      renderLegend();
+      renderResults();
+    };
+    host.appendChild(button);
+  });
+  $('#engNote').textContent = ENGINES[state.engine].note;
+}
 
-            <div className="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
-              {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={item.label === 'TOOLS' ? 'text-cyan-400' : 'hover:text-cyan-400 transition-colors'}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
+function renderToggles() {
+  const deep = $('#tDeep');
+  const long = $('#tLong');
+  deep.className = 'chip' + (state.includeDeep ? ' chip-on' : '');
+  deep.textContent = state.includeDeep ? 'Deep included' : 'Include deep';
+  deep.setAttribute('aria-pressed', String(state.includeDeep));
+  long.className = 'chip' + (state.includeLong ? ' chip-on' : '');
+  long.textContent = state.includeLong ? 'Long shot included' : 'Include long shot';
+  long.setAttribute('aria-pressed', String(state.includeLong));
+}
 
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-slate-400 hover:text-cyan-400 focus:outline-none transition-colors p-2"
-                aria-label="Toggle menu"
-              >
-                <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMobileMenuOpen ? (
-                    <path d="M6 18L18 6M6 6l12 12"></path>
-                  ) : (
-                    <path d="M4 6h16M4 12h16M4 18h16"></path>
-                  )}
-                </svg>
-              </button>
-            </div>
-          </div>
+function addMod(value) {
+  const list = $('#mods');
+  const row = el('div', 'mod-row');
+  const input = el('input', 'mod-input');
+  input.type = 'text';
+  input.placeholder = 'Example: Montgomery Alabama';
+  input.setAttribute('aria-label', 'Query modifier');
+  if (value) input.value = value;
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') build();
+  });
 
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1 shadow-glow">
-              {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="block px-3 py-3 rounded-lg font-mono text-xs font-semibold tracking-widest text-slate-300 hover:bg-slate-900 hover:text-cyan-400 transition-colors"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          )}
-        </nav>
-      );
+  const remove = el('button', 'mod-x', '×');
+  remove.type = 'button';
+  remove.setAttribute('aria-label', 'Remove modifier');
+  remove.onclick = () => {
+    row.remove();
+    refreshModsEmpty();
+  };
+
+  row.appendChild(input);
+  row.appendChild(remove);
+  list.appendChild(row);
+  refreshModsEmpty();
+  input.focus();
+}
+
+function refreshModsEmpty() {
+  $('#modsEmpty').hidden = document.querySelectorAll('.mod-input').length > 0;
+}
+
+function build() {
+  const value = normalizeText($('#target').value);
+  if (!value) {
+    state.result = null;
+    setMessage('Enter a value before building queries.', 'error');
+    renderResults();
+    $('#target').focus();
+    return;
+  }
+
+  const validationMessage = typeof cat().validate === 'function' ? cat().validate(value) : '';
+  if (validationMessage) {
+    state.result = null;
+    setMessage(validationMessage, 'error');
+    renderResults();
+    $('#target').focus();
+    return;
+  }
+
+  state.result = cat().run(value, currentMods());
+  setMessage(state.result.note || '', '');
+  renderToggles();
+  renderResults();
+}
+
+async function writeClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  area.style.position = 'fixed';
+  area.style.opacity = '0';
+  document.body.appendChild(area);
+  area.select();
+  const copied = document.execCommand('copy');
+  area.remove();
+  return copied;
+}
+
+async function copyText(text, button, doneLabel) {
+  const oldText = button.textContent;
+  const oldClass = button.className;
+  try {
+    const copied = await writeClipboard(text);
+    if (!copied) throw new Error('Copy unavailable');
+    button.textContent = doneLabel;
+    button.className = oldClass + ' ok';
+    window.setTimeout(() => {
+      button.textContent = oldText;
+      button.className = oldClass;
+    }, 1500);
+  } catch (error) {
+    setMessage('Automatic copy is blocked in this browser. Select the query text and copy it manually.', 'error');
+  }
+}
+
+function renderResults() {
+  const host = $('#results');
+  host.innerHTML = '';
+  const list = combined();
+  if (!list.length) return;
+
+  const head = el('div', 'res-head');
+  head.appendChild(el('h3', 'res-title', 'Built queries'));
+  const right = el('div', 'res-head-right');
+  right.appendChild(el('span', 'count', list.length + (list.length === 1 ? ' query' : ' queries')));
+  const copyAll = el('button', 'action', 'Copy all');
+  copyAll.type = 'button';
+  copyAll.onclick = () => copyText(list.join('\n'), copyAll, 'Copied');
+  right.appendChild(copyAll);
+  head.appendChild(right);
+  host.appendChild(head);
+
+  const rows = el('div', 'res-rows');
+  list.forEach((query) => {
+    const row = el('div', 'res-row');
+    row.appendChild(el('div', 'res-q', query));
+    const actions = el('div', 'res-acts');
+    const open = el('a', 'action primary', 'Open');
+    open.href = ENGINES[state.engine].url + encodeURIComponent(query);
+    open.target = '_blank';
+    open.rel = 'noopener noreferrer';
+    open.setAttribute('aria-label', 'Open query in ' + ENGINES[state.engine].label);
+    actions.appendChild(open);
+    const copy = el('button', 'action', 'Copy');
+    copy.type = 'button';
+    copy.onclick = () => copyText(query, copy, 'Copied');
+    actions.appendChild(copy);
+    row.appendChild(actions);
+    rows.appendChild(row);
+  });
+  host.appendChild(rows);
+}
+
+function renderLegend() {
+  const box = $('#legend');
+  box.hidden = !state.showHelp;
+  $('#legendBtn').textContent = state.showHelp ? 'Hide operator guide' : 'Show operator guide';
+  $('#legendBtn').setAttribute('aria-expanded', String(state.showHelp));
+  $('#legendFile').textContent = state.engine === 'yandex' ? 'mime:pdf' : 'filetype:pdf';
+  $('#legendTitle').textContent = state.engine === 'yandex' ? '"title words"' : 'intitle:term';
+  $('#legendTitleMeaning').textContent = state.engine === 'yandex' ? 'Title constraints fall back to quoted words' : 'Target a term in the page title';
+  $('#legendUrl').textContent = state.engine === 'yandex' ? 'url:*term*' : (state.engine === 'bing' ? 'term' : 'inurl:term');
+  $('#legendUrlMeaning').textContent = state.engine === 'bing' ? 'URL constraints fall back to a plain term' : 'Target a term in the page address';
+  $('#legendOr').textContent = state.engine === 'yandex' ? 'A | B' : (state.engine === 'ddg' ? 'A B' : 'A OR B');
+  $('#legendDateRow').hidden = state.engine !== 'google';
+}
+
+function init() {
+  syncCat();
+  renderEngines();
+  renderToggles();
+  renderLegend();
+  refreshModsEmpty();
+
+  $('#buildBtn').onclick = build;
+  $('#target').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') build();
+  });
+  $('#addMod').onclick = () => addMod('');
+  $('#tDeep').onclick = () => {
+    state.includeDeep = !state.includeDeep;
+    renderToggles();
+    renderResults();
+  };
+  $('#tLong').onclick = () => {
+    state.includeLong = !state.includeLong;
+    renderToggles();
+    renderResults();
+  };
+  $('#legendBtn').onclick = () => {
+    state.showHelp = !state.showHelp;
+    renderLegend();
+  };
+
+  const burger = $('#burger');
+  const mobileNav = $('#mnav');
+  burger.onclick = () => {
+    const open = burger.getAttribute('aria-expanded') === 'true';
+    burger.setAttribute('aria-expanded', String(!open));
+    burger.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+    mobileNav.hidden = open;
+  };
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 760) {
+      mobileNav.hidden = true;
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open navigation');
     }
-
-    function Hero() {
-      return (
-        <section className="border-b border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-18">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-6">
-                Search Logic · OSINT · Structured Queries
-              </div>
-              <h1 className="font-display text-4xl sm:text-6xl leading-[0.95] text-white mb-6 uppercase tracking-tighter">
-                Research <span className="text-cyan-400">Tools</span>
-              </h1>
-              <p className="text-slate-400 text-lg sm:text-xl leading-relaxed">
-                Use targeted builders to pivot faster through names, handles, emails, domains, and public web traces.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Results({ generated, engine, copiedId, setCopiedId, label = 'Searches Built' }) {
-      const copyToClipboard = async (text, index) => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopiedId(index);
-          setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) {
-          alert('Copy failed.');
-        }
-      };
-
-      const copyAll = async () => {
-        try {
-          await navigator.clipboard.writeText(generated.join('\n'));
-          setCopiedId('all');
-          setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) {
-          alert('Copy failed.');
-        }
-      };
-
-      if (!generated.length) return null;
-
-      return (
-        <div className="mt-8 pt-6 border-t border-slate-800 animate-dropdown">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-mono text-[10px] font-bold text-slate-500 tracking-widest uppercase italic">
-              // {label}
-            </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded font-bold uppercase">
-                {generated.length} Ready
-              </span>
-              <button
-                onClick={copyAll}
-                className={`px-3 py-1 text-[10px] font-bold font-mono rounded border ${
-                  copiedId === 'all'
-                    ? 'bg-green-500/20 text-green-400 border-green-500/40'
-                    : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'
-                }`}
-              >
-                {copiedId === 'all' ? '✓ COPIED ALL' : 'COPY ALL'}
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {generated.map((q, i) => (
-              <div key={i} className="flex flex-col sm:flex-row gap-3 bg-slate-950/60 border border-slate-800/80 p-3 rounded-lg shadow-glow">
-                <div className="flex-1 font-mono text-xs text-cyan-100/80 break-all">{q}</div>
-                <div className="flex gap-2 shrink-0">
-                  <a
-                    href={`${ENGINES[engine]}${encodeURIComponent(q)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded text-center uppercase hover:bg-amber-500/20 transition-colors"
-                  >
-                    🔍 Run
-                  </a>
-                  <button
-                    onClick={() => copyToClipboard(q, i)}
-                    className={`flex-1 sm:flex-none px-3 py-2 text-[10px] font-bold font-mono rounded border ${
-                      copiedId === i
-                        ? 'bg-green-500/20 text-green-400 border-green-500/40'
-                        : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:text-slate-200 uppercase'
-                    }`}
-                  >
-                    {copiedId === i ? '✓ COPIED' : '📋 COPY'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    function TierToggles({ includeDeep, setIncludeDeep, includeLongShot, setIncludeLongShot }) {
-      return (
-        <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-800">
-          <button
-            onClick={() => setIncludeDeep(!includeDeep)}
-            className={`px-3 py-2 rounded-lg border font-mono text-[10px] uppercase tracking-widest ${
-              includeDeep
-                ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300'
-                : 'bg-slate-950 border-slate-700 text-slate-400'
-            }`}
-          >
-            {includeDeep ? '✓ Deep Included' : '+ Include Deep'}
-          </button>
-
-          <button
-            onClick={() => setIncludeLongShot(!includeLongShot)}
-            className={`px-3 py-2 rounded-lg border font-mono text-[10px] uppercase tracking-widest ${
-              includeLongShot
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                : 'bg-slate-950 border-slate-700 text-slate-400'
-            }`}
-          >
-            {includeLongShot ? '✓ Long Shot Included' : '+ Include Long Shot'}
-          </button>
-        </div>
-      );
-    }
-
-    function DorkBuilder() {
-      const [dorkType, setDorkType] = useState('people');
-      const [target, setTarget] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const [showHelp, setShowHelp] = useState(false);
-      const [includeDeep, setIncludeDeep] = useState(true);
-      const [includeLongShot, setIncludeLongShot] = useState(false);
-
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => {
-        const newMods = [...modifiers];
-        newMods[index] = value;
-        setModifiers(newMods);
-      };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-
-      const buildTieredQueries = (group, replacements) => {
-        let all = [...group.core];
-        if (includeDeep) all = all.concat(group.deep);
-        if (includeLongShot) all = all.concat(group.longShot);
-
-        return all.map((q) =>
-          q
-            .replace(/\{t_q\}/g, replacements.t_q)
-            .replace(/\{t_raw\}/g, replacements.t_raw)
-            .replace(/\{mods\}/g, replacements.mods)
-            .replace(/\s+/g, ' ')
-            .trim()
-        );
-      };
-
-      const generateDorks = () => {
-        if (!target.trim()) return;
-        const quote = (str) => (!str ? '' : (str.startsWith('"') && str.endsWith('"')) ? str : `"${str}"`);
-        // Templates already wrap {t_q} in quotes, so t_q must be the RAW (unquoted) value.
-        const t_raw = target.trim().replace(/(^"|"$)/g, '');
-        const t_q = t_raw;
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(quote).join(' ');
-
-        const results = buildTieredQueries(DORKS[dorkType], { t_q, t_raw, mods });
-        setGenerated(results);
-      };
-
-      const placeholder =
-        dorkType === 'people'
-          ? 'Name (e.g. John Doe)'
-          : dorkType === 'address'
-          ? 'Address (e.g. 123 Main St)'
-          : 'Business or Topic';
-
-      return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-dropdown">
-          <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">Builder v2.0</span>
-            </div>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1"
-            >
-              {showHelp ? 'Close Guide ▴' : 'Help & Logic ▾'}
-            </button>
-          </div>
-
-          {showHelp && (
-            <div className="bg-cyan-500/5 border-b border-slate-800 p-6 sm:p-8 animate-dropdown">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Quick Start</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Enter the main target, add narrowing details, then build searches. Core queries give the highest-yield results first. Deep and Long Shot broaden coverage.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Long Shot</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Long Shot is for lower-signal but occasionally high-payoff public results like cloud docs, public indexes, archived material, conference traces, and odd references.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="p-4 sm:p-8">
-            <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-              {[{ id: 'people', label: '👤 PEOPLE' }, { id: 'address', label: '📍 ADDRESS' }, { id: 'other', label: '🛠️ OTHER' }].map(type => (
-                <button
-                  key={type.id}
-                  onClick={() => setDorkType(type.id)}
-                  className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${
-                    dorkType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Main Search Target</label>
-                <input
-                  type="text"
-                  value={target}
-                  onChange={(e) => setTarget(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && generateDorks()}
-                  placeholder={placeholder}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
-                />
-              </div>
-
-              {modifiers.map((mod, i) => (
-                <div key={i} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={mod}
-                    onChange={(e) => handleModifierChange(i, e.target.value)}
-                    placeholder="Detail (e.g. City, State, Employer)"
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
-                  />
-                  <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-                </div>
-              ))}
-            </div>
-
-            <TierToggles
-              includeDeep={includeDeep}
-              setIncludeDeep={setIncludeDeep}
-              includeLongShot={includeLongShot}
-              setIncludeLongShot={setIncludeLongShot}
-            />
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800 mt-4">
-              <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">
-                + ADD DETAIL
-              </button>
-
-              <div className="flex gap-2">
-                <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                  <option value="google">Google</option>
-                  <option value="ddg">DuckDuckGo</option>
-                  <option value="bing">Bing</option>
-                  <option value="yandex">Yandex</option>
-                </select>
-
-                <button onClick={generateDorks} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">
-                  ▶ Build Dorks
-                </button>
-              </div>
-            </div>
-
-            <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} label="Strings Built" />
-          </div>
-        </div>
-      );
-    }
-
-    function HandleFinder() {
-      const [searchType, setSearchType] = useState('social');
-      const [handle, setHandle] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const [showHelp, setShowHelp] = useState(false);
-      const [includeDeep, setIncludeDeep] = useState(true);
-      const [includeLongShot, setIncludeLongShot] = useState(false);
-
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => {
-        const newMods = [...modifiers];
-        newMods[index] = value;
-        setModifiers(newMods);
-      };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-
-      const buildTieredQueries = (group, replacements) => {
-        let all = [...group.core];
-        if (includeDeep) all = all.concat(group.deep);
-        if (includeLongShot) all = all.concat(group.longShot);
-
-        return all.map((q) =>
-          q
-            .replace(/\{h\}/g, replacements.h)
-            .replace(/\{mods\}/g, replacements.mods)
-            .replace(/\s+/g, ' ')
-            .trim()
-        );
-      };
-
-      const generateSearches = () => {
-        if (!handle.trim()) return;
-        const cleanHandle = handle.trim().replace(/^@/, '');
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(m => `"${m}"`).join(' ');
-        const results = buildTieredQueries(HANDLE_SEARCHES[searchType], { h: cleanHandle, mods });
-        setGenerated(results);
-      };
-
-      return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-dropdown">
-          <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">Handle Finder v1.0</span>
-            </div>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1"
-            >
-              {showHelp ? 'Close Guide ▴' : 'Help & Logic ▾'}
-            </button>
-          </div>
-
-          {showHelp && (
-            <div className="bg-cyan-500/5 border-b border-slate-800 p-6 sm:p-8 animate-dropdown">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Quick Start</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Enter a handle, alias, or gamer tag. Add context only if the handle is common. Use Core first, then expand into Deep and Long Shot.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Best Use</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Best for repeated usernames, burner identities, cross-platform pivoting, and linking a handle to broader public traces.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="p-4 sm:p-8">
-            <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-              {[{ id: 'social', label: '🌐 SOCIAL' }, { id: 'forums', label: '💬 FORUMS' }, { id: 'dev', label: '🧠 DEV / PRO' }, { id: 'broad', label: '🛠️ BROAD WEB' }].map(type => (
-                <button
-                  key={type.id}
-                  onClick={() => setSearchType(type.id)}
-                  className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${
-                    searchType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Username / Handle</label>
-                <input
-                  type="text"
-                  value={handle}
-                  onChange={(e) => setHandle(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && generateSearches()}
-                  placeholder="Handle (e.g. jsmith or @jsmith)"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
-                />
-              </div>
-
-              {modifiers.map((mod, i) => (
-                <div key={i} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={mod}
-                    onChange={(e) => handleModifierChange(i, e.target.value)}
-                    placeholder="Detail (e.g. Alabama, music, developer)"
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
-                  />
-                  <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-                </div>
-              ))}
-            </div>
-
-            <TierToggles
-              includeDeep={includeDeep}
-              setIncludeDeep={setIncludeDeep}
-              includeLongShot={includeLongShot}
-              setIncludeLongShot={setIncludeLongShot}
-            />
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800 mt-4">
-              <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">
-                + ADD DETAIL
-              </button>
-
-              <div className="flex gap-2">
-                <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                  <option value="google">Google</option>
-                  <option value="ddg">DuckDuckGo</option>
-                  <option value="bing">Bing</option>
-                  <option value="yandex">Yandex</option>
-                </select>
-
-                <button onClick={generateSearches} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">
-                  ▶ Build Searches
-                </button>
-              </div>
-            </div>
-
-            <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} />
-          </div>
-        </div>
-      );
-    }
-
-    function EmailPivotBuilder() {
-      const [pivotType, setPivotType] = useState('exact');
-      const [value, setValue] = useState('');
-      const [modifiers, setModifiers] = useState([]);
-      const [engine, setEngine] = useState('google');
-      const [generated, setGenerated] = useState([]);
-      const [copiedId, setCopiedId] = useState(null);
-      const [showHelp, setShowHelp] = useState(false);
-      const [includeDeep, setIncludeDeep] = useState(true);
-      const [includeLongShot, setIncludeLongShot] = useState(false);
-
-      const handleAddModifier = () => setModifiers([...modifiers, '']);
-      const handleModifierChange = (index, value) => {
-        const newMods = [...modifiers];
-        newMods[index] = value;
-        setModifiers(newMods);
-      };
-      const handleRemoveModifier = (index) => setModifiers(modifiers.filter((_, i) => i !== index));
-
-      const buildTieredQueries = (group, replacements) => {
-        let all = [...group.core];
-        if (includeDeep) all = all.concat(group.deep);
-        if (includeLongShot) all = all.concat(group.longShot);
-
-        return all.map((q) =>
-          q
-            .replace(/\{v\}/g, replacements.v)
-            .replace(/\{mods\}/g, replacements.mods)
-            .replace(/\s+/g, ' ')
-            .trim()
-        );
-      };
-
-      const generateSearches = () => {
-        if (!value.trim()) return;
-        let cleanValue = value.trim();
-        if (pivotType === 'domain') {
-          cleanValue = cleanValue.replace(/^@/, '').replace(/^https?:\/\//, '').replace(/\/$/, '');
-        }
-        const mods = modifiers.map(m => m.trim()).filter(Boolean).map(m => `"${m}"`).join(' ');
-        const results = buildTieredQueries(EMAIL_SEARCHES[pivotType], { v: cleanValue, mods });
-        setGenerated(results);
-      };
-
-      const placeholder =
-        pivotType === 'exact'
-          ? 'Email (e.g. jane@example.com)'
-          : pivotType === 'prefix'
-          ? 'Prefix (e.g. jane.doe)'
-          : 'Domain (e.g. example.com)';
-
-      return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-dropdown">
-          <div className="bg-slate-800/50 border-b border-slate-800 p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 font-mono text-[10px] sm:text-xs tracking-widest text-slate-400 font-bold uppercase tracking-[0.2em]">Email Pivot v1.0</span>
-            </div>
-            <button
-              onClick={() => setShowHelp(!showHelp)}
-              className="text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase flex items-center gap-1"
-            >
-              {showHelp ? 'Close Guide ▴' : 'Help & Logic ▾'}
-            </button>
-          </div>
-
-          {showHelp && (
-            <div className="bg-cyan-500/5 border-b border-slate-800 p-6 sm:p-8 animate-dropdown">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-cyan-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Quick Start</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Use exact email when you have a full address. Use prefix when you only know the left side. Use domain for staff, contact, document, and footprint pivots.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-amber-400 font-display text-sm mb-4 tracking-widest uppercase italic font-bold">Long Shot</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Long Shot here means archived references, odd public mentions, directory traces, or document hits that sometimes connect an address or domain to a larger footprint.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="p-4 sm:p-8">
-            <div className="flex flex-wrap bg-slate-950 border border-slate-800 rounded-lg overflow-hidden mb-6">
-              {[{ id: 'exact', label: '✉️ EXACT EMAIL' }, { id: 'prefix', label: '🧩 PREFIX' }, { id: 'domain', label: '🌍 DOMAIN' }].map(type => (
-                <button
-                  key={type.id}
-                  onClick={() => setPivotType(type.id)}
-                  className={`flex-1 min-w-[100px] py-3 text-[10px] sm:text-sm font-bold tracking-wide transition-colors ${
-                    pivotType === type.id ? 'bg-cyan-900/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900'
-                  }`}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-[10px] sm:text-xs font-mono font-bold text-slate-500 mb-2 tracking-wider uppercase italic">Email / Prefix / Domain</label>
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && generateSearches()}
-                  placeholder={placeholder}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono shadow-inner"
-                />
-              </div>
-
-              {modifiers.map((mod, i) => (
-                <div key={i} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={mod}
-                    onChange={(e) => handleModifierChange(i, e.target.value)}
-                    placeholder="Detail (e.g. company, city, team, role)"
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 font-mono"
-                  />
-                  <button onClick={() => handleRemoveModifier(i)} className="px-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg font-bold">✕</button>
-                </div>
-              ))}
-            </div>
-
-            <TierToggles
-              includeDeep={includeDeep}
-              setIncludeDeep={setIncludeDeep}
-              includeLongShot={includeLongShot}
-              setIncludeLongShot={setIncludeLongShot}
-            />
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-4 border-t border-slate-800 mt-4">
-              <button onClick={handleAddModifier} className="px-4 py-3 sm:py-2.5 text-xs font-bold font-mono text-slate-400 bg-slate-800/50 border border-slate-700 rounded-lg hover:text-slate-200 uppercase tracking-widest">
-                + ADD DETAIL
-              </button>
-
-              <div className="flex gap-2">
-                <select value={engine} onChange={(e) => setEngine(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-lg px-2 sm:px-4 py-3 sm:py-2.5 text-xs text-slate-300 font-mono">
-                  <option value="google">Google</option>
-                  <option value="ddg">DuckDuckGo</option>
-                  <option value="bing">Bing</option>
-                  <option value="yandex">Yandex</option>
-                </select>
-
-                <button onClick={generateSearches} className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-2.5 bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 rounded-lg font-bold font-mono tracking-widest shadow-glow uppercase">
-                  ▶ Build Pivots
-                </button>
-              </div>
-            </div>
-
-            <Results generated={generated} engine={engine} copiedId={copiedId} setCopiedId={setCopiedId} label="Pivots Built" />
-          </div>
-        </div>
-      );
-    }
-
-    function ToolAccordionCard({ id, title, desc, activeTool, setActiveTool, children }) {
-      const isOpen = activeTool === id;
-
-      return (
-        <div className={`rounded-2xl border shadow-glow transition-all ${isOpen ? 'border-cyan-500/40 bg-slate-900/70' : 'border-slate-800 bg-slate-900/40'}`}>
-          <button
-            onClick={() => setActiveTool(isOpen ? null : id)}
-            className="w-full text-left p-6"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-cyan-400 mb-3">Tool</div>
-                <h2 className="text-white text-xl font-bold mb-3">{title}</h2>
-                <p className="text-sm text-slate-400 leading-relaxed">{desc}</p>
-              </div>
-              <div className="text-cyan-400 font-mono text-xs pt-1 shrink-0">
-                {isOpen ? '− CLOSE' : '+ OPEN'}
-              </div>
-            </div>
-          </button>
-
-          {isOpen && (
-            <div className="px-4 sm:px-6 pb-6 animate-dropdown">
-              {children}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    function Footer() {
-      return (
-        <footer className="border-t border-slate-800 py-12 bg-slate-950/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
-            <div className="font-display text-[14px] text-slate-600 tracking-[0.4em] mb-8">
-              SIGNAL &amp; TRACE // 2026
-            </div>
-            <div className="flex gap-8 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
-              <a href="tools.html" className="hover:text-cyan-400">TOOLS</a>
-              <a href="blog.html" className="hover:text-cyan-400">BLOG</a>
-              <a href="resources.html" className="hover:text-cyan-400">RESOURCES</a>
-              <a href="about.html" className="hover:text-cyan-400">ABOUT</a>
-            </div>
-          </div>
-        </footer>
-      );
-    }
-
-    function App() {
-      const [activeTool, setActiveTool] = useState('dorks');
-
-      return (
-        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
-          <Navbar />
-          <Hero />
-
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-            <div className="grid gap-5">
-              <ToolAccordionCard
-                id="dorks"
-                title="Dork Builder"
-                desc="Build structured search strings for people, addresses, businesses, and broader targets."
-                activeTool={activeTool}
-                setActiveTool={setActiveTool}
-              >
-                <DorkBuilder />
-              </ToolAccordionCard>
-
-              <ToolAccordionCard
-                id="handles"
-                title="Handle Finder"
-                desc="Track repeated usernames, aliases, gamer tags, and cross-platform handle reuse."
-                activeTool={activeTool}
-                setActiveTool={setActiveTool}
-              >
-                <HandleFinder />
-              </ToolAccordionCard>
-
-              <ToolAccordionCard
-                id="email"
-                title="Email / Domain Pivot"
-                desc="Pivot from an email, prefix, or domain into broader public search coverage."
-                activeTool={activeTool}
-                setActiveTool={setActiveTool}
-              >
-                <EmailPivotBuilder />
-              </ToolAccordionCard>
-            </div>
-          </section>
-
-          <Footer />
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+  });
+}
+
+window.OperatorsLogic = Object.freeze({
+  phrase: phrase,
+  buildMods: buildMods,
+  normalizeDomain: normalizeDomain,
+  phoneFormats: phoneFormats,
+  emailBuild: emailBuild,
+  domainBuild: domainBuild,
+  adaptQuery: adaptQuery
+});
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
