@@ -1,313 +1,649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signal & Trace | Public Research Tools and AI Workflows</title>
-  <meta name="description" content="Signal & Trace helps people verify claims, check online entities, and turn scattered public research into structured findings using investigative logic and current AI workflows." />
-  <meta name="theme-color" content="#020617" />
-  <meta property="og:title" content="Signal & Trace | Public Research Tools and AI Workflows" />
-  <meta property="og:description" content="Public research tools, case reviews, and AI-assisted workflows built around disciplined source tracking, evidence grading, and verification." />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            mono: ['\"IBM Plex Mono\"', 'monospace'],
-            sans: ['system-ui', 'sans-serif'],
-            display: ['\"Orbitron\"', 'system-ui', 'sans-serif'],
-          },
-          boxShadow: {
-            glow: '0 0 0 1px rgba(34,211,238,0.12), 0 12px 40px rgba(2,8,23,0.65)',
-            hard: '0 24px 80px rgba(0,0,0,0.65)',
-            cyan: '0 0 55px rgba(34,211,238,0.16)'
-          }
-        }
-      }
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal &amp; Trace | Public Research, Clearer Thinking</title>
+  <meta name="description" content="Signal & Trace offers focused search tools, transparent case files, and practical workflows for working carefully with public information.">
+  <meta name="theme-color" content="#0b1120">
+  <link rel="canonical" href="https://lockhartinv.netlify.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Signal &amp; Trace | Public Research, Clearer Thinking">
+  <meta property="og:description" content="Follow the signal. Trace the truth. Focused tools and practical methods for working carefully with public information.">
+  <meta property="og:url" content="https://lockhartinv.netlify.app/">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Signal & Trace",
+    "url": "https://lockhartinv.netlify.app/",
+    "description": "Focused search tools, transparent case files, and practical workflows for public research."
+  }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-raised: #162033;
+      --surface-soft: #0f172a;
+      --border: #263449;
+      --border-strong: #3a4a63;
+      --text: #e7edf6;
+      --muted: #9aa9bd;
+      --soft: #74859d;
+      --blue: #3b82f6;
+      --blue-hover: #60a5fa;
+      --blue-soft: rgba(59, 130, 246, 0.12);
+      --blue-border: rgba(96, 165, 250, 0.38);
+      --radius: 12px;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html, body { margin: 0; min-height: 100%; }
     body {
-      background:
-        radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.12), transparent 34rem),
-        radial-gradient(circle at 80% 12%, rgba(14, 165, 233, 0.10), transparent 30rem),
-        linear-gradient(180deg, #020617 0%, #020617 42%, #020617 100%);
-      color: #cbd5e1;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent 80%);
-      z-index: -2;
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    [hidden] { display: none !important; }
+    :focus-visible {
+      outline: 2px solid var(--blue-hover);
+      outline-offset: 3px;
     }
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at center, transparent 0%, rgba(2,6,23,0.22) 45%, rgba(2,6,23,0.85) 100%);
-      z-index: -1;
+    ::selection { background: rgba(59, 130, 246, 0.35); }
+
+    .wrap {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
     }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-    .premium-card {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(145deg, rgba(15,23,42,0.92), rgba(2,6,23,0.88));
-      border: 1px solid rgba(30,41,59,0.95);
-      box-shadow: 0 0 0 1px rgba(34,211,238,0.08), 0 24px 80px rgba(0,0,0,0.50);
+
+    /* Navigation */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.94);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
     }
-    .premium-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, rgba(34,211,238,0.10), transparent 32%, transparent 68%, rgba(14,165,233,0.06));
-      pointer-events: none;
+    .nav-in {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
     }
-    .panel-grid {
-      background-image:
-        linear-gradient(rgba(34,211,238,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,211,238,0.06) 1px, transparent 1px);
-      background-size: 22px 22px;
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
     }
-    .scanline { position: relative; }
-    .scanline::after {
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #07101f;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .brand-name {
+      color: #f5f8fc;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .brand-name span { color: var(--blue-hover); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+    .nav-links a {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .nav-links a:hover,
+    .nav-links a.on { color: #f4f7fb; }
+    .nav-links a.on { position: relative; }
+    .nav-links a.on::after {
       content: "";
       position: absolute;
       left: 0;
       right: 0;
-      top: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(34,211,238,0.85), transparent);
-      opacity: 0.75;
+      bottom: -22px;
+      height: 2px;
+      background: var(--blue);
+    }
+    .burger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+    }
+    .mnav {
+      padding: 6px 20px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .mnav a {
+      display: block;
+      padding: 11px 8px;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .mnav a:hover,
+    .mnav a.on {
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 620px;
+      height: 620px;
+      top: -330px;
+      right: -180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.13), transparent 68%);
+      pointer-events: none;
+    }
+    .hero-in {
+      max-width: 920px;
+      padding: 96px 0 88px;
+    }
+    .eyebrow,
+    .section-kicker {
+      margin: 0 0 15px;
+      color: var(--blue-hover);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 920px;
+      margin: 0;
+      color: #f8fafc;
+      font-size: clamp(44px, 7vw, 74px);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+    .hero-copy {
+      max-width: 720px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: clamp(17px, 2.1vw, 20px);
+      line-height: 1.65;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 19px;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      color: var(--text);
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 700;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+    .button:hover {
+      border-color: #52647e;
+      background: var(--surface-raised);
+      transform: translateY(-1px);
+    }
+    .button.primary {
+      border-color: var(--blue);
+      color: #07101f;
+      background: var(--blue);
+    }
+    .button.primary:hover {
+      border-color: var(--blue-hover);
+      background: var(--blue-hover);
+    }
+    .principles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      margin: 42px 0 0;
+      padding: 0;
+      color: var(--soft);
+      font-size: 13px;
+      list-style: none;
+    }
+    .principles li {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .principles li::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* Shared sections */
+    section { padding: 82px 0; }
+    .section-head {
+      max-width: 680px;
+      margin-bottom: 34px;
+    }
+    h2 {
+      margin: 0;
+      color: #f5f8fc;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.14;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+    .section-copy {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    /* Starting paths */
+    .start {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-soft);
+    }
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .path {
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+    .path:hover {
+      border-color: var(--blue-border);
+      background: var(--surface-raised);
+      transform: translateY(-2px);
+    }
+    .path-number {
+      color: var(--blue-hover);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+    .path h3 {
+      margin: 28px 0 10px;
+      color: #f5f8fc;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .path p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .path-link {
+      margin-top: auto;
+      padding-top: 28px;
+      color: var(--blue-hover);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    /* Method */
+    .method-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: 72px;
+      align-items: start;
+    }
+    .text-link {
+      display: inline-flex;
+      margin-top: 26px;
+      color: var(--blue-hover);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .text-link:hover { color: #93c5fd; }
+    .steps {
+      border-top: 1px solid var(--border);
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 18px;
+      padding: 25px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      padding-top: 3px;
+      color: var(--blue-hover);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+    .step h3 {
+      margin: 0 0 7px;
+      color: #f5f8fc;
+      font-size: 18px;
+    }
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* Experience */
+    .experience {
+      padding: 0 0 82px;
+    }
+    .experience-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 50px;
+      align-items: center;
+      padding: 38px 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .experience h2 {
+      max-width: 700px;
+      font-size: clamp(25px, 3.4vw, 34px);
+    }
+    .experience p {
+      max-width: 720px;
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface-soft);
+    }
+    .footer-main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 38px 0 30px;
+    }
+    .footer-brand {
+      color: #f5f8fc;
+      font-size: 15px;
+      font-weight: 750;
+    }
+    .footer-tagline {
+      margin: 8px 0 0;
+      color: var(--soft);
+      font-size: 13px;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 13px 22px;
+    }
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-note {
+      margin: 0;
+      padding: 20px 0 28px;
+      border-top: 1px solid var(--border);
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 820px) {
+      .nav-links { display: none; }
+      .burger { display: grid; }
+      .path-grid { grid-template-columns: 1fr; }
+      .path { min-height: 220px; }
+      .method-grid { grid-template-columns: 1fr; gap: 42px; }
+      .experience-in { grid-template-columns: 1fr; gap: 25px; }
+      .experience-in .button { justify-self: start; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 32px, 1080px); }
+      .hero-in { padding: 70px 0 64px; }
+      h1 { font-size: clamp(40px, 12vw, 58px); }
+      .hero-copy { font-size: 17px; }
+      .actions { align-items: stretch; flex-direction: column; }
+      .button { width: 100%; }
+      .principles { align-items: flex-start; flex-direction: column; gap: 10px; }
+      section { padding: 62px 0; }
+      .path { min-height: 0; padding: 24px; }
+      .path h3 { margin-top: 22px; }
+      .experience { padding-bottom: 62px; }
+      .experience-in { padding: 28px 24px; }
+      .footer-main { flex-direction: column; }
+      .footer-links { justify-content: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
-  <nav class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl border border-cyan-500/40 bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold shadow-cyan">S</div>
-        <div>
-          <div class="font-mono text-[10px] text-cyan-400 tracking-[0.25em]">SIGNAL &amp;</div>
-          <div class="font-display text-sm sm:text-lg text-slate-100 tracking-[0.14em]">TRACE</div>
-        </div>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="wrap nav-in">
+      <a href="/" class="brand" aria-label="Signal and Trace home">
+        <span class="brand-mark" aria-hidden="true">ST</span>
+        <span class="brand-name">Signal <span>&amp; Trace</span></span>
       </a>
-      <div class="hidden md:flex gap-6 font-mono text-xs font-semibold tracking-widest text-slate-400">
-        <a href="index.html" class="text-cyan-400">HOME</a>
-        <a href="tools.html" class="hover:text-cyan-400 transition-colors">TOOLS</a>
-        <a href="blog.html" class="hover:text-cyan-400 transition-colors">BLOG</a>
-        <a href="case-reviews.html" class="hover:text-cyan-400 transition-colors">CASE REVIEWS</a>
-        <a href="ai-workflows.html" class="hover:text-cyan-400 transition-colors">AI WORKFLOWS</a>
-        <a href="about.html" class="hover:text-cyan-400 transition-colors">ABOUT</a>
+      <div class="nav-links">
+        <a href="/" class="on" aria-current="page">Home</a>
+        <a href="/tools">Tools</a>
+        <a href="/blog">Blog</a>
+        <a href="/case-reviews">Case Files</a>
+        <a href="/ai-workflows">Workflows</a>
+        <a href="/about">About</a>
       </div>
+      <button class="burger" id="burger" type="button" aria-label="Open navigation" aria-controls="mnav" aria-expanded="false">
+        <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
     </div>
-    <div class="md:hidden border-t border-slate-800/80 bg-slate-950/90 px-4 py-3 overflow-x-auto whitespace-nowrap font-mono text-[10px] tracking-widest text-slate-400 flex gap-4">
-      <a href="index.html" class="text-cyan-400">HOME</a>
-      <a href="tools.html">TOOLS</a>
-      <a href="blog.html">BLOG</a>
-      <a href="case-reviews.html">CASE REVIEWS</a>
-      <a href="ai-workflows.html">AI WORKFLOWS</a>
-      <a href="about.html">ABOUT</a>
+    <div class="mnav" id="mnav" hidden>
+      <a href="/" class="on" aria-current="page">Home</a>
+      <a href="/tools">Tools</a>
+      <a href="/blog">Blog</a>
+      <a href="/case-reviews">Case Files</a>
+      <a href="/ai-workflows">Workflows</a>
+      <a href="/about">About</a>
     </div>
   </nav>
 
-  <header class="relative overflow-hidden border-b border-slate-800/80">
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-slate-950/70 to-slate-950"></div>
-    <div class="absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-28">
-      <div class="grid lg:grid-cols-[1fr_0.9fr] gap-10 lg:gap-12 items-center">
-        <div class="text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/25 bg-cyan-500/10 text-cyan-400 font-mono text-[10px] tracking-[0.22em] uppercase mb-8 shadow-cyan">
-            Public Research · Verification · Living AI Workflows
-          </div>
-          <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl text-white mb-6 uppercase tracking-tighter leading-[0.92]">
-            Separate Signal <br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-cyan-400 to-sky-300">From Noise.</span>
-          </h1>
-          <p class="text-slate-300 text-base sm:text-xl max-w-3xl mx-auto lg:mx-0 leading-relaxed mb-5">
-            Signal &amp; Trace helps people verify claims, check online entities, and turn scattered public research into structured findings.
-          </p>
-          <p class="text-slate-400 text-sm sm:text-lg max-w-3xl mx-auto lg:mx-0 leading-relaxed mb-10">
-            Built from investigative logic, source discipline, and current AI-assisted workflows. The tools change. The method stays disciplined.
-          </p>
-          <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-            <a href="ai-workflows.html" class="px-8 py-4 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-display text-sm tracking-widest font-bold hover:bg-cyan-500/25 transition-all shadow-cyan">START WITH WORKFLOWS</a>
-            <a href="tools.html" class="px-8 py-4 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-100 font-display text-sm tracking-widest font-bold hover:bg-slate-800 transition-all shadow-hard">OPEN TOOLS</a>
-          </div>
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-in">
+        <p class="eyebrow">Follow the signal. Trace the truth.</p>
+        <h1>In the AI age, information is everywhere. Discernment is the skill that matters.</h1>
+        <p class="hero-copy">Signal &amp; Trace gives you focused search tools, practical research workflows, and transparent case files—so you can examine public information without losing the thread.</p>
+        <div class="actions">
+          <a class="button primary" href="/tools">Open research tools</a>
+          <a class="button" href="/case-reviews">Explore case files</a>
         </div>
-
-        <div class="premium-card rounded-3xl p-4 sm:p-5 lg:p-6 shadow-hard">
-          <div class="relative rounded-2xl border border-slate-800 bg-slate-950/80 panel-grid overflow-hidden">
-            <div class="scanline flex items-center justify-between border-b border-slate-800 bg-slate-950/90 px-4 py-3">
-              <div class="flex items-center gap-2">
-                <span class="h-2.5 w-2.5 rounded-full bg-red-500/70"></span>
-                <span class="h-2.5 w-2.5 rounded-full bg-amber-500/70"></span>
-                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500/70"></span>
-              </div>
-              <span class="font-mono text-[10px] tracking-[0.22em] text-cyan-400 uppercase">Research File</span>
-            </div>
-
-            <div class="p-5 sm:p-6 space-y-5">
-              <div class="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4">
-                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-2">Target</div>
-                <div class="font-mono text-slate-100 text-sm break-all">website · claim · person · company · domain</div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="rounded-xl border border-slate-800 bg-slate-900/75 p-4">
-                  <div class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-2">Status</div>
-                  <div class="text-emerald-300 font-mono text-xs">SOURCE REVIEW ACTIVE</div>
-                </div>
-                <div class="rounded-xl border border-slate-800 bg-slate-900/75 p-4">
-                  <div class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mb-2">Mode</div>
-                  <div class="text-cyan-300 font-mono text-xs">TOOL-AGNOSTIC</div>
-                </div>
-              </div>
-
-              <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-4">Method Pipeline</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[10px] tracking-widest">
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">DEFINE</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">SEARCH</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">CAPTURE</div>
-                  <div class="rounded-lg bg-cyan-500/10 border border-cyan-500/25 px-3 py-2 text-cyan-300">GRADE</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">MAP</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">TEST</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">BUILD</div>
-                  <div class="rounded-lg bg-slate-950/80 border border-slate-800 px-3 py-2 text-slate-300">UPDATE</div>
-                </div>
-              </div>
-
-              <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-                <div class="flex items-center justify-between mb-3">
-                  <span class="font-mono text-[10px] tracking-[0.2em] text-slate-500 uppercase">Evidence Buckets</span>
-                  <span class="font-mono text-[10px] text-cyan-400">LIVE METHOD</span>
-                </div>
-                <div class="space-y-2">
-                  <div class="h-2 rounded-full bg-slate-800 overflow-hidden"><div class="h-full w-[82%] bg-cyan-400/70"></div></div>
-                  <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-slate-500 uppercase tracking-widest">
-                    <span>Facts</span><span>Leads</span><span>Unknowns</span><span>Output</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ul class="principles">
+          <li>Focused searches</li>
+          <li>Clear source trails</li>
+          <li>Findings you can explain</li>
+        </ul>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
-      <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
-        <div class="premium-card rounded-3xl p-6 sm:p-8">
-          <div class="relative">
-            <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">What This Is</div>
-            <h2 class="text-2xl sm:text-3xl text-white font-bold mb-4">A public research system, not just a tool page.</h2>
-            <p class="text-slate-400 text-base sm:text-lg leading-relaxed mb-4">
-              Start with one name, company, username, email, website, claim, or topic. Use structured search paths, AI-assisted organization, and source-grounded review to build a cleaner file.
-            </p>
-            <p class="text-slate-400 text-base sm:text-lg leading-relaxed">
-              The goal is not to make research look complicated. The goal is to make it repeatable, explainable, and useful.
-            </p>
-          </div>
+    <section class="start" aria-labelledby="start-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="section-kicker">Start here</p>
+          <h2 id="start-title">Choose one place to begin.</h2>
+          <p class="section-copy">You do not need special software or an investigator’s vocabulary. Start with the question in front of you.</p>
         </div>
-        <div class="premium-card rounded-3xl p-6 sm:p-8">
-          <div class="relative">
-            <div class="font-mono text-xs tracking-[0.22em] text-cyan-400 mb-3 uppercase">Possible Outputs</div>
-            <ul class="space-y-3 text-slate-300 text-sm sm:text-base">
-              <li class="flex gap-3"><span class="text-cyan-400">•</span><span>Research summary</span></li>
-              <li class="flex gap-3"><span class="text-cyan-400">•</span><span>Professional-style report</span></li>
-              <li class="flex gap-3"><span class="text-cyan-400">•</span><span>Timeline or entity map</span></li>
-              <li class="flex gap-3"><span class="text-cyan-400">•</span><span>Slide deck or script outline</span></li>
-              <li class="flex gap-3"><span class="text-cyan-400">•</span><span>Reusable prompt and source checklist</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-y border-slate-800/80 bg-slate-900/20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
-        <div class="mb-8">
-          <div class="font-mono text-xs tracking-[0.25em] text-cyan-400 mb-3 uppercase">The Signal &amp; Trace Method</div>
-          <h2 class="text-2xl sm:text-3xl text-white font-bold">The process survives tool changes.</h2>
-        </div>
-
-        <div class="rounded-3xl border border-slate-800 bg-slate-950/70 p-4 sm:p-5 shadow-hard mb-6 overflow-x-auto">
-          <div class="min-w-[760px] flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase text-slate-400">
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-cyan-300">Define</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Search</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Capture</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-cyan-300">Grade</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Map</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Test</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Build</div>
-            <div class="text-slate-600">→</div>
-            <div class="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">Update</div>
-          </div>
-        </div>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">01</span><h3 class="relative text-white font-bold mt-2 mb-2">Define</h3><p class="relative text-slate-400 text-sm">Name the target and the question being tested.</p></div>
-          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">02</span><h3 class="relative text-white font-bold mt-2 mb-2">Search</h3><p class="relative text-slate-400 text-sm">Generate targeted search paths instead of wandering.</p></div>
-          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">03</span><h3 class="relative text-white font-bold mt-2 mb-2">Capture</h3><p class="relative text-slate-400 text-sm">Save useful returns with source context intact.</p></div>
-          <div class="premium-card rounded-2xl p-5"><span class="relative font-mono text-cyan-400 text-xs">04</span><h3 class="relative text-white font-bold mt-2 mb-2">Grade</h3><p class="relative text-slate-400 text-sm">Separate facts, leads, assumptions, and unknowns.</p></div>
+        <div class="path-grid">
+          <a class="path" href="/tools">
+            <span class="path-number">01</span>
+            <h3>Build a focused search</h3>
+            <p>Turn a name, address, username, email, phone number, or organization into deliberate search passes.</p>
+            <span class="path-link">Open the query builder →</span>
+          </a>
+          <a class="path" href="/case-reviews">
+            <span class="path-number">02</span>
+            <h3>See the reasoning</h3>
+            <p>Follow case files that separate public claims, source findings, unanswered questions, and outcomes.</p>
+            <span class="path-link">Explore case files →</span>
+          </a>
+          <a class="path" href="/ai-workflows">
+            <span class="path-number">03</span>
+            <h3>Learn the method</h3>
+            <p>Use repeatable workflows to organize research, check sources, and use AI without trusting it blindly.</p>
+            <span class="path-link">View research workflows →</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <a href="tools.html" class="premium-card group rounded-3xl p-7 hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-300">
-          <div class="relative"><div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-5">Utility</div><h3 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight group-hover:text-cyan-400">Tools</h3><p class="text-slate-400 leading-relaxed mb-6">Build targeted search strings for people, handles, emails, domains, and broader targets.</p><span class="text-cyan-400 font-mono text-xs tracking-widest font-bold">OPEN →</span></div>
-        </a>
-        <a href="ai-workflows.html" class="premium-card group rounded-3xl p-7 hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-300">
-          <div class="relative"><div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-5">Living System</div><h3 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight group-hover:text-cyan-400">AI Workflows</h3><p class="text-slate-400 leading-relaxed mb-6">See the current recommended workflow and why it changes as better tools appear.</p><span class="text-cyan-400 font-mono text-xs tracking-widest font-bold">OPEN →</span></div>
-        </a>
-        <a href="case-reviews.html" class="premium-card group rounded-3xl p-7 hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-300">
-          <div class="relative"><div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-5">Proof</div><h3 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight group-hover:text-cyan-400">Case Reviews</h3><p class="text-slate-400 leading-relaxed mb-6">Read scam analysis and structured breakdowns that show the logic in action.</p><span class="text-cyan-400 font-mono text-xs tracking-widest font-bold">OPEN →</span></div>
-        </a>
-        <a href="shane-lockhart.html" class="premium-card group rounded-3xl p-7 hover:border-cyan-500/30 transition-all hover:-translate-y-1 duration-300">
-          <div class="relative"><div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase mb-5">Builder</div><h3 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight group-hover:text-cyan-400">Background</h3><p class="text-slate-400 leading-relaxed mb-6">Former investigator Shane Lockhart’s background and current research systems focus.</p><span class="text-cyan-400 font-mono text-xs tracking-widest font-bold">READ →</span></div>
-        </a>
+    <section aria-labelledby="method-title">
+      <div class="wrap method-grid">
+        <div>
+          <p class="section-kicker">Operator's Logic</p>
+          <h2 id="method-title">A simple discipline for messy information.</h2>
+          <p class="section-copy">Start with a question. Search in deliberate passes. Separate what the sources show from what you think they mean. Keep the record clear enough that someone else can follow it.</p>
+          <a class="text-link" href="/ai-workflows">See the working method →</a>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">01</span>
+            <div>
+              <h3>Search</h3>
+              <p>Use narrow, repeatable queries instead of wandering through results.</p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-number">02</span>
+            <div>
+              <h3>Verify</h3>
+              <p>Compare sources, dates, claims, context, and contradictions.</p>
+            </div>
+          </article>
+          <article class="step">
+            <span class="step-number">03</span>
+            <div>
+              <h3>Build</h3>
+              <p>Turn what survives review into a clear, usable, updateable file.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="experience" aria-labelledby="experience-title">
+      <div class="wrap">
+        <div class="experience-in">
+          <div>
+            <p class="section-kicker">Experience behind the method</p>
+            <h2 id="experience-title">Built from investigative experience. Designed for public use.</h2>
+            <p>Signal &amp; Trace is created by former investigator Shane Lockhart. The point is not to tell people what to believe—it is to provide a disciplined way to examine what is available.</p>
+          </div>
+          <a class="button" href="/shane-lockhart">Read the background</a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-800/80 py-12 bg-slate-950/70">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
-      <div class="font-display text-[14px] text-slate-500 tracking-[0.4em] mb-3">SIGNAL &amp; TRACE // 2026</div>
-      <div class="font-mono text-[10px] text-cyan-400/80 tracking-[0.2em] font-bold mb-6">OSINT · RESEARCH · VERIFICATION</div>
-      <p class="text-slate-500 text-xs leading-relaxed max-w-3xl mb-6">Signal &amp; Trace is for lawful public-record and open-source research only. Users are responsible for following applicable laws, platform rules, and ethical boundaries.</p>
-      <div class="flex flex-wrap justify-center gap-6 font-mono text-[10px] text-slate-400 tracking-[0.2em] font-bold">
-        <a href="tools.html" class="hover:text-cyan-400">TOOLS</a>
-        <a href="blog.html" class="hover:text-cyan-400">BLOG</a>
-        <a href="case-reviews.html" class="hover:text-cyan-400">CASE REVIEWS</a>
-        <a href="ai-workflows.html" class="hover:text-cyan-400">AI WORKFLOWS</a>
-        <a href="about.html" class="hover:text-cyan-400">ABOUT</a>
-        <a href="contact.html" class="hover:text-cyan-400">CONTACT</a>
+  <footer>
+    <div class="wrap footer-main">
+      <div>
+        <div class="footer-brand">Signal &amp; Trace</div>
+        <p class="footer-tagline">Follow the signal. Trace the truth.</p>
       </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/tools">Tools</a>
+        <a href="/blog">Blog</a>
+        <a href="/case-reviews">Case Files</a>
+        <a href="/ai-workflows">Workflows</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </div>
+    <div class="wrap">
+      <p class="footer-note">For lawful public-record and open-source research. Follow applicable laws, platform rules, and ethical boundaries.</p>
     </div>
   </footer>
+
+  <script>
+    const burger = document.querySelector('#burger');
+    const mobileNav = document.querySelector('#mnav');
+
+    burger.addEventListener('click', () => {
+      const open = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', String(!open));
+      burger.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+      mobileNav.hidden = open;
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 820) {
+        mobileNav.hidden = true;
+        burger.setAttribute('aria-expanded', 'false');
+        burger.setAttribute('aria-label', 'Open navigation');
+      }
+    });
+  </script>
 </body>
 </html>
